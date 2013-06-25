@@ -1,0 +1,52 @@
+name: MCCore
+main: com.rit.sucy.MCCore
+version: 1.0
+author: Eniripsa96
+commands:
+  chat:
+    description: chat controls for prefixes and display names
+  board:
+    description: scoreboard controls
+permissions:
+  core.board.cycle:
+    description: allows a user to have their scoreboard cycle
+    default: true
+  core.board.list:
+    description: allows a user to see a list of their active scoreboards
+    default: true
+  core.board.show:
+    description: allows a user to change their scoreboard display
+    default: true
+  core.board.stop:
+    description: allows a user to stop their scoreboard from cycling
+    default: true
+  core.board:
+    description: access to all scoreboard commands
+    children:
+      core.board.cycle: true
+      core.board.show: true
+      core.board.stop: true
+  core.chat.list:
+    description: displays a list of unlocked prefixes
+    default: true
+  core.chat.name:
+    description: allows a user to change their display name
+    default: op
+  core.chat.prefix:
+    description: allows a user to select a prefix
+    default: true
+  core.chat.reset:
+    description: allows a user to reset their display name
+    default: op
+  core.chat:
+    description: access to all chat commands
+    children:
+      core.chat.list: true
+      core.chat.name: true
+      core.chat.prefix: true
+      core.chat.reset: true
+  core.*:
+    description: anything and everything
+    children:
+      core.board: true
+      core.chat: true
