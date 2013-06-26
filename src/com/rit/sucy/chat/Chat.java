@@ -35,6 +35,16 @@ public class Chat {
     }
 
     /**
+     * Saves chat data
+     */
+    public static void save() {
+        for (ChatData data : players.values()) {
+            MCCore core = (MCCore)Bukkit.getPluginManager().getPlugin("MCCore");
+            data.save(core.getConfig("chat"));
+        }
+    }
+
+    /**
      * Unlocks the prefix for all players
      *
      * @param prefix the prefix to unlock

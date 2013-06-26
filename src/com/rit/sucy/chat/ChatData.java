@@ -19,6 +19,13 @@ public class ChatData {
     String playerName;
     String displayName;
 
+    ChatData(String playerName) {
+        pluginPrefixes = new ArrayList<Prefix>();
+        unlockedPrefixes = new ArrayList<Prefix>();
+        this.playerName = playerName;
+        this.displayName = playerName;
+    }
+
     /**
      * Constructor
      *
@@ -26,10 +33,7 @@ public class ChatData {
      * @param playerName the name of the player to store the data of
      */
     ChatData(ConfigurationSection config, String playerName) {
-        pluginPrefixes = new ArrayList<Prefix>();
-        unlockedPrefixes = new ArrayList<Prefix>();
-        this.playerName = playerName;
-        displayName = playerName;
+        this(playerName);
         load(config);
     }
 

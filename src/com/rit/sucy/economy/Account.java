@@ -44,11 +44,11 @@ public interface Account {
     /**
      * Transfers money into the target player account
      *
-     * @param player target account
-     * @param amount amount to transfer
-     * @return       remaining balance
+     * @param account target account
+     * @param amount  amount to transfer
+     * @return        remaining balance
      */
-    public double transfer(Player player, double amount);
+    public double transfer(Account account, double amount);
 
     /**
      * Sets the amount of money in the account

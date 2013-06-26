@@ -1,5 +1,6 @@
 package com.rit.sucy;
 
+import com.rit.sucy.chat.Chat;
 import com.rit.sucy.chat.ChatListener;
 import com.rit.sucy.chat.ChatCommander;
 import com.rit.sucy.config.Config;
@@ -63,15 +64,9 @@ public class MCCore extends JavaPlugin {
     public void onDisable() {
 
         HandlerList.unregisterAll(this);
+        Chat.save();
         cTask.cancel();
         uTask.cancel();
-
-        // Save configs
-        for (Config config : configs.values()) {
-            if (config.saveOnDisable()) {
-                config.saveConfig();
-            }
-        }
     }
 
     /**
@@ -103,23 +98,12 @@ public class MCCore extends JavaPlugin {
     /**
      * Gets a config for a file
      *
-     * @param file file name
-     * @return     config for the file
-     */
-    public ConfigurationSection getConfig(String file) {
-        return getConfig(file, true);
-    }
-
-    /**
-     * Gets a config for a file
-     *
      * @param file          file name
-     * @param saveOnDisable whether or not to save it on disable
      * @return              config for the file
      */
-    public ConfigurationSection getConfig(String file, boolean saveOnDisable) {
+    public ConfigurationSection getConfig(String file) {
         if (!configs.containsKey(file.toLowerCase())) {
-            configs.put(file.toLowerCase(), new Config(this, file, saveOnDisable));
+            configs.put(file.toLowerCase(), new Config(this, file));
         }
         return configs.get(file.toLowerCase()).getConfig();
     }

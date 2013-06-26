@@ -150,4 +150,26 @@ public interface Economy {
      * @param world world name
      */
     public void deleteAccount(String name, String world);
+
+    /**
+     * Formats the money into a string
+     *
+     * @param money money to format
+     * @return      money string
+     */
+    public String format(double money);
+
+    /**
+     * Returns the currency name as a singular word
+     *
+     * @return singular form of currency name
+     */
+    public String getCurrencySingular();
+
+    /**
+     * Returns the currency name as a plural word
+     *
+     * @return plural form of currency name
+     */
+    public String getCurrencyPlural();
 }

@@ -19,7 +19,6 @@ public class Config {
 
     private final String fileName;
     private final JavaPlugin plugin;
-    private boolean saveOnDisable;
 
     private File configFile;
     private FileConfiguration fileConfiguration;
@@ -29,9 +28,8 @@ public class Config {
      *
      * @param plugin plugin reference
      */
-    public Config(JavaPlugin plugin, String name, boolean saveOnDisable) {
+    public Config(JavaPlugin plugin, String name) {
         this.plugin = plugin;
-        this.saveOnDisable = saveOnDisable;
         this.fileName = name + ".yml";
         this.configFile = new File(plugin.getDataFolder().getAbsolutePath() + "/" + fileName);
         try {
@@ -40,13 +38,6 @@ public class Config {
                 plugin.getLogger().info("Created a new folder for config files");
         }
         catch (Exception e) { /* */ }
-    }
-
-    /**
-     * @return true if should save on disable, false otherwise
-     */
-    public boolean saveOnDisable() {
-        return saveOnDisable;
     }
 
     /**

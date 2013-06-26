@@ -155,7 +155,7 @@ public abstract class CommandHandler implements CommandExecutor {
         int maxSize = 0;
         int index = 0;
         for (Map.Entry<String, ICommand> entry : commands.entrySet()) {
-            if (!sender.hasPermission(entry.getValue().getPermissionNode()))
+            if (!canUseCommand(sender, entry.getValue()))
                 continue;
             index++;
             if (index <= (page - 1) * 9 || index > page * 9) continue;
@@ -167,14 +167,26 @@ public abstract class CommandHandler implements CommandExecutor {
         // Display usage, squaring everything up nicely
         index = 0;
         for (Map.Entry<String, ICommand> command : commands.entrySet()) {
-            if (!sender.hasPermission(command.getValue().getPermissionNode()))
+            if (!canUseCommand(sender, command.getValue()))
                 continue;
             index++;
             if (index <= (page - 1) * 9 || index > page * 9) continue;
-            sender.sendMessage(ChatColor.GOLD + "   /" + TextSizer.expand(command.getKey() + " "
+            sender.sendMessage(ChatColor.GOLD + "   /" + label.toLowerCase() + " " + TextSizer.expand(command.getKey() + " "
                     + ChatColor.LIGHT_PURPLE + command.getValue().getArgsString() + ChatColor.GRAY, maxSize, false)
                     + ChatColor.GRAY + "- " + command.getValue().getDescription());
         }
+    }
+
+    /**
+     * Checks whether or not a command sender can use a certain command
+     * - Can be overridden for custom checks -
+     *
+     * @param sender  sender of the command
+     * @param command command to check
+     * @return        true if able to use it, false otherwise
+     */
+    protected boolean canUseCommand(CommandSender sender, ICommand command) {
+        return sender.hasPermission(command.getPermissionNode());
     }
 
     /**
