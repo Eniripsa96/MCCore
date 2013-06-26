@@ -33,8 +33,8 @@ public class TextBoard extends Board {
     public void addMessage(String message) {
         ArrayList<String> result = TextSplitter.getLines(message);
         if (separateMessages && messages.size() > 0) {
-            String separator = ChatColor.DARK_GRAY + "=-------------";
-            while (messages.contains(separator) && !separator.equals(ChatColor.DARK_GRAY + "-------------="))
+            String separator = ChatColor.DARK_GRAY + "=---------------";
+            while (messages.contains(separator) && !separator.equals(ChatColor.DARK_GRAY + "---------------="))
                 separator = separator.replace("=-", "-=");
             if (!messages.contains(separator))
                 messages.add(separator);

@@ -1,6 +1,7 @@
 package com.rit.sucy.chat;
 
 import com.rit.sucy.MCCore;
+import com.rit.sucy.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -28,20 +29,13 @@ public class Chat {
         // Initialize data if it doesn't exist
         if (!players.containsKey(playerName)) {
             MCCore core = (MCCore)Bukkit.getPluginManager().getPlugin("MCCore");
-            players.put(playerName, new ChatData(core.getConfig("chat"), playerName));
+            Config configFile = core.getConfigFile(core, "data");
+            ChatData data = new ChatData(configFile.getConfig(), playerName);
+            configFile.addSavable(data, playerName.toLowerCase() + ".");
+            players.put(playerName, data);
         }
 
         return players.get(playerName);
-    }
-
-    /**
-     * Saves chat data
-     */
-    public static void save() {
-        for (ChatData data : players.values()) {
-            MCCore core = (MCCore)Bukkit.getPluginManager().getPlugin("MCCore");
-            data.save(core.getConfig("chat"));
-        }
     }
 
     /**

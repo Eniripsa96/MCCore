@@ -17,7 +17,7 @@ public class ScoreboardCommander extends CommandHandler {
      * @param plugin plugin reference
      */
     public ScoreboardCommander(Plugin plugin) {
-        super(plugin, "Scoreboard");
+        super(plugin, "Scoreboard", "board");
     }
 
     /**

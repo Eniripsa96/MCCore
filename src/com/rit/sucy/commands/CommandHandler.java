@@ -5,10 +5,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -20,10 +21,16 @@ public abstract class CommandHandler implements CommandExecutor {
      * Table of registered sub-commands
      */
     protected final Map<String, ICommand> commands = new HashMap<String, ICommand>();
+
     /**
      * Plugin reference
      */
     protected final Plugin plugin;
+
+    /**
+     * Usage title
+     */
+    protected String title;
 
     /**
      * Command label
@@ -33,13 +40,30 @@ public abstract class CommandHandler implements CommandExecutor {
     /**
      * Constructor
      *
-     * @param plugin plugin reference
-     * @param label  command label
+     * @param plugin  plugin reference
+     * @param title   usage title
+     * @param command command label
      */
-    public CommandHandler(Plugin plugin, String label) {
+    public CommandHandler(Plugin plugin, String title, String command) {
         this.plugin = plugin;
-        this.label = label;
+        this.title = title;
+        this.label = command;
         registerCommands();
+
+        PluginCommand cmd = ((JavaPlugin)plugin).getCommand(command);
+        if (cmd != null) {
+            cmd.setExecutor(plugin);
+        }
+    }
+
+    /**
+     * Constructor
+     *
+     * @param plugin  plugin reference
+     * @param command command label and usage title
+     */
+    public CommandHandler(Plugin plugin, String command) {
+        this(plugin, command, command);
     }
 
     /**
@@ -149,7 +173,7 @@ public abstract class CommandHandler implements CommandExecutor {
         if (page < 1) page = 1;
         if (page > (commands.size() - 1) / 9 + 1) page = (commands.size() - 1) / 9 + 1;
 
-        sender.sendMessage(ChatColor.DARK_GREEN + label + " - Command Usage (Page " + page + "/" + ((commands.size() - 1) / 9 + 1) + ")");
+        sender.sendMessage(ChatColor.DARK_GREEN + title + " - Command Usage (Page " + page + "/" + ((commands.size() - 1) / 9 + 1) + ")");
 
         // Get the maximum length
         int maxSize = 0;

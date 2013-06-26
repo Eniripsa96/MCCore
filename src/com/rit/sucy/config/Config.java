@@ -7,6 +7,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -17,6 +19,7 @@ import java.util.logging.Level;
  */
 public class Config {
 
+    private final HashMap<ISavable, String> savables = new HashMap<ISavable, String>();
     private final String fileName;
     private final JavaPlugin plugin;
 
@@ -27,10 +30,13 @@ public class Config {
      * Constructor
      *
      * @param plugin plugin reference
+     * @param name   file name
      */
     public Config(JavaPlugin plugin, String name) {
         this.plugin = plugin;
         this.fileName = name + ".yml";
+
+        // Setup the path
         this.configFile = new File(plugin.getDataFolder().getAbsolutePath() + "/" + fileName);
         try {
             String path = configFile.getAbsolutePath();
@@ -38,6 +44,44 @@ public class Config {
                 plugin.getLogger().info("Created a new folder for config files");
         }
         catch (Exception e) { /* */ }
+
+    }
+
+    /**
+     * Saves if there are savables added
+     */
+    public void save() {
+        if (savables.size() == 0)
+            return;
+
+        for (Map.Entry<ISavable, String> entry : savables.entrySet()) {
+            entry.getKey().save(getConfig(), entry.getValue());
+        }
+        saveConfig();
+    }
+
+    /**
+     * Adds a savable object to the config for automatic saving
+     *
+     * @param savable  savable object
+     * @param basePath base path for it
+     */
+    public void addSavable(ISavable savable, String basePath) {
+        this.savables.put(savable, basePath);
+    }
+
+    /**
+     * Deletes the savable from the config
+     *
+     * @param savable savable to delete
+     */
+    public void deleteSavable(ISavable savable) {
+        if (savables.containsKey(savable)) {
+            String base = savables.get(savable);
+            if (base.length() > 0 && base.charAt(base.length() - 1) == '.')
+                base = base.substring(0, base.length() - 1);
+            getConfig().set(base, null);
+        }
     }
 
     /**

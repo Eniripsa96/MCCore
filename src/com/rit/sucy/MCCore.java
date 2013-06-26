@@ -1,20 +1,19 @@
 package com.rit.sucy;
 
-import com.rit.sucy.chat.Chat;
 import com.rit.sucy.chat.ChatListener;
 import com.rit.sucy.chat.ChatCommander;
 import com.rit.sucy.config.Config;
 import com.rit.sucy.economy.Economy;
 
+import com.rit.sucy.economy.EconomyPlugin;
 import com.rit.sucy.scoreboard.BoardListener;
 import com.rit.sucy.scoreboard.CycleTask;
 import com.rit.sucy.scoreboard.ScoreboardCommander;
 import com.rit.sucy.scoreboard.UpdateTask;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.DisplaySlot;
 
 import java.util.Hashtable;
 
@@ -46,15 +45,20 @@ public class MCCore extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        getCommand("chat").setExecutor(new ChatCommander(this));
-        getCommand("board").setExecutor(new ScoreboardCommander(this));
+        new ChatCommander(this);
+        new ScoreboardCommander(this);
         new ChatListener(this);
         new BoardListener(this);
 
         cTask = new CycleTask(this);
         uTask = new UpdateTask(this);
 
-        getLogger().info(Bukkit.getScoreboardManager().getNewScoreboard().getObjective(DisplaySlot.BELOW_NAME) + " is it");
+        for (Plugin plugin : getServer().getPluginManager().getPlugins()) {
+            if (plugin instanceof EconomyPlugin) {
+                this.economy = ((EconomyPlugin) plugin).getEconomy();
+                break;
+            }
+        }
     }
 
     /**
@@ -64,7 +68,9 @@ public class MCCore extends JavaPlugin {
     public void onDisable() {
 
         HandlerList.unregisterAll(this);
-        Chat.save();
+        for (Config config : configs.values())
+            config.save();
+        configs.clear();
         cTask.cancel();
         uTask.cancel();
     }
@@ -79,32 +85,25 @@ public class MCCore extends JavaPlugin {
     }
 
     /**
-     * Sets the economy to be accessed
-     *
-     * @param economy economy class
-     * @return        true if successful, false otherwise
-     */
-    public boolean setEconomy(Economy economy) {
-        if (this.economy == null || this.economy == economy) {
-            this.economy = economy;
-            return true;
-        }
-        else {
-            getLogger().severe("Multiple economies detected! - " + economy.getClass().getName() + " was rejected!");
-            return false;
-        }
-    }
-
-    /**
      * Gets a config for a file
      *
      * @param file          file name
      * @return              config for the file
      */
-    public ConfigurationSection getConfig(String file) {
+    public ConfigurationSection getConfig(JavaPlugin plugin, String file) {
+        return getConfigFile(plugin,file).getConfig();
+    }
+
+    /**
+     * Gets the config manager for a file
+     *
+     * @param file file name
+     * @return     config manager for the file
+     */
+    public Config getConfigFile(JavaPlugin plugin, String file) {
         if (!configs.containsKey(file.toLowerCase())) {
-            configs.put(file.toLowerCase(), new Config(this, file));
+            configs.put(file.toLowerCase(), new Config(plugin, file));
         }
-        return configs.get(file.toLowerCase()).getConfig();
+        return configs.get(file.toLowerCase());
     }
 }

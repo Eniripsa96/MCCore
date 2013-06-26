@@ -17,7 +17,7 @@ public class ChatCommander extends CommandHandler {
      * @param plugin plugin reference
      */
     public ChatCommander(Plugin plugin) {
-        super(plugin, "Chat");
+        super(plugin, "Chat", "chat");
     }
 
     /**

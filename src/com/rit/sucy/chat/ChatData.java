@@ -1,5 +1,6 @@
 package com.rit.sucy.chat;
 
+import com.rit.sucy.config.ISavable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * Contains player data for the chat
  */
-public class ChatData {
+public class ChatData implements ISavable {
 
     ArrayList<Prefix> pluginPrefixes;
     ArrayList<Prefix> unlockedPrefixes;
@@ -270,11 +271,11 @@ public class ChatData {
     /**
      * Saves the player data to the config file
      */
-    void save(ConfigurationSection config) {
-        config.set(playerName.toLowerCase() + ".name", displayName);
-        config.set(playerName.toLowerCase() + ".unlocked", unlockedList());
-        config.set(playerName.toLowerCase() + ".prefixes", setList());
-        if (playerPrefix != null) config.set(playerName.toLowerCase() + ".prefix", playerPrefix.toString());
+    public void save(ConfigurationSection config, String base) {
+        config.set(base + "name", displayName);
+        config.set(base + "unlocked", unlockedList());
+        config.set(base + "prefixes", setList());
+        if (playerPrefix != null) config.set(base + "prefix", playerPrefix.toString());
     }
 
     /**
