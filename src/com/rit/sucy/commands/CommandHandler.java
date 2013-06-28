@@ -52,7 +52,7 @@ public abstract class CommandHandler implements CommandExecutor {
 
         PluginCommand cmd = ((JavaPlugin)plugin).getCommand(command);
         if (cmd != null) {
-            cmd.setExecutor(plugin);
+            cmd.setExecutor(this);
         }
     }
 

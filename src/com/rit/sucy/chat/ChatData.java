@@ -264,7 +264,9 @@ public class ChatData implements ISavable {
         if (name.length() > 0) name += " ";
 
         // Set the display name to the prefixes plus the regular display name
-        Bukkit.getPlayer(playerName).setDisplayName(
+        Player player = Bukkit.getPlayer(playerName);
+        if (player != null)
+            player.setDisplayName(
                 name + ChatColor.WHITE + displayName);
     }
 

@@ -65,7 +65,7 @@ public class PlayerBoards {
         ArrayList<Board> list = new ArrayList<Board>(boards.values());
         for (Board board : list) {
             if (board.plugin.equalsIgnoreCase(plugin)) {
-                boards.remove(board.getName().toLowerCase());
+                boards.remove(format(board.getName()));
             }
         }
         validateBoard();
@@ -80,7 +80,10 @@ public class PlayerBoards {
         if (!boards.contains(currentBoard)) {
             if (boards.size() > 0)
                 showNextBoard();
-            else Bukkit.getPlayer(player).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+            else {
+                currentBoard = null;
+                Bukkit.getPlayer(player).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+            }
         }
     }
 

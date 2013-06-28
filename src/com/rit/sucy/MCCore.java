@@ -6,6 +6,7 @@ import com.rit.sucy.config.Config;
 import com.rit.sucy.economy.Economy;
 
 import com.rit.sucy.economy.EconomyPlugin;
+import com.rit.sucy.event.EquipListener;
 import com.rit.sucy.scoreboard.BoardListener;
 import com.rit.sucy.scoreboard.CycleTask;
 import com.rit.sucy.scoreboard.ScoreboardCommander;
@@ -49,6 +50,7 @@ public class MCCore extends JavaPlugin {
         new ScoreboardCommander(this);
         new ChatListener(this);
         new BoardListener(this);
+        new EquipListener(this);
 
         cTask = new CycleTask(this);
         uTask = new UpdateTask(this);
