@@ -9,6 +9,8 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -171,33 +173,49 @@ public abstract class CommandHandler implements CommandExecutor {
      */
     public void displayUsage (CommandSender sender, int page) {
         if (page < 1) page = 1;
-        if (page > (commands.size() - 1) / 9 + 1) page = (commands.size() - 1) / 9 + 1;
 
         sender.sendMessage(ChatColor.DARK_GREEN + title + " - Command Usage (Page " + page + "/" + ((commands.size() - 1) / 9 + 1) + ")");
+
+        // Get the key set alphabetized
+        ArrayList<String> keys = new ArrayList<String>(commands.keySet());
+        Collections.sort(keys);
+
+        // Limit the page number
+        int validKeys = 0;
+        for (String key : keys)
+                if (canUseCommand(sender, commands.get(key)))
+                    validKeys++;
+
+        if (validKeys == 0) {
+            sender.sendMessage(ChatColor.GRAY + "   No commands available");
+            return;
+        }
+        else if (page > (validKeys - 1) / 9 + 1)
+            page = (validKeys - 1) / 9 + 1;
 
         // Get the maximum length
         int maxSize = 0;
         int index = 0;
-        for (Map.Entry<String, ICommand> entry : commands.entrySet()) {
-            if (!canUseCommand(sender, entry.getValue()))
+        for (String key : keys) {
+            if (!canUseCommand(sender, commands.get(key)))
                 continue;
             index++;
             if (index <= (page - 1) * 9 || index > page * 9) continue;
-            int size = TextSizer.measureString(entry.getKey() + " " + entry.getValue().getArgsString());
+            int size = TextSizer.measureString(key + " " + commands.get(key).getArgsString());
             if (size > maxSize) maxSize = size;
         }
         maxSize += 4;
 
         // Display usage, squaring everything up nicely
         index = 0;
-        for (Map.Entry<String, ICommand> command : commands.entrySet()) {
-            if (!canUseCommand(sender, command.getValue()))
+        for (String key : keys) {
+            if (!canUseCommand(sender, commands.get(key)))
                 continue;
             index++;
             if (index <= (page - 1) * 9 || index > page * 9) continue;
-            sender.sendMessage(ChatColor.GOLD + "   /" + label.toLowerCase() + " " + TextSizer.expand(command.getKey() + " "
-                    + ChatColor.LIGHT_PURPLE + command.getValue().getArgsString() + ChatColor.GRAY, maxSize, false)
-                    + ChatColor.GRAY + "- " + command.getValue().getDescription());
+            sender.sendMessage(ChatColor.GOLD + "/" + label.toLowerCase() + " " + TextSizer.expand(key + " "
+                    + ChatColor.LIGHT_PURPLE + commands.get(key).getArgsString() + ChatColor.GRAY, maxSize, false)
+                    + ChatColor.GRAY + "- " + commands.get(key).getDescription());
         }
     }
 

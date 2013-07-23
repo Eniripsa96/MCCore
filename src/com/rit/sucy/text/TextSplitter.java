@@ -7,13 +7,17 @@ import java.util.ArrayList;
  */
 public class TextSplitter {
 
+    private static final int MIN_WRAP = 4;
+    private static final int SPACE = 1;
+    private static final int DASH = 1;
+
     /**
      * Smart-splits messages to wrap for the scoreboard
      *
      * @param message message to split
      * @return        lines of text
      */
-    public static ArrayList<String> getLines(String message) {
+    public static ArrayList<String> getLines(String message, int maxLength) {
 
         // Make sure the message isn't null
         if (message == null) throw new IllegalArgumentException("Null string");
@@ -31,9 +35,9 @@ public class TextSplitter {
             if (line.length() == 0) {
 
                 // If its longer than a line, make the next 15 characters a line
-                if (pieces[i].length() - offset > 16) {
-                    lines.add(pieces[i].substring(offset, 15 + offset) + "-");
-                    offset += 15;
+                if (pieces[i].length() - offset > maxLength) {
+                    lines.add(pieces[i].substring(offset, maxLength - DASH + offset) + "-");
+                    offset += maxLength - DASH;
                     i--;
                 }
 
@@ -48,10 +52,10 @@ public class TextSplitter {
             else {
 
                 // When it exceeds the line limit
-                if (pieces[i].length() + line.length() > 15) {
+                if (pieces[i].length() + line.length() > maxLength - SPACE) {
 
                     // If it would hardly wrap, just wait for the next line
-                    if (line.length() > 12 || line.length() + pieces[i].length() < 18) {
+                    if (line.length() > maxLength - MIN_WRAP || line.length() + pieces[i].length() < maxLength - SPACE - DASH + MIN_WRAP) {
                         lines.add(line);
                         line = "";
                         i--;
@@ -59,8 +63,8 @@ public class TextSplitter {
 
                     // Otherwise, wrap the word using a dash to separate the pieces
                     else {
-                        offset = 14 - line.length();
-                        line += " " + pieces[i].substring(0, 14 - line.length()) + "-";
+                        offset = maxLength - DASH - SPACE - line.length();
+                        line += " " + pieces[i].substring(0, maxLength - DASH - SPACE - line.length()) + "-";
                         lines.add(line);
                         line = "";
                         i--;

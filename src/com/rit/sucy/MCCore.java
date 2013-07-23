@@ -103,9 +103,18 @@ public class MCCore extends JavaPlugin {
      * @return     config manager for the file
      */
     public Config getConfigFile(JavaPlugin plugin, String file) {
-        if (!configs.containsKey(file.toLowerCase())) {
-            configs.put(file.toLowerCase(), new Config(plugin, file));
+        if (!configs.containsKey(file.toLowerCase() + plugin.getName())) {
+            return new Config(plugin, file);
         }
-        return configs.get(file.toLowerCase());
+        return configs.get(file.toLowerCase() + plugin.getName());
+    }
+
+    /**
+     * Registers the config for auto-saving
+     *
+     * @param config config to register
+     */
+    public void registerConfig(Config config) {
+        configs.put(config.getFile().toLowerCase() + config.getPlugin().getName(), config);
     }
 }

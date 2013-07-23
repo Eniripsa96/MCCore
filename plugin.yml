@@ -1,6 +1,6 @@
 name: MCCore
 main: com.rit.sucy.MCCore
-version: 1.5
+version: 1.8
 author: Eniripsa96
 commands:
   chat:

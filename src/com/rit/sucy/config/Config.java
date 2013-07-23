@@ -1,5 +1,6 @@
 package com.rit.sucy.config;
 
+import com.rit.sucy.MCCore;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,6 +46,22 @@ public class Config {
         }
         catch (Exception e) { /* */ }
 
+        // Register for auto-saving
+        ((MCCore)plugin.getServer().getPluginManager().getPlugin("MCCore")).registerConfig(this);
+    }
+
+    /**
+     * @return plugin owning this config file
+     */
+    public JavaPlugin getPlugin() {
+        return plugin;
+    }
+
+    /**
+     * @return name of the file this config saves to
+     */
+    public String getFile() {
+        return fileName.replace(".yml", "");
     }
 
     /**
@@ -77,10 +94,12 @@ public class Config {
      */
     public void deleteSavable(ISavable savable) {
         if (savables.containsKey(savable)) {
+            plugin.getLogger().info("Deleting!");
             String base = savables.get(savable);
             if (base.length() > 0 && base.charAt(base.length() - 1) == '.')
                 base = base.substring(0, base.length() - 1);
             getConfig().set(base, null);
+            savables.remove(savable);
         }
     }
 

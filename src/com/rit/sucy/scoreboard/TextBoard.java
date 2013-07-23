@@ -31,7 +31,7 @@ public class TextBoard extends Board {
      * @param message message to add
      */
     public void addMessage(String message) {
-        ArrayList<String> result = TextSplitter.getLines(message);
+        ArrayList<String> result = TextSplitter.getLines(message, 16);
         if (separateMessages && messages.size() > 0) {
             String separator = ChatColor.DARK_GRAY + "=---------------";
             while (messages.contains(separator) && !separator.equals(ChatColor.DARK_GRAY + "---------------="))

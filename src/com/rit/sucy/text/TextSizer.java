@@ -33,6 +33,7 @@ public class TextSizer {
         for (char c : message.toCharArray()) {
             if (skip) {
                 skip = false;
+                index++;
                 continue;
             }
 
@@ -52,6 +53,8 @@ public class TextSizer {
                 if (lengths.containsKey(c)) size += lengths.get(c) + boldBonus;
                 else size += 6 + boldBonus;
             }
+
+            index++;
         }
 
         return size;

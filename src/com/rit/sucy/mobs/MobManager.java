@@ -44,8 +44,12 @@ public class MobManager {
      */
     public static String getDetailedName(LivingEntity entity) {
         String basic = getName(entity);
+
+        // Wolves and ocelots are described with whether or not they are tamed
         if (entity instanceof Tameable)
             basic = ((Tameable)entity).isTamed() ? "Tamed " + basic : "Wild " + basic;
+
+        // Slimes are described with their size
         else if (entity instanceof Slime) {
             switch (((Slime)entity).getSize()) {
                 case 4:
@@ -59,20 +63,27 @@ public class MobManager {
                     break;
             }
         }
+
+        // Sheep are described with their color
         else if (entity instanceof Sheep) {
             String color = ((Sheep) entity).getColor().name().toLowerCase();
             basic = TextFormatter.format(color) + " " + basic;
         }
+
+        // Villagers are described with their profession
         else if (entity instanceof Villager) {
             String profession = ((Villager) entity).getProfession().name();
             basic = TextFormatter.format(profession) + " " + basic;
         }
+
+        // Zombies are described with whether or not they are a villager zombie and if they are a baby
         else if (entity instanceof Zombie) {
             String extra = ((Zombie) entity).isBaby() ? "Baby " : "";
             extra += ((Zombie) entity).isVillager() ? "Villager " : "";
             basic = extra + basic;
         }
 
+        // Animals are described with whether or not they are a baby
         if (entity instanceof Ageable) {
             basic = ((Ageable) entity).isAdult() ? basic : "Baby " + basic;
         }

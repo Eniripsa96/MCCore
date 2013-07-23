@@ -33,15 +33,6 @@ public interface Account {
     public double deposit(double amount);
 
     /**
-     * Transfers money into the target bank
-     *
-     * @param bank   target bank
-     * @param amount amount to transfer
-     * @return       remaining balance
-     */
-    public double transfer(Bank bank, double amount);
-
-    /**
      * Transfers money into the target player account
      *
      * @param account target account

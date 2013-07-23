@@ -33,16 +33,25 @@ public class ListCommand implements ICommand {
         else handler.displayUsage(sender);
     }
 
+    /**
+     * @return permission required by the command
+     */
     @Override
     public String getPermissionNode() {
         return ScoreboardNodes.LIST.getNode();
     }
 
+    /**
+     * @return arguments used by the command
+     */
     @Override
     public String getArgsString() {
         return "";
     }
 
+    /**
+     * @return command description
+     */
     @Override
     public String getDescription() {
         return "Displays a list of active scoreboards";

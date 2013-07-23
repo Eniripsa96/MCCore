@@ -1,6 +1,11 @@
 package com.rit.sucy.text;
 
+import com.rit.sucy.chat.Chat;
+import org.bukkit.ChatColor;
+
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Formats strings into various forms
@@ -8,8 +13,9 @@ import java.text.DecimalFormat;
 public class TextFormatter {
 
     /**
-     * Formats text to be separate words with each word capitalized
+     * Formats text into individual words
      * (e.g. This Would Be A Result)
+     *
      * @param string string to format
      * @return       formatted string
      */
@@ -18,11 +24,11 @@ public class TextFormatter {
             return string;
 
         String[] pieces = split(string);
-        String result = "";
-        for (String part : pieces) {
-            result += " " + part.substring(0, 1).toUpperCase() + part.substring(1).toLowerCase();
+        String result = pieces[0].substring(0, 1).toUpperCase() + pieces[0].substring(1).toLowerCase();
+        for (int i = 1; i < pieces.length; i++) {
+            result += " " + pieces[i].substring(0, 1).toUpperCase() + pieces[i].substring(1).toLowerCase();
         }
-        return result.substring(1);
+        return result;
     }
 
     /**
@@ -74,6 +80,52 @@ public class TextFormatter {
         if (decimals >= 1) formatString += ".0";
         for (int i = 1; i < decimals; i++) formatString += "0";
         return new DecimalFormat(formatString).format(number);
+    }
+
+    /**
+     * Colors a string using & as the color indicator
+     *
+     * @param string string to color
+     * @return       colored string
+     */
+    public static String colorString(String string) {
+        return string.replace('&', ChatColor.COLOR_CHAR);
+    }
+
+    /**
+     * Colors a string using the given color indicator
+     *
+     * @param string string to color
+     * @param token  color indicator
+     * @return       colored string
+     */
+    public static String colorString(String string, char token) {
+        return string.replace(token, ChatColor.COLOR_CHAR);
+    }
+
+    /**
+     * Colors a list of strings using & as the color indicator
+     *
+     * @param list string list
+     * @return     colored string list
+     */
+    public static List<String> colorStringList(List<String> list) {
+        return colorStringList(list, '&');
+    }
+
+    /**
+     * Colors a list of strings with the given color indicator
+     *
+     * @param list  string list
+     * @param token color indicator
+     * @return     colored string list
+     */
+    public static List<String> colorStringList(List<String> list, char token) {
+        ArrayList<String> copy = new ArrayList<String>();
+        for (String string : list) {
+            copy.add(string.replace(token, ChatColor.COLOR_CHAR));
+        }
+        return copy;
     }
 
     /**
