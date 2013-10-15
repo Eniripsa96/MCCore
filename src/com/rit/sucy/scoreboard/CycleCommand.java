@@ -2,6 +2,7 @@ package com.rit.sucy.scoreboard;
 
 import com.rit.sucy.commands.CommandHandler;
 import com.rit.sucy.commands.ICommand;
+import com.rit.sucy.commands.SenderType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -56,5 +57,13 @@ public class CycleCommand implements ICommand {
     @Override
     public String getDescription() {
         return "Makes the scoreboard cycle";
+    }
+
+    /**
+     * Sender required for the command
+     */
+    @Override
+    public SenderType getSenderType() {
+        return SenderType.PLAYER_ONLY;
     }
 }

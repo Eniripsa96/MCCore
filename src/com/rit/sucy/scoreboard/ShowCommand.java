@@ -2,6 +2,7 @@ package com.rit.sucy.scoreboard;
 
 import com.rit.sucy.commands.CommandHandler;
 import com.rit.sucy.commands.ICommand;
+import com.rit.sucy.commands.SenderType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,7 +23,7 @@ public class ShowCommand implements ICommand {
      */
     @Override
     public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args) {
-        if (sender instanceof Player && args.length > 0) {
+        if (args.length > 0) {
             String name = args[0];
             for (int i = 1; i < args.length; i++) {
                 name += " " + args[i];
@@ -58,5 +59,13 @@ public class ShowCommand implements ICommand {
     @Override
     public String getDescription() {
         return "Shows the scoreboard";
+    }
+
+    /**
+     * Sender required for the command
+     */
+    @Override
+    public SenderType getSenderType() {
+        return SenderType.PLAYER_ONLY;
     }
 }

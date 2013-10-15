@@ -2,6 +2,7 @@ package com.rit.sucy.scoreboard;
 
 import com.rit.sucy.commands.CommandHandler;
 import com.rit.sucy.commands.ICommand;
+import com.rit.sucy.commands.SenderType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,16 +23,13 @@ public class StopCommand implements ICommand {
      */
     @Override
     public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args) {
-        if (sender instanceof Player) {
-            PlayerBoards board = BoardManager.getPlayerBoards(sender.getName());
-            if (!board.isCycling())
-                sender.sendMessage(ChatColor.DARK_RED + "Your scoreboard is already stopped");
-            else {
-                board.stopCycling();
-                sender.sendMessage(ChatColor.DARK_GREEN + "Your scoreboard is no longer cycling");
-            }
+        PlayerBoards board = BoardManager.getPlayerBoards(sender.getName());
+        if (!board.isCycling())
+            sender.sendMessage(ChatColor.DARK_RED + "Your scoreboard is already stopped");
+        else {
+            board.stopCycling();
+            sender.sendMessage(ChatColor.DARK_GREEN + "Your scoreboard is no longer cycling");
         }
-        else handler.displayUsage(sender);
     }
 
     /**
@@ -56,5 +54,13 @@ public class StopCommand implements ICommand {
     @Override
     public String getDescription() {
         return "Stops cycling the scoreboard";
+    }
+
+    /**
+     * Sender required for the command
+     */
+    @Override
+    public SenderType getSenderType() {
+        return SenderType.PLAYER_ONLY;
     }
 }

@@ -1,10 +1,16 @@
 package com.rit.sucy.scoreboard;
 
+import com.rit.sucy.player.TargetHelper;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
+
+import java.lang.annotation.Target;
 
 /**
  * Listener for players quitting
@@ -38,5 +44,12 @@ public class BoardListener implements Listener {
     @EventHandler
     public void onKick(PlayerKickEvent event) {
         BoardManager.clearPlayer(event.getPlayer().getName());
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        LivingEntity target = TargetHelper.getLivingTarget(event.getPlayer(), 20);
+
+        event.getPlayer().sendMessage(target == null ? "None" : target.getType().name());
     }
 }

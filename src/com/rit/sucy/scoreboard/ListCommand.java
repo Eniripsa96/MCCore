@@ -2,6 +2,7 @@ package com.rit.sucy.scoreboard;
 
 import com.rit.sucy.commands.CommandHandler;
 import com.rit.sucy.commands.ICommand;
+import com.rit.sucy.commands.SenderType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,15 +23,12 @@ public class ListCommand implements ICommand {
      */
     @Override
     public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args) {
-        if (sender instanceof Player) {
-            String message = ChatColor.DARK_GREEN + "Active Scoreboards: ";
-            PlayerBoards boards = BoardManager.getPlayerBoards(sender.getName());
-            for (Board board : boards.boards.values()) {
-                message += ChatColor.GOLD + ChatColor.stripColor(board.getName()) + ChatColor.GRAY + ", ";
-            }
-            sender.sendMessage(message);
+        String message = ChatColor.DARK_GREEN + "Active Scoreboards: ";
+        PlayerBoards boards = BoardManager.getPlayerBoards(sender.getName());
+        for (Board board : boards.boards.values()) {
+            message += ChatColor.GOLD + ChatColor.stripColor(board.getName()) + ChatColor.GRAY + ", ";
         }
-        else handler.displayUsage(sender);
+        sender.sendMessage(message);
     }
 
     /**
@@ -55,5 +53,13 @@ public class ListCommand implements ICommand {
     @Override
     public String getDescription() {
         return "Displays a list of active scoreboards";
+    }
+
+    /**
+     * Sender required for the command
+     */
+    @Override
+    public SenderType getSenderType() {
+        return SenderType.PLAYER_ONLY;
     }
 }

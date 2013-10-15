@@ -32,4 +32,9 @@ public interface ICommand {
      * @return command description (be very brief)
      */
     public String getDescription();
+
+    /**
+     * @return type of sender required by the command
+     */
+    public SenderType getSenderType();
 }

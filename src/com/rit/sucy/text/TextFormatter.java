@@ -1,6 +1,5 @@
 package com.rit.sucy.text;
 
-import com.rit.sucy.chat.Chat;
 import org.bukkit.ChatColor;
 
 import java.text.DecimalFormat;
@@ -11,6 +10,11 @@ import java.util.List;
  * Formats strings into various forms
  */
 public class TextFormatter {
+
+    /**
+     * Regex string for finding color patterns
+     */
+    private static final String COLOR_REGEX = "([0-9a-fl-orA-FL-OR])";
 
     /**
      * Formats text into individual words
@@ -89,7 +93,7 @@ public class TextFormatter {
      * @return       colored string
      */
     public static String colorString(String string) {
-        return string.replace('&', ChatColor.COLOR_CHAR);
+        return colorString(string, '&');
     }
 
     /**
@@ -100,7 +104,7 @@ public class TextFormatter {
      * @return       colored string
      */
     public static String colorString(String string, char token) {
-        return string.replace(token, ChatColor.COLOR_CHAR);
+        return string.replaceAll(token + COLOR_REGEX, ChatColor.COLOR_CHAR + "$1");
     }
 
     /**
@@ -123,7 +127,7 @@ public class TextFormatter {
     public static List<String> colorStringList(List<String> list, char token) {
         ArrayList<String> copy = new ArrayList<String>();
         for (String string : list) {
-            copy.add(string.replace(token, ChatColor.COLOR_CHAR));
+            copy.add(colorString(string));
         }
         return copy;
     }

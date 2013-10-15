@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,6 +19,8 @@ import java.util.Map;
  * Manages organizing commands into sub-commands
  */
 public abstract class CommandHandler implements CommandExecutor {
+
+    protected static final String BREAK = ChatColor.STRIKETHROUGH + "" + ChatColor.DARK_GRAY + "-----------------------------------------------------";
 
     /**
      * Table of registered sub-commands
@@ -106,7 +109,7 @@ public abstract class CommandHandler implements CommandExecutor {
         // No arguments simply shows the command usage
         if (args.length == 0) displayUsage(sender);
 
-        // If a sub-command is found, execute it
+            // If a sub-command is found, execute it
         else if (commands.containsKey(args[0].toLowerCase())) {
             ICommand command = commands.get(args[0].toLowerCase());
             if (sender.hasPermission(command.getPermissionNode()))
@@ -174,8 +177,6 @@ public abstract class CommandHandler implements CommandExecutor {
     public void displayUsage (CommandSender sender, int page) {
         if (page < 1) page = 1;
 
-        sender.sendMessage(ChatColor.DARK_GREEN + title + " - Command Usage (Page " + page + "/" + ((commands.size() - 1) / 9 + 1) + ")");
-
         // Get the key set alphabetized
         ArrayList<String> keys = new ArrayList<String>(commands.keySet());
         Collections.sort(keys);
@@ -183,15 +184,20 @@ public abstract class CommandHandler implements CommandExecutor {
         // Limit the page number
         int validKeys = 0;
         for (String key : keys)
-                if (canUseCommand(sender, commands.get(key)))
-                    validKeys++;
+            if (canUseCommand(sender, commands.get(key)))
+                validKeys++;
 
         if (validKeys == 0) {
             sender.sendMessage(ChatColor.GRAY + "   No commands available");
             return;
         }
-        else if (page > (validKeys - 1) / 9 + 1)
-            page = (validKeys - 1) / 9 + 1;
+
+        int maxPage = (validKeys + 6) / 7;
+        if (page > maxPage)
+            page = maxPage;
+
+        sender.sendMessage(BREAK);
+        sender.sendMessage(ChatColor.DARK_GREEN + title + " - Command Usage" + (maxPage > 1 ? " (Page " + page + "/" + maxPage + ")" : ""));
 
         // Get the maximum length
         int maxSize = 0;
@@ -200,7 +206,7 @@ public abstract class CommandHandler implements CommandExecutor {
             if (!canUseCommand(sender, commands.get(key)))
                 continue;
             index++;
-            if (index <= (page - 1) * 9 || index > page * 9) continue;
+            if (index <= (page - 1) * 7 || index > page * 7) continue;
             int size = TextSizer.measureString(key + " " + commands.get(key).getArgsString());
             if (size > maxSize) maxSize = size;
         }
@@ -212,11 +218,13 @@ public abstract class CommandHandler implements CommandExecutor {
             if (!canUseCommand(sender, commands.get(key)))
                 continue;
             index++;
-            if (index <= (page - 1) * 9 || index > page * 9) continue;
+            if (index <= (page - 1) * 7 || index > page * 7) continue;
             sender.sendMessage(ChatColor.GOLD + "/" + label.toLowerCase() + " " + TextSizer.expand(key + " "
                     + ChatColor.LIGHT_PURPLE + commands.get(key).getArgsString() + ChatColor.GRAY, maxSize, false)
                     + ChatColor.GRAY + "- " + commands.get(key).getDescription());
         }
+
+        sender.sendMessage(BREAK);
     }
 
     /**
@@ -228,6 +236,8 @@ public abstract class CommandHandler implements CommandExecutor {
      * @return        true if able to use it, false otherwise
      */
     protected boolean canUseCommand(CommandSender sender, ICommand command) {
+        if (command.getSenderType() == SenderType.CONSOLE_ONLY && sender instanceof Player) return false;
+        if (command.getSenderType() == SenderType.PLAYER_ONLY && !(sender instanceof Player)) return false;
         return sender.hasPermission(command.getPermissionNode());
     }
 

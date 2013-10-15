@@ -3,6 +3,7 @@ package com.rit.sucy.text;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -176,6 +177,123 @@ public class TextSizer {
         }
 
         return message;
+    }
+
+    /**
+     * <p>Splits the list of messages into a number of columns equal to the number of
+     * alignments provided. Columns from left to right will have the provided alignments
+     * in order. The returned list contains the rows resulting from the arrangement.</p>
+     *
+     * <p>The vertical parameter refers to what order the messages are added to columns.
+     * If true, then messages will appear in the following pattern assuming 3 columns
+     * and 8 elements:</p>
+     * <p>0 3 6</p>
+     * <p>1 4 7</p>
+     * <p>2 5</p>
+     * <p>If set to false, the messages will appear in this pattern instead:</p>
+     * <p>0 1 2</p>
+     * <p>3 4 5</p>
+     * <p>6 7</p>
+     *
+     * @param messages   messages to split into columns
+     * @param vertical   whether or not to apply messages vertically
+     * @param alignments the alignments for each column
+     * @return           the arranged message rows
+     */
+    public static List<String> split(List<String> messages, boolean vertical, TextAlignment ... alignments) {
+        int columnCount = alignments.length;
+        int rowCount = (messages.size() + columnCount - 1) / columnCount;
+
+        // Initialize rows
+        String[] rows = new String[rowCount];
+        for (int i = 0; i < rowCount; i++) {
+            rows[i] = "";
+        }
+
+        // Retrieve the columns
+        for (int i = 0; i < columnCount; i++) {
+
+            // Retrieve a column
+            List<String> column = new ArrayList<String>();
+            for (int j = 0; j < rowCount && i * rowCount + j < messages.size(); j++) {
+                int index = j * columnCount + i;
+                if (vertical) {
+                    index = j + i * rowCount;
+                }
+                column.add(messages.get(index));
+            }
+
+            // Arrange the column
+            column = expand(column, alignments[i] == TextAlignment.RIGHT);
+
+            // Append the column elements to the rows
+            for (int j = 0; i < column.size(); j++) {
+                rows[j] += column.get(j);
+            }
+        }
+
+        return Arrays.asList(rows);
+    }
+
+    /**
+     * Splits a string to fit within the given size, breaking it up by word
+     *
+     * @param message message to split
+     * @param maxSize maximum size of each line
+     * @return        resulting lines
+     */
+    public static List<String> split(String message, int maxSize) {
+        List<String> result = new ArrayList<String>();
+        if (measureString(message) <= maxSize) {
+            result.add(message);
+            return result;
+        }
+        String[] pieces = message.contains(" ") ? message.split(" ") : new String[] { message };
+
+        String current = "";
+        for (int i = 0; i < pieces.length; i++) {
+            if (current.length() == 0) {
+                while (measureString(pieces[i]) <= maxSize) {
+                    char[] chars = pieces[i].toCharArray();
+                    String temp = "";
+                    int index = 0;
+                    while (measureString(temp) <= maxSize) {
+                        temp += chars[index++];
+                    }
+                    result.add(temp.substring(0, temp.length() - 1));
+                    pieces[i] = pieces[i].substring(index - 1);
+                }
+                current += pieces[i];
+                continue;
+            }
+
+            String temp = current + pieces[i];
+            if (measureString(temp) > maxSize) {
+                result.add(current);
+                current = pieces[i];
+            }
+            else current = temp;
+        }
+
+        result.add(current);
+        return result;
+    }
+
+    /**
+     * Creates a line that is the maximum size allowed in the chat box using the given info
+     *
+     * @param begin beginning string
+     * @param end   ending string
+     * @param fill  string to fill with
+     * @return      maximum size string line
+     */
+    public static String createLine(String begin, String end, String fill) {
+        int startingSize = measureString(begin) + measureString(end);
+        int fillCount = (320 - startingSize) / measureString(fill);
+        for (int i = 0; i < fillCount; i++) {
+            begin += fill + "";
+        }
+        return begin + end;
     }
 
     /**

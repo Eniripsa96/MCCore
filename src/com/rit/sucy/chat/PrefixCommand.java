@@ -2,6 +2,7 @@ package com.rit.sucy.chat;
 
 import com.rit.sucy.commands.CommandHandler;
 import com.rit.sucy.commands.ICommand;
+import com.rit.sucy.commands.SenderType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -53,5 +54,13 @@ class PrefixCommand implements ICommand {
     @Override
     public String getDescription() {
         return "Sets your prefix";
+    }
+
+    /**
+     * Sender required for the command
+     */
+    @Override
+    public SenderType getSenderType() {
+        return SenderType.PLAYER_ONLY;
     }
 }
