@@ -126,7 +126,6 @@ public class ConfigSerializer {
 
             // Check if the field has exclude annotations. If so, ignore it
             ExcludeField exclude = field.getAnnotation(ExcludeField.class);
-            Bukkit.getLogger().info(field.getName() + ": " + exclude);
             if (exclude != null && (flags.get(exclude.flag()) & value) > 0) {
                 continue;
             }

@@ -94,7 +94,6 @@ public class Config {
      */
     public void deleteSavable(ISavable savable) {
         if (savables.containsKey(savable)) {
-            plugin.getLogger().info("Deleting!");
             String base = savables.get(savable);
             if (base.length() > 0 && base.charAt(base.length() - 1) == '.')
                 base = base.substring(0, base.length() - 1);

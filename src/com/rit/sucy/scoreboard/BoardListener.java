@@ -45,11 +45,4 @@ public class BoardListener implements Listener {
     public void onKick(PlayerKickEvent event) {
         BoardManager.clearPlayer(event.getPlayer().getName());
     }
-
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        LivingEntity target = TargetHelper.getLivingTarget(event.getPlayer(), 20);
-
-        event.getPlayer().sendMessage(target == null ? "None" : target.getType().name());
-    }
 }

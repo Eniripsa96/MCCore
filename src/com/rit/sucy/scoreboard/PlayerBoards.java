@@ -66,7 +66,6 @@ public class PlayerBoards {
     public void removeBoards(String plugin) {
         ArrayList<Board> list = new ArrayList<Board>(boards.values());
         for (Board board : list) {
-            Bukkit.getLogger().info(plugin + " " + board.plugin);
             if (board.plugin.equalsIgnoreCase(plugin)) {
                 boards.remove(format(board.getName()));
             }
@@ -84,7 +83,6 @@ public class PlayerBoards {
             if (boards.size() > 0)
                 showNextBoard();
             else {
-                Bukkit.getLogger().info("Resetting board");
                 currentBoard = null;
                 Bukkit.getPlayer(player).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             }

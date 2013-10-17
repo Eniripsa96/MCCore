@@ -89,7 +89,7 @@ public class LocationData {
      * @param dataString data string to parse
      * @return           parsed location
      */
-    public Location parseLocation(String dataString) {
+    public static Location parseLocation(String dataString) {
 
         // Must have a comma and not be null
         if (dataString == null || !dataString.contains(",")) {
@@ -129,7 +129,7 @@ public class LocationData {
      * @param locations locations to serialize
      * @return          list of data strings
      */
-    public List<String> serializeSimpleLocations(List<Location> locations) {
+    public static List<String> serializeSimpleLocations(List<Location> locations) {
 
         // Null or empty lists return null
         if (locations == null || locations.size() == 0) {
@@ -152,7 +152,7 @@ public class LocationData {
      * @param locations locations to serialize
      * @return          list of data strings
      */
-    public List<String> serializeLocations(List<Location> locations) {
+    public static List<String> serializeLocations(List<Location> locations) {
 
         // Null or empty lists return null
         if (locations == null || locations.size() == 0) {
@@ -175,7 +175,7 @@ public class LocationData {
      * @param locations locations to serialize
      * @return          list of data strings
      */
-    public List<String> serializeDetailedLocations(List<Location> locations) {
+    public static List<String> serializeDetailedLocations(List<Location> locations) {
 
         // Null or empty lists return null
         if (locations == null || locations.size() == 0) {
@@ -198,7 +198,7 @@ public class LocationData {
      * @param dataStrings data strings to parse
      * @return            list of parsed locations
      */
-    public List<Location> parseLocations(List<String> dataStrings) {
+    public static List<Location> parseLocations(List<String> dataStrings) {
 
         // Null or empty lists return null
         if (dataStrings == null || dataStrings.size() == 0) {
@@ -222,7 +222,7 @@ public class LocationData {
      * @param locations locations to serialize
      * @return          data string
      */
-    public String serializeCompactSimpleLocations (List<Location> locations) {
+    public static String serializeCompactSimpleLocations (List<Location> locations) {
 
         // Return null for an empty or null list
         if (locations == null || locations.size() == 0) {
@@ -246,7 +246,7 @@ public class LocationData {
      * @param locations locations to serialize
      * @return          data string
      */
-    public String serializeCompactLocations (List<Location> locations) {
+    public static String serializeCompactLocations (List<Location> locations) {
 
         // Return null for an empty or null list
         if (locations == null || locations.size() == 0) {
@@ -270,7 +270,7 @@ public class LocationData {
      * @param locations locations to serialize
      * @return          data string
      */
-    public String serializeCompactDetailedLocations (List<Location> locations) {
+    public static String serializeCompactDetailedLocations (List<Location> locations) {
 
         // Return null for an empty or null list
         if (locations == null || locations.size() == 0) {
@@ -295,7 +295,7 @@ public class LocationData {
      * @param dataString compact data string to parse
      * @return           parsed list of locations
      */
-    public List<Location> parseCompactLocations(String dataString) {
+    public static List<Location> parseCompactLocations(String dataString) {
 
         // Return null for null or empty string
         if (dataString == null || dataString.length() == 0) {
