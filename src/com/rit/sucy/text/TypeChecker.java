@@ -20,7 +20,7 @@ public class TypeChecker {
         /**
          * Regex string for matching double values
          */
-        DOUBLE_REGEX = "[+-]?[0-9]+(.[0-9]+)?";
+        DOUBLE_REGEX = "[+-]?[0-9]+(\\.[0-9]+)?";
 
     /**
      * Checks if a string can be parsed as an integer

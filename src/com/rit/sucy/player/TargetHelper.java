@@ -14,6 +14,13 @@ import java.util.List;
 public class TargetHelper {
 
     /**
+     * <p>Number of pixels that end up displaying about 1 degree of vision in the client window</p>
+     * <p>Not really useful since you can't get the client's window size, but I added it in case
+     * it becomes useful sometime</p>
+     */
+    private static final int PIXELS_PER_DEGREE = 35;
+
+    /**
      * <p>Gets all entities the player is looking at within the range</p>
      * <p>Has a little bit of tolerance to make targeting easier</p>
      *
@@ -85,5 +92,58 @@ public class TargetHelper {
 
         // If the dot product is positive, the target is in front
         return facing.dot(relative) >= 0;
+    }
+
+    /**
+     * Checks if the entity is in front of the player restricted to the given angle
+     *
+     * @param player player to check for
+     * @param target target to check against
+     * @param angle  angle to restrict it to (0-360)
+     * @return       true if the target is in front of the player
+     */
+    public static boolean isInFront(Player player, Entity target, double angle) {
+        if (angle <= 0) return false;
+        if (angle >= 360) return true;
+
+        // Get the necessary data
+        double dotTarget = Math.cos(angle);
+        Vector facing = player.getLocation().getDirection().normalize();
+        Vector relative = target.getLocation().subtract(player.getLocation()).toVector().normalize();
+
+        // Compare the target dot product with the actual result
+        return facing.dot(relative) >= dotTarget;
+    }
+
+    /**
+     * Checks if the entity is behind the player
+     *
+     * @param player player to check for
+     * @param target target to check against
+     * @return       true if the target is behind the player
+     */
+    public static boolean isBehind(Player player, Entity target) {
+        return !isInFront(player, target);
+    }
+
+    /**
+     * Checks if the entity is behind the player restricted to the given angle
+     *
+     * @param player player to check for
+     * @param target target to check against
+     * @param angle  angle to restrict it to (0-360)
+     * @return       true if the target is behind the player
+     */
+    public static boolean isBehind(Player player, Entity target, double angle) {
+        if (angle <= 0) return false;
+        if (angle >= 360) return true;
+
+        // Get the necessary data
+        double dotTarget = Math.cos(angle);
+        Vector facing = player.getLocation().getDirection().normalize();
+        Vector relative = player.getLocation().subtract(target.getLocation()).toVector().normalize();
+
+        // Compare the target dot product and the actual result
+        return facing.dot(relative) >= dotTarget;
     }
 }

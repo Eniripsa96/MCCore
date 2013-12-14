@@ -127,7 +127,7 @@ public class TextFormatter {
     public static List<String> colorStringList(List<String> list, char token) {
         ArrayList<String> copy = new ArrayList<String>();
         for (String string : list) {
-            copy.add(colorString(string));
+            copy.add(colorString(string, token));
         }
         return copy;
     }
@@ -139,10 +139,8 @@ public class TextFormatter {
      * @return       split string
      */
     private static String[] split(String string) {
-        if (string.contains(" "))
-            return string.split(" ");
-        if (string.contains("_"))
-            return string.split("_");
+        if (string.contains(" ") || string.contains("_"))
+            return string.split("[ _]");
         else return new String[] { string };
     }
 }

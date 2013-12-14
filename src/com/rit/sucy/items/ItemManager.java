@@ -66,7 +66,6 @@ public class ItemManager {
         return getVanillaName(type.name(), damage);
     }
 
-
     /**
      * Gets the vanilla name of the item stack
      *

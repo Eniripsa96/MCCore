@@ -20,6 +20,11 @@ public class ChatData implements ISavable {
     String playerName;
     String displayName;
 
+    /**
+     * Initial constructor
+     *
+     * @param playerName name of the player
+     */
     ChatData(String playerName) {
         pluginPrefixes = new ArrayList<Prefix>();
         unlockedPrefixes = new ArrayList<Prefix>();
@@ -265,9 +270,13 @@ public class ChatData implements ISavable {
 
         // Set the display name to the prefixes plus the regular display name
         Player player = Bukkit.getPlayer(playerName);
-        if (player != null)
+        if (player != null) {
+            if (displayName.equalsIgnoreCase(playerName)) {
+                displayName = player.getName();
+            }
             player.setDisplayName(
                 name + ChatColor.WHITE + displayName);
+        }
     }
 
     /**

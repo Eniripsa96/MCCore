@@ -31,7 +31,7 @@ public class Chat {
             MCCore core = (MCCore)Bukkit.getPluginManager().getPlugin("MCCore");
             Config configFile = core.getConfigFile(core, "data");
             ChatData data = new ChatData(configFile.getConfig(), playerName);
-            configFile.addSavable(data, playerName.toLowerCase() + ".");
+            configFile.addSavable(data, playerName + ".");
             players.put(playerName, data);
         }
 
