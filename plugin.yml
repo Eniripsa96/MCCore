@@ -1,6 +1,6 @@
 name: MCCore
 main: com.rit.sucy.MCCore
-version: 1.13
+version: 1.14
 author: Eniripsa96
 commands:
   chat:
@@ -22,6 +22,7 @@ permissions:
     default: true
   core.board:
     description: access to all scoreboard commands
+    default: op
     children:
       core.board.cycle: true
       core.board.show: true
@@ -40,6 +41,7 @@ permissions:
     default: op
   core.chat:
     description: access to all chat commands
+    default: op
     children:
       core.chat.list: true
       core.chat.name: true
@@ -47,6 +49,7 @@ permissions:
       core.chat.reset: true
   core.*:
     description: anything and everything
+    default: op
     children:
       core.board: true
       core.chat: true

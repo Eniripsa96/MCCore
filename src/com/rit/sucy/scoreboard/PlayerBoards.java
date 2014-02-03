@@ -3,6 +3,9 @@ package com.rit.sucy.scoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -11,6 +14,8 @@ import java.util.Hashtable;
  * Scoreboard data for a player
  */
 public class PlayerBoards {
+
+    public static final Scoreboard EMPTY = Bukkit.getScoreboardManager().getNewScoreboard();
 
     final Hashtable<String, Board> boards = new Hashtable<String, Board>();
     private final String player;
@@ -32,12 +37,27 @@ public class PlayerBoards {
     }
 
     /**
+     * @return owning player reference
+     */
+    public Player getPlayer() {
+        return Bukkit.getPlayer(player);
+    }
+
+    /**
+     * @return name of the owning player
+     */
+    public String getPlayerName() {
+        return player;
+    }
+
+    /**
      * Adds a scoreboard for the player
      *
      * @param board board to add
      */
     public void addBoard(Board board) {
         boards.put(format(board.getName()), board);
+        BoardManager.updateBoard(board);
         if (currentBoard == null) {
             board.showPlayer(Bukkit.getPlayer(player));
             currentBoard = board.getName();
@@ -84,7 +104,7 @@ public class PlayerBoards {
                 showNextBoard();
             else {
                 currentBoard = null;
-                Bukkit.getPlayer(player).setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+                Bukkit.getPlayer(player).setScoreboard(EMPTY);
             }
         }
     }
@@ -117,9 +137,10 @@ public class PlayerBoards {
         ArrayList<Board> boards = new ArrayList<Board>(this.boards.values());
 
         if (boards.size() == 1 || currentBoard == null) {
-            if (currentBoard == null)
+            if (currentBoard == null) {
                 showBoard(boards.get(0).getName());
-            else return;
+            }
+            return;
         }
 
         for (int i = 0; i < boards.size(); i++) {
@@ -148,6 +169,13 @@ public class PlayerBoards {
      */
     public Board getBoard(String name) {
         return boards.get(name.toLowerCase());
+    }
+
+    /**
+     * @return the boards attached to the player
+     */
+    public Hashtable<String, Board> getBoards() {
+        return boards;
     }
 
     /**

@@ -297,6 +297,42 @@ public class TextSizer {
     }
 
     /**
+     * Creates a line that is the maximum size allowed in the chat box using the given info
+     *
+     * @param begin     beginning string
+     * @param end       ending string
+     * @param fill      string to fill with
+     * @param fillColor color to apply to the fill
+     * @return          maximum size string line
+     */
+    public static String createLine(String begin, String end, String fill, ChatColor fillColor) {
+        int startingSize = measureString(begin) + measureString(end);
+        int fillCount = (320 - startingSize) / measureString(fill);
+        begin += fillColor;
+        for (int i = 0; i < fillCount; i++) {
+            begin += fill + "";
+        }
+        return begin + ChatColor.RESET + end;
+    }
+
+    /**
+     * Creates a line that is the maximum size allowed in the chat box using the given info
+     *
+     * @param middle middle string
+     * @param fill   string to fill the line with
+     * @return       line string
+     */
+    public static String createLine(String middle, String fill, ChatColor fillColor) {
+        int startingSize = measureString(middle);
+        middle = ChatColor.RESET + middle + fillColor;
+        int fillCount = (320 - startingSize) / measureString(fill);
+        for (int i = 0; i < fillCount / 2; i++) {
+            middle = fill + middle + fill;
+        }
+        return fillColor + middle;
+    }
+
+    /**
      * The lengths for each character
      */
     private static final HashMap<Character, Byte> lengths = new HashMap<Character, Byte>() {{
