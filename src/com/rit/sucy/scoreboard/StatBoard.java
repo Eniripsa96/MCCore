@@ -1,6 +1,8 @@
 package com.rit.sucy.scoreboard;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -11,6 +13,7 @@ import java.util.Map;
 public class StatBoard extends Board {
 
     private final ArrayList<StatHolder> holders = new ArrayList<StatHolder>();
+    private final ArrayList<OfflinePlayer> stats = new ArrayList<OfflinePlayer>();
 
     /**
      * Constructor
@@ -28,6 +31,9 @@ public class StatBoard extends Board {
      */
     public void addStats(StatHolder holder) {
         holders.add(holder);
+        for (OfflinePlayer stat : holder.getStats()) {
+            stats.add(stat);
+        }
         update();
     }
 
@@ -37,8 +43,9 @@ public class StatBoard extends Board {
      * @param holder stat holder
      */
     public void clearStats(StatHolder holder) {
-        for (String statName : holder.getStats().keySet())
-            scoreboard.resetScores(Bukkit.getOfflinePlayer(statName));
+        for (OfflinePlayer stat : stats) {
+            scoreboard.resetScores(stat);
+        }
     }
 
     /**
@@ -46,9 +53,10 @@ public class StatBoard extends Board {
      */
     public void update() {
         for (StatHolder holder : holders) {
-            for (Map.Entry<String, Integer> entry : holder.getStats().entrySet()) {
-                obj.getScore(Bukkit.getOfflinePlayer(entry.getKey())).setScore(entry.getValue());
+            int index = 0;
+            for (Integer value : holder.getValues()) {
+                obj.getScore(stats.get(index++)).setScore(value);
             }
-        }
+        };
     }
 }

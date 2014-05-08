@@ -1,5 +1,6 @@
 package com.rit.sucy.scoreboard;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -20,12 +21,13 @@ public class UpdateTask extends BukkitRunnable {
     /**
      * Updates stat boards
      */
+    @Override
     public void run() {
         for (PlayerBoards player : BoardManager.getAllPlayerBoards()) {
-            for (Board board : player.boards.values()) {
-                if (board instanceof StatBoard) {
-                    ((StatBoard) board).update();
-                }
+            if (!player.hasActiveBoard()) continue;
+            Board board = player.getActiveBoard();
+            if (board instanceof StatBoard) {
+                ((StatBoard) board).update();
             }
         }
     }

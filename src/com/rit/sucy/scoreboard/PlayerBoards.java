@@ -56,11 +56,12 @@ public class PlayerBoards {
      * @param board board to add
      */
     public void addBoard(Board board) {
-        boards.put(format(board.getName()), board);
+        String fName = format(board.getName());
+        boards.put(fName, board);
         BoardManager.updateBoard(board);
         if (currentBoard == null) {
             board.showPlayer(Bukkit.getPlayer(player));
-            currentBoard = board.getName();
+            currentBoard = fName;
         }
     }
 
@@ -71,10 +72,11 @@ public class PlayerBoards {
      */
     public void removeBoard(Board board) {
 
-        if (!boards.containsKey(format(board.getName())))
+        String fName = format(board.getName());
+        if (!boards.containsKey(fName))
             return;
 
-        boards.remove(format(board.getName()));
+        boards.remove(fName);
         validateBoard();
     }
 
@@ -169,6 +171,24 @@ public class PlayerBoards {
      */
     public Board getBoard(String name) {
         return boards.get(name.toLowerCase());
+    }
+
+    /**
+     * Gets the active board for the player
+     *
+     * @return active board
+     */
+    public Board getActiveBoard() {
+        return boards.get(currentBoard);
+    }
+
+    /**
+     * Checks whether or not the player has an active scoreboard
+     *
+     * @return true if has an active scoreboard, false otherwise
+     */
+    public boolean hasActiveBoard() {
+        return boards.size() > 0;
     }
 
     /**

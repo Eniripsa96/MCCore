@@ -1,5 +1,8 @@
 package com.rit.sucy.scoreboard;
 
+import org.bukkit.OfflinePlayer;
+
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -7,10 +10,7 @@ import java.util.Map;
  */
 public interface StatHolder {
 
-    /**
-     * Retrieves the map of stats (stat name -> stat value)
-     *
-     * @return map of stats
-     */
-    public Map<String, Integer> getStats();
+    public ArrayList<OfflinePlayer> getStats();
+    public ArrayList<Integer> getValues();
+
 }
