@@ -113,7 +113,7 @@ public abstract class CommandHandler implements CommandExecutor {
         else if (commands.containsKey(args[0].toLowerCase())) {
             ICommand command = commands.get(args[0].toLowerCase());
             if (sender.hasPermission(command.getPermissionNode()))
-                command.execute(this, plugin, sender, trimArgs(args));
+                command.execute(this, plugin, sender, CommandManager.trimArgs(args));
             else
                 sender.sendMessage(ChatColor.DARK_RED + "You do not have permission to do that");
         }
@@ -140,21 +140,11 @@ public abstract class CommandHandler implements CommandExecutor {
      *
      * @param args initial args
      * @return     trimmed args
+     * @deprecated use CommandManager.trimArgs(String[]) instead
      */
+    @Deprecated
     protected String[] trimArgs(String[] args) {
-
-        // Can't trim a zero-length array
-        if (args.length == 0) return args;
-
-        // Make a new array that is one smaller in size
-        String[] trimmed = new String[args.length - 1];
-
-        // Copy the array over if there are elements left
-        if (trimmed.length > 0)
-            System.arraycopy(args, 1, trimmed, 0, trimmed.length);
-
-        // Return the new array
-        return trimmed;
+        return CommandManager.trimArgs(args);
     }
 
     /**

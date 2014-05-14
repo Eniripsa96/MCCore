@@ -1,6 +1,8 @@
 package com.rit.sucy.config;
 
 import com.rit.sucy.MCCore;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,7 +49,7 @@ public class Config {
         catch (Exception e) { /* */ }
 
         // Register for auto-saving
-        ((MCCore)plugin.getServer().getPluginManager().getPlugin("MCCore")).registerConfig(this);
+        ((MCCore) plugin.getServer().getPluginManager().getPlugin("MCCore")).registerConfig(this);
     }
 
     /**
@@ -68,11 +70,10 @@ public class Config {
      * Saves if there are savables added
      */
     public void save() {
-        if (savables.size() == 0)
-            return;
-
-        for (Map.Entry<ISavable, String> entry : savables.entrySet()) {
-            entry.getKey().save(getConfig(), entry.getValue());
+        if (savables.size() > 0) {
+            for (Map.Entry<ISavable, String> entry : savables.entrySet()) {
+                entry.getKey().save(getConfig(), entry.getValue());
+            }
         }
         saveConfig();
     }
@@ -125,6 +126,15 @@ public class Config {
     }
 
     /**
+     * <p>Retrieves the file of the configuration</p>
+     *
+     * @return the file of the configuration
+     */
+    public File getConfigFile() {
+        return configFile;
+    }
+
+    /**
      * Saves the config
      */
     public void saveConfig() {
@@ -146,6 +156,85 @@ public class Config {
         }
         if (!configFile.exists()) {
             this.plugin.saveResource(fileName, false);
+        }
+    }
+
+    /**
+     * <p>Checks the configuration for default values, copying
+     * default values over if they are not set. Once finished,
+     * the config is saved so the user can see the changes.</p>
+     * <p>This acts differently than saveDefaultConfig() as
+     * the config can already exist for this method. This is
+     * more for making sure users do not erase needed values
+     * from settings configs.</p>
+     */
+    public void checkDefaults() {
+        ConfigurationSection config = getConfig();
+        setDefaults(config);
+        if (config.getDefaultSection() != null) saveConfig();
+    }
+
+    /**
+     * <p>Trims excess (non-default) values from the configuration</p>
+     * <p>Any values that weren't in the default configuration are removed</p>
+     * <p>This is primarily used for settings configs </p>
+     */
+    public void trim() {
+        ConfigurationSection config = getConfig();
+        trim(config);
+        saveConfig();
+    }
+
+    /**
+     * <p>A recursive method to set the defaults of the config</p>
+     * <p>Only defaults that aren't set in the current config are
+     * copied over so that user changes aren't overwritten.</p>
+     *
+     * @param config config section to set the defaults for
+     */
+    public static void setDefaults(ConfigurationSection config) {
+        if (config.getDefaultSection() != null) {
+            for (String key : config.getDefaultSection().getKeys(false)) {
+
+                // Recursively set the defaults for the inner sections
+                if (config.isConfigurationSection(key)) {
+                    setDefaults(config.getConfigurationSection(key));
+                }
+
+                // Set each default value if not set already
+                else if (!config.isSet(key)) {
+                    config.set(key, config.get(key));
+                }
+            }
+        }
+    }
+
+    /**
+     * <p>A recursive method to trim the non-default values from a config</p>
+     * <p>This is for clearing unnecessary values from settings configs</p>
+     *
+     * @param config configuration section to trim
+     */
+    public static void trim(ConfigurationSection config) {
+        if (config.getDefaultSection() != null) {
+            ConfigurationSection d = config.getDefaultSection();
+            for (String key : config.getKeys(false)) {
+
+                // If the default section doesn't contain the key, remove it
+                if (!d.contains(key)) {
+                    config.set(key, null);
+                }
+
+                // Recursively set the defaults for the inner sections
+                else if (config.isConfigurationSection(key)) {
+                    trim(config.getConfigurationSection(key));
+                }
+            }
+        }
+        else {
+            for (String key : config.getKeys(false)) {
+                config.set(key, null);
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Formats strings into various forms
@@ -15,6 +16,7 @@ public class TextFormatter {
      * Regex string for finding color patterns
      */
     private static final String COLOR_REGEX = "([0-9a-fl-orA-FL-OR])";
+    private static final Pattern COLOR_PATTERN = Pattern.compile(COLOR_REGEX);
 
     /**
      * Formats text into individual words
@@ -105,6 +107,33 @@ public class TextFormatter {
      */
     public static String colorString(String string, char token) {
         return string.replaceAll(token + COLOR_REGEX, ChatColor.COLOR_CHAR + "$1");
+    }
+
+    /**
+     * Colors a string builder using & as the color indicator
+     *
+     * @param sb string builder to color
+     */
+    public static void colorString(StringBuilder sb) {
+        colorString(sb, '&');
+    }
+
+    /**
+     * Colors a string builder using the given color indicator
+     *
+     * @param sb    string builder to color
+     * @param token color indicator
+     */
+    public static void colorString(StringBuilder sb, char token) {
+        String t = token + "";
+        int index = sb.indexOf(t);
+        while (index >= 0 && index < sb.length() - 1) {
+            ChatColor color = ChatColor.getByChar(sb.charAt(index + 1));
+            if (color != null) {
+                sb.setCharAt(index, ChatColor.COLOR_CHAR);
+            }
+            index = sb.indexOf(t);
+        }
     }
 
     /**

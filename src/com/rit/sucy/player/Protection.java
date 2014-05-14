@@ -16,19 +16,31 @@ import java.util.List;
 public class Protection {
 
     /**
+     * Checks whether or not an entity can be attacked by a player
+     *
+     * @param attacker player trying to attack
+     * @param target   target of the attack
+     * @return         true if the target can be attacked, false otherwise
+     */
+    public static boolean canAttack(Player attacker, LivingEntity target) {
+        if (target instanceof Tameable) {
+            Tameable entity = (Tameable)target;
+            if (entity.isTamed()) {
+                return canAttack(attacker, (Player)entity.getOwner());
+            }
+        }
+        return canAttack((LivingEntity)attacker, target);
+    }
+
+    /**
      * Checks if a player can be PvPed
      *
      * @param attacker player attacking the other
      * @param target   player being attacked
      * @return         true if the attack is allowed
      */
-    public static boolean canAttack(Player attacker, LivingEntity target) {
-        if (target instanceof Tameable) {
-            Tameable entity = (Tameable)target;
-            if (entity.isTamed() && entity.getOwner().getName().equals(attacker.getName())) {
-                return true;
-            }
-        }
+    public static boolean canAttack(LivingEntity attacker, LivingEntity target) {
+        if (attacker == target) return false;
         EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(attacker, target, EntityDamageEvent.DamageCause.CUSTOM, 1.0);
         Bukkit.getPluginManager().callEvent(event);
         return !event.isCancelled() && event.getDamage() > 0;

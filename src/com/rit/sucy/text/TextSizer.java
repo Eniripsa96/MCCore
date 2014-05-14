@@ -129,6 +129,42 @@ public class TextSizer {
     }
 
     /**
+     * Expands a string to meet the desired size for the console
+     *
+     * @param message message to expand
+     * @param size    desired size
+     * @param front   whether or not to add to the front of the string
+     * @return        the resulting message
+     * @throws IllegalArgumentException when the string is too large or null
+     */
+    public static String expandConsole(String message, int size, boolean front) {
+
+        // Make sure the message isn't null
+        if (message == null)
+            throw new IllegalArgumentException("Invalid string - null");
+
+        // Get the length of the message
+        int currentSize = ChatColor.stripColor(message).length();
+
+        // Already the correct size
+        if (currentSize == size) return message;
+
+        // Too large of a string
+        if (currentSize > size)
+            throw new IllegalArgumentException("Invalid string - larger than desired size");
+
+        // Expand the string
+        StringBuilder sb = new StringBuilder(size);
+        sb.append(message);
+        for (int i = 0; i < size - currentSize; i++) {
+            if (front) sb.insert(0, ' ');
+            else sb.append(' ');
+        }
+
+        return sb.toString();
+    }
+
+    /**
      * Expands a string by adding to the end of the string
      *
      * @param message     message to expand
@@ -138,19 +174,23 @@ public class TextSizer {
      */
     private static String expandBack(String message, int currentSize, int size) {
 
+        StringBuilder sb = new StringBuilder(message);
         while (currentSize < size - 3 && currentSize != size - 5) {
-            message += ' ';
+            sb.append(' ');
             currentSize += 4;
         }
         if (currentSize < size - 2) {
-            message += ChatColor.BLACK + "'";
+            sb.append(ChatColor.BLACK);
+            sb.append('\'');
             currentSize += 3;
         }
         if (currentSize < size - 1) {
-            message += ChatColor.BLACK + "`";
+            sb.append(ChatColor.BLACK);
+            sb.append('`');
         }
+        sb.append(ChatColor.RESET);
 
-        return message + ChatColor.RESET;
+        return sb.toString();
     }
 
     /**
@@ -163,20 +203,24 @@ public class TextSizer {
      */
     private static String expandFront(String message, int currentSize, int size) {
 
+        StringBuilder sb = new StringBuilder(message);
         while (currentSize < size - 3 && currentSize != size - 5) {
-            message = " " + message;
+            sb.insert(0, ' ');
             currentSize += 4;
         }
         if ((size - currentSize) % 2 == 1) {
-            message = ChatColor.BLACK + "'" + ChatColor.RESET + message;
+            sb.insert(0, ChatColor.RESET);
+            sb.insert(0, '\'');
+            sb.insert(0, ChatColor.BLACK);
             currentSize += 3;
         }
         if ((size - currentSize) % 4 == 2) {
-            message = ChatColor.BLACK + "`" + ChatColor.RESET + message;
-            currentSize += 2;
+            sb.insert(0, ChatColor.RESET);
+            sb.insert(0, '`');
+            sb.insert(0, ChatColor.BLACK);
         }
 
-        return message;
+        return sb.toString();
     }
 
     /**
@@ -290,10 +334,12 @@ public class TextSizer {
     public static String createLine(String begin, String end, String fill) {
         int startingSize = measureString(begin) + measureString(end);
         int fillCount = (320 - startingSize) / measureString(fill);
+        StringBuilder sb = new StringBuilder(begin);
         for (int i = 0; i < fillCount; i++) {
-            begin += fill + "";
+            sb.append(fill);
         }
-        return begin + end;
+        sb.append(end);
+        return sb.toString();
     }
 
     /**
@@ -309,10 +355,13 @@ public class TextSizer {
         int startingSize = measureString(begin) + measureString(end);
         int fillCount = (320 - startingSize) / measureString(fill);
         begin += fillColor;
+        StringBuilder sb = new StringBuilder(begin);
         for (int i = 0; i < fillCount; i++) {
-            begin += fill + "";
+            sb.append(fill);
         }
-        return begin + ChatColor.RESET + end;
+        sb.append(ChatColor.RESET);
+        sb.append(end);
+        return sb.toString();
     }
 
     /**
@@ -324,12 +373,16 @@ public class TextSizer {
      */
     public static String createLine(String middle, String fill, ChatColor fillColor) {
         int startingSize = measureString(middle);
-        middle = ChatColor.RESET + middle + fillColor;
+        StringBuilder sb = new StringBuilder(middle);
+        sb.insert(0, ChatColor.RESET);
+        sb.append(fillColor);
         int fillCount = (320 - startingSize) / measureString(fill);
         for (int i = 0; i < fillCount / 2; i++) {
-            middle = fill + middle + fill;
+            sb.insert(0, fill);
+            sb.append(fill);
         }
-        return fillColor + middle;
+        sb.insert(0, fillColor);
+        return sb.toString();
     }
 
     /**

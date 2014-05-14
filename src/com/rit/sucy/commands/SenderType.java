@@ -19,5 +19,5 @@ public enum SenderType {
     /**
      * Anyone can send the command, player or console
      */
-    ANYONE
+    ANYONE;
 }

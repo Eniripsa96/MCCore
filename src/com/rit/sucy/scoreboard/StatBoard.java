@@ -57,6 +57,6 @@ public class StatBoard extends Board {
             for (Integer value : holder.getValues()) {
                 obj.getScore(stats.get(index++)).setScore(value);
             }
-        };
+        }
     }
 }

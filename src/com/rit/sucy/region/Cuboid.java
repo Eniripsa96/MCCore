@@ -198,7 +198,7 @@ public class Cuboid extends Region {
         return cuboid.world.getName().equals(world.getName())
                 && cuboid.xMax <= xMax && cuboid.xMin >= xMin
                 && cuboid.yMax <= yMax && cuboid.yMin >= yMin
-                && cuboid.zMax <= zMax && cuboid.yMax >= yMax;
+                && cuboid.zMax <= zMax && cuboid.zMin >= zMax;
     }
 
     /**

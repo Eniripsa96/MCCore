@@ -2,16 +2,20 @@ package com.rit.sucy;
 
 import com.rit.sucy.chat.ChatListener;
 import com.rit.sucy.chat.ChatCommander;
+import com.rit.sucy.commands.CommandListener;
+import com.rit.sucy.commands.CommandManager;
 import com.rit.sucy.config.Config;
 import com.rit.sucy.economy.Economy;
 
 import com.rit.sucy.economy.EconomyPlugin;
 import com.rit.sucy.event.EquipListener;
+import com.rit.sucy.player.PlayerUUIDs;
 import com.rit.sucy.scoreboard.BoardListener;
 import com.rit.sucy.scoreboard.CycleTask;
 import com.rit.sucy.scoreboard.ScoreboardCommander;
 import com.rit.sucy.scoreboard.UpdateTask;
 import com.rit.sucy.text.TextFormatter;
+import com.rit.sucy.version.VersionManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
@@ -21,25 +25,12 @@ import java.util.Hashtable;
 
 public class MCCore extends JavaPlugin {
 
-    /**
-     * Config files in use
-     */
     private static Hashtable<String, Config> configs = new Hashtable<String, Config>();
 
-    /**
-     * The active economy
-     */
     private Economy economy;
-
-    /**
-     * Board cycling task
-     */
     private CycleTask cTask;
-
-    /**
-     * Stat board update task
-     */
     private UpdateTask uTask;
+    private PlayerUUIDs idManager;
 
     /**
      * Sets up commands and listeners
@@ -47,11 +38,17 @@ public class MCCore extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        VersionManager.initialize();
+        if (VersionManager.isVersionAtLeast(VersionManager.MC_1_7_5_MIN)) {
+            idManager = new PlayerUUIDs(this);
+        }
+
         new ChatCommander(this);
         new ScoreboardCommander(this);
         new ChatListener(this);
         new BoardListener(this);
         new EquipListener(this);
+        new CommandListener(this);
 
         cTask = new CycleTask(this);
         uTask = new UpdateTask(this);
@@ -71,11 +68,13 @@ public class MCCore extends JavaPlugin {
     public void onDisable() {
 
         HandlerList.unregisterAll(this);
+        if (idManager != null) idManager.save();
         for (Config config : configs.values())
             config.save();
         configs.clear();
         cTask.cancel();
         uTask.cancel();
+        CommandManager.unregisterAll();
     }
 
     /**

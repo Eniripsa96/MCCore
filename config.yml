@@ -1,0 +1,32 @@
+Commands:
+
+    Size:
+        player-help-size: 10
+        console-help-size: 15
+
+    Colors:
+        command: gold
+        required-args: light purple
+        optional-args: green
+        description: gray
+
+    Format:
+        page: '&2(&6{page}&2/&6{max}&2)'
+        no-description: 'No description available'
+        no-commands: '&7No commands available'
+        prev-button: Previous
+        next-button: Next
+        prev-button-hover: Previous Page
+        next-button-hover: Next Page
+        help-button:
+        - '&8-----------------------------------------------------'
+        - '&2{title} - Command Usage {page}'
+        - '{commands}'
+        - '&8-----------------------------------------------------'
+        - '{buttons}'
+        help-no-button:
+        - '&8-----------------------------------------------------'
+        - '&2{title} - Command Usage {page}'
+        - '&8-----------------------------------------------------'
+        - '{commands}'
+        - '&8-----------------------------------------------------'
