@@ -4,6 +4,7 @@ import com.rit.sucy.text.TextFormatter;
 import com.rit.sucy.text.TextSizer;
 import com.rit.sucy.version.VersionManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -111,6 +112,8 @@ public class LanguageConfig extends Config {
                 filterSizer(sb, true, player);
                 filterBreak(sb);
             }
+
+            sb.append(ChatColor.RESET);
 
             result.add(sb.toString());
         }

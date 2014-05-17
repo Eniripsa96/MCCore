@@ -13,5 +13,9 @@ import java.lang.annotation.RetentionPolicy;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExcludeField {
+
+    /**
+     * @return name of the flag to exclude from serialization
+     */
     String flag() default ConfigSerializer.ALL_FLAG;
 }

@@ -17,11 +17,13 @@ public class VersionPlayer {
     private static final String ID_REGEX = ".{8}-.{4}-.{4}-.{4}-.{12}";
     private static final Pattern ID_PATTERN = Pattern.compile(ID_REGEX);
 
-    Object id;
-    String idString;
+    private Object id;
+    private String idString;
 
     /**
-     * Constructor from a player's UUID
+     * <p>Initializes a new VersionPlayer from a player's UUID</p>
+     * <p>You probably don't need to be using this constructor
+     * if you have the UUID of players.</p>
      *
      * @param id ID of the player
      */
@@ -31,8 +33,16 @@ public class VersionPlayer {
     }
 
     /**
-     * Constructor for use when the value could be either the player
-     * name or the player's UUID
+     * <p>Initializes a new VersionPlayer from a player's ID string</p>
+     * <p>The ID string could either be a UUID toString or a player's
+     * name. If the ID is a UUID, then it will simply be parsed and
+     * used to represent the player. If it is the player's name,
+     * it will be converted into a UUID if the server is at least
+     * on version 1.7.5 or remain the players name otherwise.</p>
+     * <p>If the ID is a player's name and they have not logged on
+     * since MCCore 1.16 or later has been installed, this will
+     * query the Minecraft servers for the player's UUID which
+     * can cause some lag if not done during the server's startup.</p>
      *
      * @param id UUID or name of the player
      */
@@ -51,7 +61,8 @@ public class VersionPlayer {
     }
 
     /**
-     * Constructor for representing an already known player
+     * <p>Represents the given player as a VersionPlayer, letting
+     * you save the player for different versions.</p>
      *
      * @param player Bukkit player object
      */
@@ -60,7 +71,8 @@ public class VersionPlayer {
     }
 
     /**
-     * Constructor for representing an already known player
+     * <p>Represents the given player as a VersionPlayer, letting
+     * you save the player for different versions.</p>
      *
      * @param player Bukkit player object
      */
@@ -74,7 +86,8 @@ public class VersionPlayer {
     }
 
     /**
-     * Constructor for representing an already known player
+     * <p>Represents the given player as a VersionPlayer, letting
+     * you save the player for different versions.</p>
      *
      * @param player Bukkit player entity object
      */
@@ -88,7 +101,10 @@ public class VersionPlayer {
     }
 
     /**
-     * Returns the ID for the player (name if pre-1.7)
+     * <p>Retrieves the appropriate ID for the player</p>
+     * <p>If the server is pre-1.7.5, this will return the
+     * player's name. Otherwise, this will return the
+     * player's UUID.</p>
      *
      * @return player ID or name
      */
@@ -97,7 +113,11 @@ public class VersionPlayer {
     }
 
     /**
-     * Gets the ID for the player represented as a string
+     * <p>Retrieves the string version of the
+     * appropriate ID for the player</p>
+     * <p>If the server is pre-1.7.5, this will return the
+     * player's name. Otherwise, this will return the
+     * toString of the player's UUID.</p>
      *
      * @return string representation of player's ID
      */
@@ -106,7 +126,7 @@ public class VersionPlayer {
     }
 
     /**
-     * Gets the current name of the player
+     * <p>Retrieves the name of the current player.</p>
      *
      * @return name of the player
      */

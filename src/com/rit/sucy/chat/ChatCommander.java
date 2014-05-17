@@ -29,14 +29,6 @@ public class ChatCommander extends CommandHandler {
         registerCommand("name", new NameCommand());
         registerCommand("prefix", new PrefixCommand());
         registerCommand("reset", new ResetCommand());
-        registerCommand("list2", new ListCommand());
-        registerCommand("name2", new NameCommand());
-        registerCommand("prefix2", new PrefixCommand());
-        registerCommand("reset2", new ResetCommand());
-        registerCommand("list3", new ListCommand());
-        registerCommand("name3", new NameCommand());
-        registerCommand("prefix3", new PrefixCommand());
-        registerCommand("reset3", new ResetCommand());
     }
 
     /**

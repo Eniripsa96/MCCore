@@ -5,7 +5,6 @@ import com.rit.sucy.commands.ICommand;
 import com.rit.sucy.commands.SenderType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 /**

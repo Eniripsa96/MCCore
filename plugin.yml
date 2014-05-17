@@ -1,12 +1,15 @@
 name: MCCore
 main: com.rit.sucy.MCCore
-version: 1.15
+version: 1.17
 author: Eniripsa96
+description: A library of helpful functions to speed up and simplify plugin development for all developers.
+
 commands:
   chat:
     description: chat controls for prefixes and display names
   board:
     description: scoreboard controls
+
 permissions:
   core.board.cycle:
     description: allows a user to have their scoreboard cycle

@@ -1,7 +1,5 @@
 package com.rit.sucy.config;
 
-import com.rit.sucy.MCCore;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -47,9 +45,6 @@ public class Config {
                 plugin.getLogger().info("Created a new folder for config files");
         }
         catch (Exception e) { /* */ }
-
-        // Register for auto-saving
-        ((MCCore) plugin.getServer().getPluginManager().getPlugin("MCCore")).registerConfig(this);
     }
 
     /**

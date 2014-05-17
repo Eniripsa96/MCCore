@@ -24,7 +24,7 @@ public enum FilterType {
      *     Expands the text to the desired size, appending whitespace in
      *     front of the text. This can be used to perfectly line up lines
      *     of text with each other when you size things to the same value.
-     *     The 'size' is the size for player displays whereas the length
+     *     The 'size' is the size for player displays whereas the 'length'
      *     is the desired length of the string for the console. The two
      *     values are due to the console having a monotype font while
      *     in game is not one.</li>

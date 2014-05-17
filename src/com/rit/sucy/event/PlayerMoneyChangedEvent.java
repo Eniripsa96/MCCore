@@ -3,7 +3,6 @@ package com.rit.sucy.event;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * <p>Event for when someone gains or loses money</p>

@@ -5,22 +5,20 @@ package com.rit.sucy.text;
  */
 public class TypeChecker {
 
-    public static final String
+    /**
+     * Regex string for matching integer values
+     */
+    public static final String INT_REGEX = "[+-]?[0-9]+";
 
-        /**
-         * Regex string for matching integer values
-         */
-        INT_REGEX = "[+-]?[0-9]+",
+    /**
+     * Regex string for matching boolean values
+     */
+    public static final String BOOL_REGEX = "(true)|(false)";
 
-        /**
-         * Regex string for matching boolean values
-         */
-        BOOL_REGEX = "(true)|(false)",
-
-        /**
-         * Regex string for matching double values
-         */
-        DOUBLE_REGEX = "[+-]?[0-9]+(\\.[0-9]+)?";
+    /**
+     * Regex string for matching double values
+     */
+    public static final String DOUBLE_REGEX = "[+-]?[0-9]+(\\.[0-9]+)?";
 
     /**
      * Checks if a string can be parsed as an integer

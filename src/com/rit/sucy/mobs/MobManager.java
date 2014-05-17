@@ -32,12 +32,14 @@ public class MobManager {
 
     /**
      * Gets the vanilla entity name along with various attributes such as:
-     * - Baby
-     * - Sheep color
-     * - Villager profession
-     * - Slime size
-     * - Wolf/Ocelot tamed status
-     * - Zombie type
+     * <ul>
+     *     <li>Baby</li>
+     *     <li>Sheep Color</li>
+     *     <li>Villager Profession</li>
+     *     <li>Slime Size</li>
+     *     <li>Wolf/Ocelot tamed status</li>
+     *     <li>Zombie Type</li>
+     * </ul>
      *
      * @param entity entity to get the name of
      * @return       detailed name

@@ -1,3 +1,15 @@
+Features:
+
+    chat-enabled: true
+    scoreboards-enabled: true
+    equip-events-enabled: true
+    durability-enabled: true
+
+Settings:
+
+    durability-message-enabled: false
+    durability-message: '&6{current}&7/&6{max} &2Durability left on your &r{item}&r'
+
 Commands:
 
     Size:

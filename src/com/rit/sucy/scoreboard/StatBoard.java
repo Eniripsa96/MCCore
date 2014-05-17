@@ -1,11 +1,8 @@
 package com.rit.sucy.scoreboard;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Stat board for displaying various statistics

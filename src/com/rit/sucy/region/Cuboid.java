@@ -19,16 +19,20 @@ public class Cuboid extends Region {
     /**
      * Config nodes for saving/loading
      */
-    private static final String
-        WORLD = "world",
-        X_MIN = "x-min",
-        X_MAX = "x-max",
-        Y_MIN = "y-min",
-        Y_MAX = "y-max",
-        Z_MIN = "z-min",
-        Z_MAX = "z-max";
+    private static final String WORLD = "world";
+    private static final String X_MIN = "x-min";
+    private static final String X_MAX = "x-max";
+    private static final String Y_MIN = "y-min";
+    private static final String Y_MAX = "y-max";
+    private static final String Z_MIN = "z-min";
+    private static final String Z_MAX = "z-max";
 
-    private int xMin, xMax, yMin, yMax, zMin, zMax;
+    private int xMin;
+    private int xMax;
+    private int yMin;
+    private int yMax;
+    private int zMin;
+    private int zMax;
 
     /**
      * Constructor

@@ -1,14 +1,15 @@
 package com.rit.sucy.commands;
 
 import com.rit.sucy.config.Config;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>A command that is able to be modified via configuration</p>
@@ -40,13 +41,12 @@ import java.util.*;
  */
 public class ConfigurableCommand {
 
-    private static final String
-        SENDER_KEY = "sender",
-        ENABLED_KEY = "enabled",
-        DESCRIPTION_KEY = "description",
-        PERMISSION_KEY = "permission",
-        NAME_KEY = "name",
-        ARGS_KEY = "args";
+    private static final String SENDER_KEY = "sender";
+    private static final String ENABLED_KEY = "enabled";
+    private static final String DESCRIPTION_KEY = "description";
+    private static final String PERMISSION_KEY = "permission";
+    private static final String NAME_KEY = "name";
+    private static final String ARGS_KEY = "args";
 
     private HashMap<String, ConfigurableCommand> subCommands = new HashMap<String, ConfigurableCommand>();
 
@@ -340,6 +340,9 @@ public class ConfigurableCommand {
     /**
      * <p>Marks the command as registered so that it
      * cannot be added to other commands.</p>
+     * <p>This is called on commands as they are registered
+     * through the CommandManager class. You do not need
+     * to use this method.</p>
      */
     public void markAsRegistered() {
         registered = true;
@@ -347,6 +350,8 @@ public class ConfigurableCommand {
 
     /**
      * <p>Adds a sub command to this command</p>
+     * <p>The sub command cannot be a registered command</p>
+     * <p>You cannot register a command if this command is attached to a function</p>
      *
      * @param command sub command to add
      * @throws java.lang.IllegalStateException when unable to add sub commands
@@ -362,6 +367,8 @@ public class ConfigurableCommand {
 
     /**
      * <p>Adds multiple sub commands to this command</p>
+     * <p>The sub commands cannot be a registered command</p>
+     * <p>You cannot register a command if this command is attached to a function</p>
      *
      * @param commands sub commands to add
      * @throws java.lang.IllegalStateException when unable to add sub commands
@@ -374,7 +381,9 @@ public class ConfigurableCommand {
     }
 
     /**
-     * Executes the command
+     * <p>Executes the command using the provided arguments</p>
+     * <p>Root commands will pass the arguments onto sub commands or
+     * display the command usage if the args don't match any sub commands.</p>
      *
      * @param sender sender of the command
      * @param args   arguments provided by the sender
@@ -406,6 +415,11 @@ public class ConfigurableCommand {
 
     /**
      * <p>Displays the help for this command</p>
+     * <p>This displays the first page of the usage</p>
+     * <p>If this is a function command, this will display
+     * the usage for this command including the arguments.</p>
+     * <p>If this is a command that contains others, this will
+     * display the list of sub commands and their descriptions.</p>
      *
      * @param sender sender of the command
      */
@@ -415,6 +429,11 @@ public class ConfigurableCommand {
 
     /**
      * <p>Displays the help for this command according to the arguments</p>
+     * <p>The displayed page is determined by the provided arguments</p>
+     * <p>If this is a function command, this will display
+     * the usage for this command including the arguments.</p>
+     * <p>If this is a command that contains others, this will
+     * display the list of sub commands and their descriptions.</p>
      *
      * @param sender sender of the command
      * @param args   arguments provided by the sender
@@ -436,6 +455,10 @@ public class ConfigurableCommand {
      * <p>Displays the help for this command using the given page</p>
      * <p>If the page is less than one, the first page will be displayed</p>
      * <p>If the page is greater than the number of pages, the last page will be displayed</p>
+     * <p>If this is a function command, this will display
+     * the usage for this command including the arguments.</p>
+     * <p>If this is a command that contains others, this will
+     * display the list of sub commands and their descriptions.</p>
      *
      * @param sender sender of the command
      * @param page   page number
@@ -446,6 +469,9 @@ public class ConfigurableCommand {
 
     /**
      * <p>Loads the command data from the configuration</p>
+     * <p>This is handled automatically by MCCore. You generally
+     * will not use this command unless you want to override MCCore's
+     * default configuration.</p>
      *
      * @param key command key
      * @param description default description

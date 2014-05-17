@@ -6,7 +6,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.UUID;
 
@@ -16,25 +15,79 @@ import java.util.UUID;
  */
 public class VersionManager {
 
-    public static int
-            MC_1_5_2_MIN = 2788,
-            MC_1_6_2_MIN = 2789,
-            MC_1_6_4_MIN = 2880,
-            MC_1_7_2_MIN = 2922,
-            MC_1_7_5_MIN = 3026,
-            MC_1_7_8_MIN = 3043,
-            MC_1_7_9_MIN = 3057,
-            MC_1_5_2_MAX = 2788,
-            MC_1_6_2_MAX = 2879,
-            MC_1_6_4_MAX = 2919,
-            MC_1_7_2_MAX = 3024,
-            MC_1_7_5_MAX = 3042,
-            MC_1_7_8_MAX = 3055;
+    /**
+     * The build number for the first 1.5.2 version
+     */
+    public static int MC_1_5_2_MIN = 2788;
 
-    private static int version;
+    /**
+     * The build number for the first 1.6.2 version
+     */
+    public static int MC_1_6_2_MIN = 2789;
+
+    /**
+     * The build number for the first 1.6.4 version
+     */
+    public static int MC_1_6_4_MIN = 2880;
+
+    /**
+     * The build number for the first 1.7.2 version
+     */
+    public static int MC_1_7_2_MIN = 2922;
+
+    /**
+     * The build number for the first 1.7.5 version
+     */
+    public static int MC_1_7_5_MIN = 3026;
+
+    /**
+     * The build number for the first 1.7.8 version
+     */
+    public static int MC_1_7_8_MIN = 3043;
+
+    /**
+     * The build number for the first 1.7.9 version
+     */
+    public static int MC_1_7_9_MIN = 3057;
+
+    /**
+     * The build number for the last 1.5.2 version
+     */
+    public static int MC_1_5_2_MAX = 2788;
+
+    /**
+     * The build number for the last 1.6.2 version
+     */
+    public static int MC_1_6_2_MAX = 2879;
+
+    /**
+     * The build number for the last 1.6.4 version
+     */
+    public static int MC_1_6_4_MAX = 2919;
+
+    /**
+     * The build number for the last 1.7.2 version
+     */
+    public static int MC_1_7_2_MAX = 3024;
+
+    /**
+     * The build number for the last 1.7.5 version
+     */
+    public static int MC_1_7_5_MAX = 3042;
+
+    /**
+     * The build number for the last 1.7.8 version
+     */
+    public static int MC_1_7_8_MAX = 3055;
+
+    private static int version = -1;
 
     /**
      * <p>Initializes the version data</p>
+     * <p>MCCore already calls this by default and
+     * this is called in case it wasn't called before
+     * data is started to be accessed so you shouldn't
+     * ever need to call this method.</p>
      */
     public static void initialize() {
         String v = Bukkit.getServer().getVersion();
@@ -71,27 +124,46 @@ public class VersionManager {
     }
 
     /**
-     * Checks if the version is at least the given version
+     * <p>Checks whether or not the server's version is at most the
+     * provided version.</p>
+     * <p>You should be passing in one of the MAX constants from
+     * this class (eg. VersionManager.MC_1_7_2_MAX)</p>
+     * <p>Passing in MC_1_7_2_MAX would mean a server version
+     * of 1.7.2 or earlier</p>
      *
      * @param v version to check
      * @return  true if the actual version is at least the provided one
      */
     public static boolean isVersionAtMost(int v) {
+        if (version == -1) initialize();
         return version <= v;
     }
 
     /**
-     * Checks if the version is at most the given version
+     * <p>Checks whether or not the server's version is at least the
+     * provided version.</p>
+     * <p>You should be passing in one of the MIN constants from
+     * this class (eg. VersionManager.MC_1_7_2_MIN)</p>
+     * <p>Passing in MC_1_7_2_MIN would mean a server version of
+     * 1.7.2 or later</p>
      *
      * @param v version to check
      * @return  true if the actual version is at most the provided one
      */
     public static boolean isVersionAtLeast(int v) {
+        if (version == -1) initialize();
         return version >= v;
     }
 
     /**
-     * Damages a target while being compatible with 1.5.2 and earlier
+     * <p>Damages an entity the given amount while giving credit
+     * to a damager</p>
+     * <p>If the server version is 1.5.2 or earlier, this will
+     * convert the damage to an integer since those versions
+     * did not support double values for damage.</p>
+     * <p>This also ignores invincibility ticks so that the damage
+     * will go through regardless of whether or not the target
+     * has been recently damaged</p>
      *
      * @param target  target to damage
      * @param damager entity dealing the damage
@@ -116,7 +188,13 @@ public class VersionManager {
     }
 
     /**
-     * Damages a target while being compatible with 1.5.2 and earlier
+     * <p>Damages an entity the given amount</p>
+     * <p>If the server version is 1.5.2 or earlier, this will
+     * convert the damage to an integer since those versions
+     * did not support double values for damage.</p>
+     * <p>This also ignores invincibility ticks so that the damage
+     * will go through regardless of whether or not the target
+     * has been recently damaged</p>
      *
      * @param target  target to damage
      * @param damage  damage to deal
@@ -140,7 +218,10 @@ public class VersionManager {
     }
 
     /**
-     * Sets the max health of an entity while being compatible with 1.5.2 and earlier
+     * <p>Sets the maximum health of an entity</p>
+     * <p>If the server version is 1.5.2 or earlier, this will
+     * convert the health amount to an integer since those versions
+     * did not support double values for health.</p>
      *
      * @param entity entity to set the health for
      * @param amount amount to set the max health to
@@ -163,7 +244,10 @@ public class VersionManager {
     }
 
     /**
-     * Heals the entity while being compatible with 1.5.2 and earlier
+     * <p>Heals the target entity the given amount</p>
+     * <p>If the server version is 1.5.2 or earlier, this will
+     * convert the heal amount to an integer since those versions
+     * did not support double values for health.</p>
      *
      * @param entity entity to heal
      * @param amount amount to heal
@@ -184,7 +268,10 @@ public class VersionManager {
     }
 
     /**
-     * Sets the damage of an event while being compatible with 1.5.2 and earlier
+     * <p>Sets the damage of the event to the given amount</p>
+     * <p>If the server version is 1.5.2 or earlier, this will
+     * convert the damage to an integer since those versions
+     * did not support double values for damage.</p>
      *
      * @param event  event details
      * @param damage damage to set
@@ -202,7 +289,11 @@ public class VersionManager {
 
     /**
      * <p>Retrieves a player by name, converting it to a
-     * UUID in case it's a newer server.</p>
+     * UUID in case the server is at least version 1.7.5.</p>
+     * <p>If the player is not online, this will return null.</p>
+     * <p>This method doesn't require querying the Minecraft
+     * server as it uses the PlayerUUIDs class so it is very
+     * efficient for the later server versions.</p>
      *
      * @param name name of the player
      * @return     player or null if not online
@@ -239,6 +330,9 @@ public class VersionManager {
      * <p>If querying is not allowed, this will return null when the
      * player has not played before and the server version is at least
      * 1.7.5.</p>
+     * <p>If you want to allow querying but avoid lag, you should
+     * call this method on an asynchronous task so that it doesn't
+     * stall the main game loop.</p>
      *
      * @param name       name of the player
      * @param allowQuery whether or not to allow server queries

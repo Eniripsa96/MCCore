@@ -1,8 +1,5 @@
 package com.rit.sucy.scoreboard;
 
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-
 /**
  * A team used by the Scoreboard Manager
  */

@@ -3,7 +3,6 @@ package com.rit.sucy.scoreboard;
 import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Simple interface for providing stats for a scoreboard

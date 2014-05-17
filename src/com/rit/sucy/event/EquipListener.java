@@ -1,6 +1,7 @@
 package com.rit.sucy.event;
 
 import com.rit.sucy.MCCore;
+import com.rit.sucy.version.VersionPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,8 +16,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 
 /**
- * Repeating task for MCCore's equip functionality
- * - do not use this class -
+ * <p>A repeating task to check when players equip and unequip items</p>
+ * <p>This is set up by MCCore already and should not be instantiated
+ * by another plugin as it will cause duplicate results leading to
+ * undesired behavior.</p>
  */
 public class EquipListener implements Listener {
 
@@ -24,7 +27,9 @@ public class EquipListener implements Listener {
     private final MCCore plugin;
 
     /**
-     * Constructor
+     * <p>Creates a new listener for player equipment</p>
+     * <p>You should not be instantiating this class as MCCore
+     * handles it already.</p>
      *
      * @param plugin plugin reference
      */
@@ -34,7 +39,7 @@ public class EquipListener implements Listener {
 
         // Load player equipment for equip events
         for (Player player : plugin.getServer().getOnlinePlayers()) {
-            equipment.put(player.getName(), player.getEquipment().getArmorContents());
+            equipment.put(new VersionPlayer(player).getIdString(), player.getEquipment().getArmorContents());
         }
     }
 
@@ -47,7 +52,7 @@ public class EquipListener implements Listener {
     public void onClick(InventoryClickEvent event) {
         if (event.getInventory().getType() == InventoryType.CRAFTING || event.getInventory().getType() == InventoryType.PLAYER) {
             if (event.getSlotType() == InventoryType.SlotType.ARMOR || event.isShiftClick()) {
-                Player player = plugin.getServer().getPlayer(event.getWhoClicked().getName());
+                Player player = new VersionPlayer(event.getWhoClicked()).getPlayer();
                 checkEquips(player);
             }
         }
@@ -86,8 +91,9 @@ public class EquipListener implements Listener {
         plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
             @Override
             public void run() {
+                String id = new VersionPlayer(player).getIdString();
                 ItemStack[] equips = player.getEquipment().getArmorContents();
-                ItemStack[] previous = equipment.get(player.getName());
+                ItemStack[] previous = equipment.get(id);
                 for (int i = 0; i < equips.length; i++) {
                     if (equips[i] == null && (previous != null && previous[i] != null))
                         plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, previous[i]));
@@ -98,7 +104,7 @@ public class EquipListener implements Listener {
                         plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, equips[i]));
                     }
                 }
-                equipment.put(player.getName(), equips);
+                equipment.put(id, equips);
             }
         }, 1);
     }

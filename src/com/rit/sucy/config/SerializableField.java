@@ -18,7 +18,19 @@ import java.lang.annotation.RetentionPolicy;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SerializableField {
+
+    /**
+     * @return the flag in which this field is serializable
+     */
     String flag() default ConfigSerializer.ALL_FLAG;
+
+    /**
+     * @return whether or not this field is a list
+     */
     boolean list() default false;
+
+    /**
+     * @return whether or not this field is a map
+     */
     boolean map() default false;
 }

@@ -87,6 +87,8 @@ public class CommandManager {
 
     /**
      * <p>Retrieves the replacement for descriptions when they are not set</p>
+     * <p>This is used by the API for the command usage. You generally will not
+     * need to use this.</p>
      *
      * @return description replacement
      */
@@ -358,7 +360,9 @@ public class CommandManager {
     }
 
     /**
-     * <p>Trims the first element off of args</p>
+     * <p>Trims the first element off of an args array</p>
+     * <p>This is used by the API to handle command execution. You
+     * generally will not need to use this.</p>
      *
      * @param args initial args
      * @return     trimmed args
@@ -381,6 +385,9 @@ public class CommandManager {
 
     /**
      * <p>Loads options for displaying command usages from the configuration</p>
+     * <p>This is called by MCCore automatically and doesn't need to be called by
+     * you. If you want to override MCCore's default configuration, you could use
+     * this method to apply a different one as long as it uses the same format.</p>
      *
      * @param config configuration to load from
      */

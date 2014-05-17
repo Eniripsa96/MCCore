@@ -102,6 +102,12 @@ public class ItemManager {
             put((short) 1, "Spruce Wood Planks");
             put((short) 2, "Birch Wood Planks");
             put((short) 3, "Jungle Wood Planks");
+            put((short) 4, "Acacia Wood Planks");
+            put((short) 5, "Dark Oak Wood Planks");
+        }});
+        put(Material.LOG_2.name(), new HashMap<Short, String>() {{
+            put((short)0, "Acacia Wood");
+            put((short)1, "Dark Oak Wood");
         }});
         put("SAPLING", new HashMap<Short, String>() {{
             put((short) 0, "Oak Sapling");
@@ -298,17 +304,13 @@ public class ItemManager {
             put((short)100, "Spawn Horse");
             put((short)120, "Spawn Villager");
         }});
-        put("WOOD_DOUBLE_STEP", new HashMap<Short, String>() {{
-            put((short)0, "Oak Wood Slab");
-            put((short)1, "Spruce Wood Slab");
-            put((short)2, "Birch Wood Slab");
-            put((short)3, "Jungle Wood Slab");
-        }});
         put("WOOD_STEP", new HashMap<Short, String>() {{
             put((short)0, "Oak Wood Slab");
             put((short)1, "Spruce Wood Slab");
             put((short)2, "Birch Wood Slab");
             put((short)3, "Jungle Wood Slab");
+            put((short)4, "Acacia Wood Slab");
+            put((short)5, "Dark Oak Wood Slab");
         }});
         put("SKULL_ITEM", new HashMap<Short, String>() {{
             put((short)0, "Skeleton Skull");
@@ -341,15 +343,134 @@ public class ItemManager {
             put((short)1, "Chiseled Quartz");
             put((short)2, "Quartz Pillar");
         }});
+        put("RAW_FISH", new HashMap<Short, String>() {{
+            put((short)0, "Raw Fish");
+            put((short)1, "Raw Salmon");
+            put((short)2, "Clownfish");
+            put((short)3, "Pufferfish");
+        }});
+        put("COOKED_FISH", new HashMap<Short, String>() {{
+            put((short)0, "Cooked Fish");
+            put((short)1, "Cooked Salmon");
+        }});
+        put("STAINED_GLASS", new HashMap<Short, String>() {{
+            put((short)0, "White Stained Glass");
+            put((short)1, "Orange Stained Glass");
+            put((short)2, "Magenta Stained Glass");
+            put((short)3, "Light Blue Stained Glass");
+            put((short)4, "Yellow Stained Glass");
+            put((short)5, "Lime Stained Glass");
+            put((short)6, "Pink Stained Glass");
+            put((short)7, "Gray Stained Glass");
+            put((short)8, "Light Gray Stained Glass");
+            put((short)9, "Cyan Stained Glass");
+            put((short)10, "Purple Stained Glass");
+            put((short)11, "Blue Stained Glass");
+            put((short)12, "Brown Stained Glass");
+            put((short)13, "Green Stained Glass");
+            put((short)14, "Red Stained Glass");
+            put((short)15, "Black Stained Glass");
+        }});
+        put("STAINED_CLAY", new HashMap<Short, String>() {{
+            put((short)0, "White Stained Clay");
+            put((short)1, "Orange Stained Clay");
+            put((short)2, "Magenta Stained Clay");
+            put((short)3, "Light Blue Stained Clay");
+            put((short)4, "Yellow Stained Clay");
+            put((short)5, "Lime Stained Clay");
+            put((short)6, "Pink Stained Clay");
+            put((short)7, "Gray Stained Clay");
+            put((short)8, "Light Gray Stained Clay");
+            put((short)9, "Cyan Stained Clay");
+            put((short)10, "Purple Stained Clay");
+            put((short)11, "Blue Stained Clay");
+            put((short)12, "Brown Stained Clay");
+            put((short)13, "Green Stained Clay");
+            put((short)14, "Red Stained Clay");
+            put((short)15, "Black Stained Clay");
+        }});
+        put("STAINED_GLASS_PANE", new HashMap<Short, String>() {{
+            put((short)0, "White Stained Glass Pane");
+            put((short)1, "Orange Stained Glass Pane");
+            put((short)2, "Magenta Stained Glass Pane");
+            put((short)3, "Light Blue Stained Glass Pane");
+            put((short)4, "Yellow Stained Glass Pane");
+            put((short)5, "Lime Stained Glass Pane");
+            put((short)6, "Pink Stained Glass Pane");
+            put((short)7, "Gray Stained Glass Pane");
+            put((short)8, "Light Gray Stained Glass Pane");
+            put((short)9, "Cyan Stained Glass Pane");
+            put((short)10, "Purple Stained Glass Pane");
+            put((short)11, "Blue Stained Glass Pane");
+            put((short)12, "Brown Stained Glass Pane");
+            put((short)13, "Green Stained Glass Pane");
+            put((short)14, "Red Stained Glass Pane");
+            put((short)15, "Black Stained Glass Pane");
+        }});
+        put("CARPET", new HashMap<Short, String>() {{
+            put((short)0, "White Carpet");
+            put((short)1, "Orange Carpet");
+            put((short)2, "Magenta Carpet");
+            put((short)3, "Light Blue Carpet");
+            put((short)4, "Yellow Carpet");
+            put((short)5, "Lime Carpet");
+            put((short)6, "Pink Carpet");
+            put((short)7, "Gray Carpet");
+            put((short)8, "Light Gray Carpet");
+            put((short)9, "Cyan Carpet");
+            put((short)10, "Purple Carpet");
+            put((short)11, "Blue Carpet");
+            put((short)12, "Brown Carpet");
+            put((short)13, "Green Carpet");
+            put((short)14, "Red Carpet");
+            put((short)15, "Black Carpet");
+        }});
+        put("DIRT", new HashMap<Short, String>() {{
+            put((short)0, "Dirt");
+            put((short)1, "Dirt");
+            put((short)2, "Podzol");
+        }});
+        put("COBBLE_WALL", new HashMap<Short, String>() {{
+            put((short)0, "Cobblestone Wall");
+            put((short)1, "Mossy Cobblestone Wall");
+        }});
+        put("RED_ROSE", new HashMap<Short, String>() {{
+            put((short)0, "Poppy");
+            put((short)1, "Blue Orchid");
+            put((short)2, "Allium");
+            put((short)3, "Azure Bluet");
+            put((short)4, "Red Tulip");
+            put((short)5, "Orange Tulip");
+            put((short)6, "White Tulip");
+            put((short)7, "Pink Tulip");
+            put((short)8, "Oxeye Daisy");
+        }});
+        put("STONE", new HashMap<Short, String>() {{
+            put((short)0, "Stone");
+            put((short)1, "Granite");
+            put((short)2, "Polished Granite");
+            put((short)3, "Diorite");
+            put((short)4, "Polished Diorite");
+            put((short)5, "Andesite");
+            put((short)6, "Polished Andesite");
+        }});
+        put("DOUBLE_PLANT", new HashMap<Short, String>() {{
+            put((short)0, "Sunflower");
+            put((short)1, "Lilac");
+            put((short)2, "Double Tallgrass");
+            put((short)3, "Large Fern");
+            put((short)4, "Rose Bush");
+            put((short)5, "Peony");
+        }});
     }};
 
     private static final HashMap<String, String> oddNames = new HashMap<String, String>(){{
         put("LAPIS_ORE", "Lapis Lazuli Ore");
         put("LAPIS_BLOCK", "Lapis Lazuli Block");
         put("STICKY_PISTON_BASE", "Sticky Piston");
+        put("PISTON_STICKY_BASE", "Sticky Piston");
         put("PISTON_BASE", "Piston");
         put("YELLOW_FLOWER", "Dandelion");
-        put("RED_FLOWER", "Red Rose");
         put("TNT", "TNT");
         put("MOSSY_COBBLESTONE", "Moss Stone");
         put("MOB_SPAWNER", "Monster Spawner");
@@ -374,7 +495,7 @@ public class ItemManager {
         put("IRON_SPADE", "Iron Shovel");
         put("FLINT_AND_STEEL", "Flint and Steel");
         put("WOOD_SWORD", "Wooden Sword");
-        put("WOOD_PICKAXE", "Wood Pickaxe");
+        put("WOOD_PICKAXE", "Wooden Pickaxe");
         put("WOOD_SPADE", "Wooden Shovel");
         put("WOOD_AXE", "Wooden Axe");
         put("STONE_SPADE", "Stone Spade");
@@ -385,7 +506,7 @@ public class ItemManager {
         put("GOLD_HOE", "Golden Hoe");
         put("GOLD_SWORD", "Golden Sword");
         put("SULPHUR", "Gunpowder");
-        put("WOOD_HOW", "Wooden Hoe");
+        put("WOOD_HOE", "Wooden Hoe");
         put("LEATHER_HELMET", "Leather Cap");
         put("LEATHER_CHESTPLATE", "Leather Tunic");
         put("LEATHER_LEGGINGS", "Leather Pants");
@@ -442,5 +563,16 @@ public class ItemManager {
         put("QUARTZ", "Nether Quartz");
         put("GOLD_PLATE", "Weighted Pressure Plate (Light)");
         put("IRON_PLATE", "Weighted Pressure Plate (Heavy)");
+        put("LEASH", "Lead");
+        put("ACACIA_STAIRS", "Acacia Wood Stairs");
+        put("DARK_OAK_STAIRS", "Dark Oak Wood Stairs");
+        put("EMERALD_BLOCK", "Block of Emerald");
+        put("COAL_BLOCK", "Block of Coal");
+        put("HAY_BLOCK", "Hay Bale");
+        put("REDSTONE_BLOCK", "Block of Redstone");
+        put("IRON_BARDING", "Iron Horse Armor");
+        put("GOLD_BARDING", "Gold Horse Armor");
+        put("DIAMOND_BARDING", "Diamond Horse Armor");
+        put("QUARTZ_ORE", "Nether Quartz Ore");
     }};
 }

@@ -13,41 +13,39 @@ package com.rit.sucy.config;
  */
 public class Filter {
 
-    public static final CustomFilter
-
     /**
      * <p>Filter for player names</p>
      * <p>Token: {player}</p>
      */
-    PLAYER = new CustomFilter("{player}", "unknown"),
+    public static final CustomFilter PLAYER = new CustomFilter("{player}", "unknown");
 
     /**
      * <p>Filter for a target's name</p>
      * <p>Token: {target}</p>
      */
-    TARGET = new CustomFilter("{target}", "unknown"),
+    public static final CustomFilter TARGET = new CustomFilter("{target}", "unknown");
 
     /**
      * <p>Filter for a description</p>
      * <p>Token: {description}</p>
      */
-    DESCRIPTION = new CustomFilter("{description}", "no description"),
+    public static final CustomFilter DESCRIPTION = new CustomFilter("{description}", "no description");
 
     /**
      * <p>Filter for a generic message</p>
      * <p>Token: {message}</p>
      */
-    MESSAGE = new CustomFilter("{message}", "no message"),
+    public static final CustomFilter MESSAGE = new CustomFilter("{message}", "no message");
 
     /**
      * <p>Filter for a numerical amount</p>
      * <p>Token: {amount}</p>
      */
-    AMOUNT = new CustomFilter("{amount}", "0"),
+    public static final CustomFilter AMOUNT = new CustomFilter("{amount}", "0");
 
     /**
      * <p>Filter for a generic value</p>
      * <p>Token: {value}</p>
      */
-    VALUE = new CustomFilter("{value}", "0");
+    public static final CustomFilter VALUE = new CustomFilter("{value}", "0");
 }

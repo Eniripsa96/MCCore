@@ -15,14 +15,16 @@ public class Sphere extends Region {
     /**
      * Config nodes for saving/loading
      */
-    private static final String
-        WORLD = "world",
-        X = "x",
-        Y = "y",
-        Z = "z",
-        R = "r";
+    private static final String WORLD = "world";
+    private static final String X = "x";
+    private static final String Y = "y";
+    private static final String Z = "z";
+    private static final String R = "r";
 
-    private int x, y, z, r;
+    private int x;
+    private int y;
+    private int z;
+    private int r;
 
     /**
      * Constructor from a location and radius

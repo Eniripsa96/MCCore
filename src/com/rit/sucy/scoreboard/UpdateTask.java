@@ -1,6 +1,5 @@
 package com.rit.sucy.scoreboard;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
