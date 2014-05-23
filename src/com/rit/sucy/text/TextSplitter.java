@@ -14,8 +14,9 @@ public class TextSplitter {
     /**
      * Smart-splits messages to wrap for the scoreboard
      *
-     * @param message message to split
-     * @return        lines of text
+     * @param message   message to split
+     * @param maxLength number of characters per line
+     * @return          lines of text
      */
     public static ArrayList<String> getLines(String message, int maxLength) {
 

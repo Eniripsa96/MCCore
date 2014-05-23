@@ -333,6 +333,49 @@ public class ConfigurableCommand {
         return subCommands.get(name);
     }
 
+    /**
+     * <p>Checks whether or not the command has a parent command.</p>
+     * <p>This command will have a parent if it was added as a sub
+     * command to another command</p>
+     *
+     * @return true if has a parent, false otherwise
+     */
+    public boolean hasParent() {
+        return parent != null;
+    }
+
+    /**
+     * <p>Retrieves the parent of the command.</p>
+     * <p>If this does not have a parent, this will return null.</p>
+     *
+     * @return parent of the command
+     */
+    public ConfigurableCommand getParent() {
+        return parent;
+    }
+
+    /**
+     * <p>Checks whether or not this command is a container command.</p>
+     * <p>A container command is one that doesn't have a function of
+     * its own but contains other commands that have functions.</p>
+     *
+     * @return true if a container command, false otherwise
+     */
+    public boolean isContainer() {
+        return function == null;
+    }
+
+    /**
+     * <p>Checks whether or not this command is a functional command.</p>
+     * <p>A functional command performs a task when executed and
+     * cannot hold other commands in it.</p>
+     *
+     * @return true if functional command, false otherwise
+     */
+    public boolean isFunction() {
+        return function != null;
+    }
+
     /**************************************************************************
                                     Functions
      **************************************************************************/

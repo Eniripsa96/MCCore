@@ -62,6 +62,19 @@ public class Config {
     }
 
     /**
+     * <p>Clears all of the data in the config</p>
+     * <p>This doesn't save the config so if  you want
+     * the changes to be reflected in the actual file,
+     * call the saveConfig() method after doing this.</p>
+     */
+    public void clear() {
+        ConfigurationSection config = getConfig();
+        for (String key : config.getKeys(false)) {
+            config.set(key, null);
+        }
+    }
+
+    /**
      * Saves if there are savables added
      */
     public void save() {

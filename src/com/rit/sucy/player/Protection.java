@@ -1,11 +1,13 @@
 package com.rit.sucy.player;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Animals;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import sun.net.www.content.text.plain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +25,26 @@ public class Protection {
      * @return         true if the target can be attacked, false otherwise
      */
     public static boolean canAttack(Player attacker, LivingEntity target) {
+        return canAttack(attacker, target, false);
+    }
+
+    /**
+     * Checks whether or not an entity can be attacked by a player
+     *
+     * @param attacker    player trying to attack
+     * @param target      target of the attack
+     * @param passiveAlly whether or not passive mobs are considered allies
+     * @return            true if the target can be attacked, false otherwise
+     */
+    public static boolean canAttack(Player attacker, LivingEntity target, boolean passiveAlly) {
         if (target instanceof Tameable) {
             Tameable entity = (Tameable)target;
             if (entity.isTamed()) {
                 return canAttack(attacker, (Player)entity.getOwner());
             }
+        }
+        else if (passiveAlly && target instanceof Animals) {
+            return false;
         }
         return canAttack((LivingEntity)attacker, target);
     }

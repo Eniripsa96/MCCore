@@ -3,6 +3,7 @@ package com.rit.sucy.commands;
 import com.rit.sucy.config.Config;
 import com.rit.sucy.text.TextFormatter;
 import com.rit.sucy.text.TextSizer;
+import com.rit.sucy.text.TextSplitter;
 import com.rit.sucy.version.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,6 +37,7 @@ public class CommandManager {
             HELP_NO_BUTTON = "Format.help-no-button",
             PAGE = "Format.page",
             NO_DESCRIPTION = "Format.no-description",
+            COMMAND_USAGE = "Format.command-usage",
             NO_COMMANDS = "Format.no-commands",
             NEXT_PAGE = "Format.next-button",
             NEXT_PAGE_HOVER = "Format.next-button-hover",
@@ -82,6 +84,13 @@ public class CommandManager {
                 add(ChatColor.DARK_GREEN + "{title} - Command Usage {page}");
                 add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
                 add("{commands}");
+                add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
+            }},
+            commandUsage = new ArrayList<String>() {{
+                add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
+                add(ChatColor.GOLD + "{command}");
+                add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
+                add(ChatColor.GRAY + "{description}");
                 add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
             }};
 
@@ -214,10 +223,63 @@ public class CommandManager {
      *
      * @param c      command to show usage for
      * @param sender sender of the command
+     */
+    public static void displayUsage(ConfigurableCommand c, CommandSender sender) {
+        displayUsage(c, sender, 1);
+    }
+
+    /**
+     * <p>Displays the usage help for the command, showing only the commands
+     * that the sender can use.</p>
+     *
+     * <p>The usage display adjusts to the sender, having different spacing
+     * for players and the console.</p>
+     *
+     * <p>When on 1.7.9+, players also can see buttons to navigate through
+     * the help menu as long as it is included in the format.</p>
+     *
+     * @param c      command to show usage for
+     * @param sender sender of the command
      * @param page   page to display
      */
     public static void displayUsage(ConfigurableCommand c, CommandSender sender, int page) {
 
+        // Get the first command in the chain that can be used
+        while (c.hasParent() && !c.canUseCommand(sender)) {
+            c = c.getParent();
+        }
+
+        // Only show something if the command be used
+        if (c.canUseCommand(sender)) {
+            if (c.isContainer()) {
+                displayGeneralUsage(c, sender, page);
+            }
+            else displaySpecificUsage(c, sender);
+        }
+    }
+
+    private static void displaySpecificUsage(ConfigurableCommand c, CommandSender sender) {
+        String command = "/" + c.toString() + " " + c.getArgs().replace("[", optionalArgs + "[").replace("<", requiredArgs + "<");
+        for (String line : commandUsage) {
+            if (line.contains("{description}")) {
+                if (sender instanceof Player) {
+                    List<String> dLines = TextSizer.split(c.getDescription(), 320 - TextSizer.measureString(line.replace("{description}", "")));
+                    for (String d : dLines) {
+                        sender.sendMessage(line.replace("{description}", d));
+                    }
+                }
+                else {
+                    List<String> dLines = TextSplitter.getLines(c.getDescription(), 60 - ChatColor.stripColor(line.replace("{description}", "")).length());
+                    for (String d : dLines) {
+                        sender.sendMessage(line.replace("{description}", d));
+                    }
+                }
+            }
+            else sender.sendMessage(line.replace("{command}", command));
+        }
+    }
+
+    private static void displayGeneralUsage(ConfigurableCommand c, CommandSender sender, int page) {
         List<String> keys = c.getUsableCommands(sender);
 
         // There are no usable commands
@@ -417,6 +479,9 @@ public class CommandManager {
         helpNoButton = config.contains(HELP_NO_BUTTON) && config.isList(HELP_NO_BUTTON)
                 ? TextFormatter.colorStringList(config.getStringList(HELP_NO_BUTTON))
                 : helpNoButton;
+        commandUsage = config.contains(COMMAND_USAGE) && config.isList(COMMAND_USAGE)
+                ? TextFormatter.colorStringList(config.getStringList(COMMAND_USAGE))
+                : commandUsage;
     }
 
     /**
