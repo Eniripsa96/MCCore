@@ -47,7 +47,6 @@ public class DurabilityListener implements Listener {
      */
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
-        plugin.getLogger().info(event.getPlayer() + " " + Durability.canHaveCustomDurability(event.getPlayer().getItemInHand()));
         if (event.getPlayer() != null && Durability.canHaveCustomDurability(event.getPlayer().getItemInHand())) {
             new DurabilityTask(event.getPlayer(), event.getPlayer().getItemInHand());
         }
@@ -170,7 +169,6 @@ public class DurabilityListener implements Listener {
 
             // Losing durability
             else if (difference < 0) {
-                plugin.getLogger().info("Item Lost " + -difference + " durability on " + item.getType().name() + " (" + actualDurability + " -> " + (actualDurability + difference) + ")");
                 ItemLoseDurabilityEvent event = new ItemLoseDurabilityEvent(player, item, -difference);
                 plugin.getServer().getPluginManager().callEvent(event);
                 difference = -event.getAmount();
@@ -178,7 +176,6 @@ public class DurabilityListener implements Listener {
 
             // Gaining durability
             else if (difference > 0) {
-                plugin.getLogger().info("Item gained " + difference + " durability on " + item.getType().name() + " (" + actualDurability + " -> " + (actualDurability + difference) + ")");
                 ItemGainDurabilityEvent event = new ItemGainDurabilityEvent(player, item, difference);
                 plugin.getServer().getPluginManager().callEvent(event);
                 difference = event.getAmount();
