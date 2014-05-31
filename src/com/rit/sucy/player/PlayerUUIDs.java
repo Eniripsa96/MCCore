@@ -48,7 +48,7 @@ public class PlayerUUIDs implements Listener {
         ConfigurationSection section = config.getConfig();
         for (String key : section.getKeys(false)) {
             UUID id = UUID.fromString(section.getString(key));
-            ids.put(key, id);
+            ids.put(key.toLowerCase(), id);
             names.put(id, key);
         }
     }
@@ -58,9 +58,10 @@ public class PlayerUUIDs implements Listener {
      */
     public void save() {
         ConfigurationSection section = config.getConfig();
-        for (Map.Entry<String, UUID> id : ids.entrySet()) {
-           section.set(id.getKey().toLowerCase(), id.getValue().toString());
+        for (Map.Entry<UUID, String> id : names.entrySet()) {
+           section.set(id.getValue(), id.getKey().toString());
         }
+        config.save();
     }
 
     /**
@@ -70,7 +71,8 @@ public class PlayerUUIDs implements Listener {
      */
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        ids.put(event.getPlayer().getName(), event.getPlayer().getUniqueId());
+        ids.put(event.getPlayer().getName().toLowerCase(), event.getPlayer().getUniqueId());
+        names.put(event.getPlayer().getUniqueId(), event.getPlayer().getName());
     }
 
     /**

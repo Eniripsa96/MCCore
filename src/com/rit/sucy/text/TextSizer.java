@@ -354,8 +354,8 @@ public class TextSizer {
     public static String createLine(String begin, String end, String fill, ChatColor fillColor) {
         int startingSize = measureString(begin) + measureString(end);
         int fillCount = (320 - startingSize) / measureString(fill);
-        begin += fillColor;
         StringBuilder sb = new StringBuilder(begin);
+        sb.append(fillColor);
         for (int i = 0; i < fillCount; i++) {
             sb.append(fill);
         }
