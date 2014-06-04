@@ -1,6 +1,7 @@
 package com.rit.sucy.commands;
 
 import com.rit.sucy.config.Config;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -39,7 +40,7 @@ import java.util.Map;
  *
  * </code>
  */
-public class ConfigurableCommand {
+public class ConfigurableCommand extends Command {
 
     private static final String SENDER_KEY = "sender";
     private static final String ENABLED_KEY = "enabled";
@@ -175,6 +176,7 @@ public class ConfigurableCommand {
      * @param permission  default required permission
      */
     public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType, IFunction function, String description, String args, String permission) {
+        super(key, description == null ? "" : description, "", new ArrayList<String>());
         this.plugin = plugin;
         this.senderType = senderType;
         this.function = function;
@@ -421,6 +423,20 @@ public class ConfigurableCommand {
         for (ConfigurableCommand command : commands) {
             addSubCommand(command);
         }
+    }
+
+    /**
+     * <p>Bukkit executiton of the command.</p>
+     * <p>Use execute(CommandSender, String[]) instead.</p>
+     *
+     * @param sender sender of the command
+     * @param label  label of the command
+     * @param args   arguments provided by the sender
+     * @return       true
+     */
+    @Override
+    public boolean execute(CommandSender sender, String label, String[] args) {
+        return execute(sender, args);
     }
 
     /**

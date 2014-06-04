@@ -7,12 +7,15 @@ import com.rit.sucy.text.TextSplitter;
 import com.rit.sucy.version.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -127,6 +130,18 @@ public class CommandManager {
             configs.put(command.getPlugin(), new Config(command.getPlugin(), "commands"));
         }
         plugins.get(command.getPlugin()).add(command.getName());
+
+        // Register it with Bukkit
+        try {
+            Field field = SimplePluginManager.class.getDeclaredField("commandMap");
+            if (!field.isAccessible()) field.setAccessible(true);
+            CommandMap map = (CommandMap)field.get(Bukkit.getPluginManager());
+            map.register(command.getName(), command);
+        }
+        catch (Exception ex) {
+            Bukkit.getLogger().severe("Failed to register the command \"" + command.getName() + "\" with Bukkit");
+            ex.printStackTrace();
+        }
     }
 
     /**
