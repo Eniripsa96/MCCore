@@ -53,6 +53,8 @@ public class MCCore extends JavaPlugin {
 
         // Load settings
         saveDefaultConfig();
+        Config.trim(getConfig());
+        Config.setDefaults(getConfig());
         chatEnabled = getConfig().getBoolean("Features.chat-enabled", true);
         scoreboardsEnabled = getConfig().getBoolean("Features.scoreboards-enabled", true);
         equipEventsEnabled = getConfig().getBoolean("Features.equip-events-enabled", true);

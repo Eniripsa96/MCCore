@@ -230,12 +230,12 @@ public class LocationData {
         }
 
         // Serialize the list
-        String dataString = "";
+        StringBuilder data = new StringBuilder();
         for (Location loc : locations) {
-            dataString += serializeSimpleLocation(loc) + ":";
+            data.append(serializeSimpleLocation(loc));
+            data.append(":");
         }
-        dataString = dataString.length() > 0 ? dataString.substring(0, dataString.length() - 1) : null;
-        return dataString;
+        return data.length() > 0 ? data.substring(0, data.length() - 1) : null;
     }
 
     /**
@@ -254,12 +254,12 @@ public class LocationData {
         }
 
         // Serialize the list
-        String dataString = "";
+        StringBuilder data = new StringBuilder();
         for (Location loc : locations) {
-            dataString += serializeLocation(loc) + ":";
+            data.append(serializeLocation(loc));
+            data.append(":");
         }
-        dataString = dataString.length() > 0 ? dataString.substring(0, dataString.length() - 1) : null;
-        return dataString;
+        return data.length() > 0 ? data.substring(0, data.length() - 1) : null;
     }
 
     /**
@@ -278,12 +278,12 @@ public class LocationData {
         }
 
         // Serialize the list
-        String dataString = "";
+        StringBuilder data = new StringBuilder();
         for (Location loc : locations) {
-            dataString += serializeDetailedLocation(loc) + ":";
+            data.append(serializeDetailedLocation(loc));
+            data.append(":");
         }
-        dataString = dataString.length() > 0 ? dataString.substring(0, dataString.length() - 1) : null;
-        return dataString;
+        return data.length() > 0 ? data.substring(0, data.length() - 1) : null;
     }
 
     /**

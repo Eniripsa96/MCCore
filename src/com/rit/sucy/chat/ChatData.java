@@ -1,5 +1,6 @@
 package com.rit.sucy.chat;
 
+import com.rit.sucy.MCCore;
 import com.rit.sucy.config.ISavable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 public class ChatData implements ISavable {
 
+    MCCore plugin;
     ArrayList<Prefix> pluginPrefixes;
     ArrayList<Prefix> unlockedPrefixes;
     Prefix playerPrefix;
@@ -26,6 +28,7 @@ public class ChatData implements ISavable {
      * @param playerName name of the player
      */
     ChatData(String playerName) {
+        plugin = (MCCore)Bukkit.getPluginManager().getPlugin("MCCore");
         pluginPrefixes = new ArrayList<Prefix>();
         unlockedPrefixes = new ArrayList<Prefix>();
         this.playerName = playerName;
@@ -257,6 +260,7 @@ public class ChatData implements ISavable {
      * Updates the display name
      */
     void updateDisplayName() {
+        if (!plugin.isChatEnabled()) return;
 
         String name = "";
 
