@@ -5,6 +5,7 @@ import com.rit.sucy.text.TextSizer;
 import com.rit.sucy.version.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -190,6 +191,38 @@ public class LanguageConfig extends Config {
     }
 
     /**
+     * Sends a message to an area without any filters
+     *
+     * @param key    key for the language message
+     * @param loc    location to send the message from
+     * @param radius radius to send the message across
+     */
+    public void sendMessage(String key, Location loc, double radius) {
+        sendMessage(key, loc, radius, FilterType.NONE);
+    }
+
+    /**
+     * Sends a message to an area using the provided filters
+     *
+     * @param key        key for the language message
+     * @param loc        location to send the message from
+     * @param radius     radius to send the message across
+     * @param filterType type of built-in filter to use
+     * @param filters    custom filters to use
+     */
+    public void sendMessage(String key, Location loc, double radius, FilterType filterType, CustomFilter ... filters) {
+        radius *= radius;
+        List<String> lines = getMessage(key, true, filterType, filters);
+        for (Player player : loc.getWorld().getPlayers()) {
+            if (player.getLocation().distanceSquared(loc) < radius) {
+                for (String line : lines) {
+                    player.sendMessage(line);
+                }
+            }
+        }
+    }
+
+    /**
      * Sends a message without any filters to a list of players
      * represented by their IDs
      *
@@ -214,8 +247,10 @@ public class LanguageConfig extends Config {
         if (lines == null || VersionManager.isVersionAtMost(VersionManager.MC_1_7_2_MAX)) return;
         for (UUID id : targetIds) {
             Player target = Bukkit.getPlayer(id);
-            for (String line : lines) {
-                target.sendMessage(line);
+            if (target != null) {
+                for (String line : lines) {
+                    target.sendMessage(line);
+                }
             }
         }
     }

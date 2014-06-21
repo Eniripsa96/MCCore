@@ -15,6 +15,7 @@ import com.rit.sucy.scoreboard.CycleTask;
 import com.rit.sucy.scoreboard.ScoreboardCommander;
 import com.rit.sucy.scoreboard.UpdateTask;
 import com.rit.sucy.version.VersionManager;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;

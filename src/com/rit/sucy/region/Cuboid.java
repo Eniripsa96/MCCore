@@ -237,6 +237,32 @@ public class Cuboid extends Region {
     }
 
     /**
+     * <p>Retrieves an iterator for the region's border locations.</p>
+     * <p>You can use a for each loop on this.</p>
+     * <code>
+     *     for (Location loc : region.getBorderIterator()) {
+     * </code>
+     *
+     * @return region border location iterator
+     */
+    public BorderIterator getBorderIterator() {
+        return new BorderIterator(this, xMin, yMin, zMin, xMax, yMax, zMax);
+    }
+
+    /**
+     * <p>Retrieves an iterator for the region's locations.</p>
+     * <p>You can use a for each loop on this.</p>
+     * <code>
+     *     for (Location loc : region.getIterator()) {
+     * </code>
+     *
+     * @return region location iterator
+     */
+    public RegionIterator getIterator() {
+        return new RegionIterator(this, xMin, yMin, zMin, xMax, yMax, zMax);
+    }
+
+    /**
      * Gets a random block in the cuboid
      *
      * @return random block

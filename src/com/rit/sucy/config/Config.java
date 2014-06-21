@@ -68,10 +68,7 @@ public class Config {
      * call the saveConfig() method after doing this.</p>
      */
     public void clear() {
-        ConfigurationSection config = getConfig();
-        for (String key : config.getKeys(false)) {
-            config.set(key, null);
-        }
+        clear(getConfig());
     }
 
     /**
@@ -243,6 +240,18 @@ public class Config {
             for (String key : config.getKeys(false)) {
                 config.set(key, null);
             }
+        }
+    }
+
+    /**
+     * <p>Clears all of the data in the configuration section</p>
+     * <p>This doesn't save the config so if  you want
+     * the changes to be reflected in the actual file,
+     * call the saveConfig() method after doing this.</p>
+     */
+    public static void clear(ConfigurationSection config) {
+        for (String key : config.getKeys(false)) {
+            config.set(key, null);
         }
     }
 }

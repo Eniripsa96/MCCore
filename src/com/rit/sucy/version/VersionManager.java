@@ -80,6 +80,7 @@ public class VersionManager {
      */
     public static int MC_1_7_8_MAX = 3055;
 
+    private static ServerType server;
     private static int version = -1;
 
     /**
@@ -93,10 +94,31 @@ public class VersionManager {
         String v = Bukkit.getServer().getVersion();
 
         // Load the bukkit version if applicable
-        if (v.contains("jnks")) {
+        if (v.contains("Cauldron")) {
+            MC_1_5_2_MIN = 152;
+            MC_1_6_2_MIN = 162;
+            MC_1_6_4_MIN = 164;
+            MC_1_7_2_MIN = 172;
+            MC_1_7_5_MIN = 175;
+            MC_1_7_8_MIN = 178;
+            MC_1_7_9_MIN = 179;
+            MC_1_5_2_MAX = 152;
+            MC_1_6_2_MAX = 162;
+            MC_1_6_4_MAX = 164;
+            MC_1_7_2_MAX = 172;
+            MC_1_7_5_MAX = 175;
+            MC_1_7_8_MAX = 178;
+            v = v.split("-")[2];
+            Bukkit.getLogger().info("Detected Cauldron build " + v);
+            v = v.replace(".", "");
+            server = ServerType.CAULDRON;
+        }
+
+        else if (v.contains("jnks")) {
             v = v.substring(v.indexOf("-b") + 2);
             v = v.substring(0, v.indexOf("jnks"));
             Bukkit.getLogger().info("Detected CraftBukkit build " + v);
+            server = ServerType.BUKKIT;
         }
 
         // Spigot modification in case someone is using it
@@ -117,6 +139,7 @@ public class VersionManager {
             v = v.substring(v.lastIndexOf("-") + 1);
             v = v.substring(0, v.indexOf(" "));
             Bukkit.getLogger().info("Detected Spigot build " + v);
+            server = ServerType.SPIGOT;
         }
 
         // Get the actual build number
@@ -153,6 +176,15 @@ public class VersionManager {
     public static boolean isVersionAtLeast(int v) {
         if (version == -1) initialize();
         return version >= v;
+    }
+
+    /**
+     * <p>Retrieves the kind of server that is being run.</p>
+     *
+     * @return the type of server that is running
+     */
+    public static ServerType getServerType() {
+        return server;
     }
 
     /**
