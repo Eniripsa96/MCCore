@@ -91,6 +91,9 @@ public class VersionManager {
      * ever need to call this method.</p>
      */
     public static void initialize() {
+        server = ServerType.SPIGOT;
+        version = 9999;
+        /*
         String v = Bukkit.getServer().getVersion();
 
         // Load the bukkit version if applicable
@@ -144,6 +147,7 @@ public class VersionManager {
 
         // Get the actual build number
         version = Integer.parseInt(v);
+        */
     }
 
     /**

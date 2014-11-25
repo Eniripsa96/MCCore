@@ -97,6 +97,20 @@ public class CommandManager {
                 add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
             }};
 
+    private static boolean invalidRegistration = false;
+
+    /**
+     * <p>Checks whether or not the CommandManager was able
+     * to register commands successfully with Bukkit. If
+     * it is invalid, then commands will be handled by
+     * MCCore instead of the default command system.</p>
+     *
+     * @return true if commands could not be registered, false otherwise
+     */
+    public static boolean isInvalidRegistration() {
+        return invalidRegistration;
+    }
+
     /**
      * <p>Retrieves the replacement for descriptions when they are not set</p>
      * <p>This is used by the API for the command usage. You generally will not
@@ -139,8 +153,8 @@ public class CommandManager {
             map.register(command.getName(), command);
         }
         catch (Exception ex) {
-            Bukkit.getLogger().severe("Failed to register the command \"" + command.getName() + "\" with Bukkit");
-            ex.printStackTrace();
+            invalidRegistration = true;
+            Bukkit.getLogger().severe("Failed to set up commands, using custom implementation instead");
         }
     }
 

@@ -62,11 +62,10 @@ public class LanguageConfig extends Config {
      * filters before sending the message.</p>
      *
      * @param key    key for the language message
-     * @param player whether or not it is for a player
      * @return       unfiltered message or null if an invalid key
      */
-    public List<String> getMessage(String key, boolean player) {
-        return getMessage(key, player, FilterType.NONE);
+    public List<String> getMessage(String key) {
+        return getMessage(key, false, FilterType.NONE);
     }
 
     /**
