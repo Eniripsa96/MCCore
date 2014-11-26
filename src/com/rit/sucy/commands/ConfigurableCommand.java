@@ -1,6 +1,10 @@
 package com.rit.sucy.commands;
 
 import com.rit.sucy.config.Config;
+import com.rit.sucy.config.CustomFilter;
+import com.rit.sucy.config.Filter;
+import com.rit.sucy.text.TextFormatter;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -42,28 +46,30 @@ import java.util.Map;
  */
 public class ConfigurableCommand extends Command {
 
-    private static final String SENDER_KEY = "sender";
-    private static final String ENABLED_KEY = "enabled";
+    private static final String SENDER_KEY      = "sender";
+    private static final String ENABLED_KEY     = "enabled";
     private static final String DESCRIPTION_KEY = "description";
-    private static final String PERMISSION_KEY = "permission";
-    private static final String NAME_KEY = "name";
-    private static final String ARGS_KEY = "args";
+    private static final String PERMISSION_KEY  = "permission";
+    private static final String NAME_KEY        = "name";
+    private static final String ARGS_KEY        = "args";
+    private static final String MESSAGES_KEY    = "messages";
 
     private HashMap<String, ConfigurableCommand> subCommands = new HashMap<String, ConfigurableCommand>();
+    private HashMap<String, String> messages    = new HashMap<String, String>();
 
-    private JavaPlugin plugin;
+    private JavaPlugin          plugin;
     private ConfigurableCommand parent;
-    private IFunction function;
-    private SenderType senderType;
-    private String description;
-    private String permission;
-    private String name;
-    private String args;
-    private boolean registered;
-    private boolean enabled;
+    private IFunction           function;
+    private SenderType          senderType;
+    private String              description;
+    private String              permission;
+    private String              name;
+    private String              args;
+    private boolean             registered;
+    private boolean             enabled;
 
     /**************************************************************************
-                                   Constructors
+     Constructors
      **************************************************************************/
 
     /**
@@ -80,7 +86,8 @@ public class ConfigurableCommand extends Command {
      * @param key        command key
      * @param senderType type of sender needed for the command
      */
-    public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType) {
+    public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType)
+    {
         this(plugin, key, senderType, null, null, null, null);
     }
 
@@ -96,7 +103,8 @@ public class ConfigurableCommand extends Command {
      * @param senderType  type of sender needed for the command
      * @param description default description
      */
-    public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType, String description) {
+    public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType, String description)
+    {
         this(plugin, key, senderType, null, description, null, null);
     }
 
@@ -527,6 +535,41 @@ public class ConfigurableCommand extends Command {
     }
 
     /**
+     * Retrieves a message for the command, using the default and adding
+     * it to the configuration if not already set.
+     *
+     * @param key            the message key
+     * @param defaultMessage the message to use if not set
+     * @param filters        filters to use on the message
+     * @return               the message from the config or default message if not set
+     */
+    public String getMessage(String key, String defaultMessage, CustomFilter... filters)
+    {
+        // Get the configuration for this command
+        Config pluginConfig = CommandManager.getConfig(plugin);
+        ConfigurationSection main = pluginConfig.getConfig();
+        if (!main.contains(this.getName())) main.createSection(key);
+        ConfigurationSection config = main.getConfigurationSection(key);
+
+        // Add it to the config if it is new
+        ConfigurationSection msgSection = config.getConfigurationSection(MESSAGES_KEY);
+        if (msgSection == null || !msgSection.contains(key)) {
+            if (msgSection == null) {
+                msgSection = config.createSection(MESSAGES_KEY);
+            }
+            msgSection.set(key, defaultMessage.replace(ChatColor.COLOR_CHAR, '&'));
+            pluginConfig.saveConfig();
+        }
+
+        // Apply filters before returning
+        String msg = TextFormatter.colorString(msgSection.getString(key));
+        for (CustomFilter filter : filters) {
+            msg = filter.apply(msg);
+        }
+        return msg;
+    }
+
+    /**
      * <p>Loads the command data from the configuration</p>
      * <p>This is handled automatically by MCCore. You generally
      * will not use this command unless you want to override MCCore's
@@ -551,6 +594,16 @@ public class ConfigurableCommand extends Command {
         this.permission = config.getString(PERMISSION_KEY, permission);
         this.args = config.getString(ARGS_KEY, args);
         this.enabled = config.getBoolean(ENABLED_KEY, enabled);
+
+        // Configurable messages
+        if (config.contains(MESSAGES_KEY))
+        {
+            ConfigurationSection msgSection = config.getConfigurationSection(MESSAGES_KEY);
+            for (String msgKey : msgSection.getKeys(false))
+            {
+                messages.put(msgKey, msgSection.getString(msgKey));
+            }
+        }
 
         // Restrict the name to not have spaces
         if (this.name.contains(" ")) {

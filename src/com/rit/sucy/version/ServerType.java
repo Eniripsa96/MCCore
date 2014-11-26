@@ -7,5 +7,6 @@ public enum ServerType {
 
     BUKKIT,
     CAULDRON,
-    SPIGOT
+    SPIGOT,
+    UNKNOWN
 }

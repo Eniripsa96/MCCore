@@ -91,63 +91,71 @@ public class VersionManager {
      * ever need to call this method.</p>
      */
     public static void initialize() {
-        server = ServerType.SPIGOT;
-        version = 9999;
-        /*
-        String v = Bukkit.getServer().getVersion();
+        try
+        {
+            String v = Bukkit.getServer().getVersion();
 
-        // Load the bukkit version if applicable
-        if (v.contains("Cauldron")) {
-            MC_1_5_2_MIN = 152;
-            MC_1_6_2_MIN = 162;
-            MC_1_6_4_MIN = 164;
-            MC_1_7_2_MIN = 172;
-            MC_1_7_5_MIN = 175;
-            MC_1_7_8_MIN = 178;
-            MC_1_7_9_MIN = 179;
-            MC_1_5_2_MAX = 152;
-            MC_1_6_2_MAX = 162;
-            MC_1_6_4_MAX = 164;
-            MC_1_7_2_MAX = 172;
-            MC_1_7_5_MAX = 175;
-            MC_1_7_8_MAX = 178;
-            v = v.split("-")[2];
-            Bukkit.getLogger().info("Detected Cauldron build " + v);
-            v = v.replace(".", "");
-            server = ServerType.CAULDRON;
+            // Load the bukkit version if applicable
+            if (v.contains("Cauldron"))
+            {
+                MC_1_5_2_MIN = 152;
+                MC_1_6_2_MIN = 162;
+                MC_1_6_4_MIN = 164;
+                MC_1_7_2_MIN = 172;
+                MC_1_7_5_MIN = 175;
+                MC_1_7_8_MIN = 178;
+                MC_1_7_9_MIN = 179;
+                MC_1_5_2_MAX = 152;
+                MC_1_6_2_MAX = 162;
+                MC_1_6_4_MAX = 164;
+                MC_1_7_2_MAX = 172;
+                MC_1_7_5_MAX = 175;
+                MC_1_7_8_MAX = 178;
+                v = v.split("-")[2];
+                Bukkit.getLogger().info("Detected Cauldron build " + v);
+                v = v.replace(".", "");
+                server = ServerType.CAULDRON;
+            }
+
+            else if (v.contains("jnks"))
+            {
+                v = v.substring(v.indexOf("-b") + 2);
+                v = v.substring(0, v.indexOf("jnks"));
+                Bukkit.getLogger().info("Detected CraftBukkit build " + v);
+                server = ServerType.BUKKIT;
+            }
+
+            // Spigot modification in case someone is using it
+            else
+            {
+                MC_1_5_2_MIN = 832;
+                MC_1_6_2_MIN = 1016;
+                MC_1_6_4_MIN = 1108;
+                MC_1_7_2_MIN = 1141;
+                MC_1_7_5_MIN = 1342;
+                MC_1_7_8_MIN = 1388;
+                MC_1_7_9_MIN = 1434;
+                MC_1_5_2_MAX = 964;
+                MC_1_6_2_MAX = 1107;
+                MC_1_6_4_MAX = 1138;
+                MC_1_7_2_MAX = 1339;
+                MC_1_7_5_MAX = 1387;
+                MC_1_7_8_MAX = 1433;
+                v = v.substring(v.lastIndexOf("-") + 1);
+                v = v.substring(0, v.indexOf(" "));
+                Bukkit.getLogger().info("Detected Spigot build " + v);
+                server = ServerType.SPIGOT;
+            }
+
+            // Get the actual build number
+            version = Integer.parseInt(v);
         }
 
-        else if (v.contains("jnks")) {
-            v = v.substring(v.indexOf("-b") + 2);
-            v = v.substring(0, v.indexOf("jnks"));
-            Bukkit.getLogger().info("Detected CraftBukkit build " + v);
-            server = ServerType.BUKKIT;
+        // Some error occurred, assume an up to date server with all features
+        catch (Exception ex) {
+            server = ServerType.UNKNOWN;
+            version = 99999;
         }
-
-        // Spigot modification in case someone is using it
-        else {
-            MC_1_5_2_MIN = 832;
-            MC_1_6_2_MIN = 1016;
-            MC_1_6_4_MIN = 1108;
-            MC_1_7_2_MIN = 1141;
-            MC_1_7_5_MIN = 1342;
-            MC_1_7_8_MIN = 1388;
-            MC_1_7_9_MIN = 1434;
-            MC_1_5_2_MAX = 964;
-            MC_1_6_2_MAX = 1107;
-            MC_1_6_4_MAX = 1138;
-            MC_1_7_2_MAX = 1339;
-            MC_1_7_5_MAX = 1387;
-            MC_1_7_8_MAX = 1433;
-            v = v.substring(v.lastIndexOf("-") + 1);
-            v = v.substring(0, v.indexOf(" "));
-            Bukkit.getLogger().info("Detected Spigot build " + v);
-            server = ServerType.SPIGOT;
-        }
-
-        // Get the actual build number
-        version = Integer.parseInt(v);
-        */
     }
 
     /**
