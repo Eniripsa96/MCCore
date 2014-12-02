@@ -3,25 +3,32 @@ package com.rit.sucy;
 import com.rit.sucy.chat.ChatCommander;
 import com.rit.sucy.chat.ChatListener;
 import com.rit.sucy.commands.CommandListener;
+import com.rit.sucy.commands.CommandLog;
 import com.rit.sucy.commands.CommandManager;
+import com.rit.sucy.commands.LogFunction;
 import com.rit.sucy.config.Config;
 import com.rit.sucy.economy.Economy;
 import com.rit.sucy.economy.EconomyPlugin;
 import com.rit.sucy.event.EquipListener;
 import com.rit.sucy.items.DurabilityListener;
 import com.rit.sucy.player.PlayerUUIDs;
+import com.rit.sucy.reflect.Reflection;
 import com.rit.sucy.scoreboard.BoardListener;
 import com.rit.sucy.scoreboard.CycleTask;
 import com.rit.sucy.scoreboard.ScoreboardCommander;
 import com.rit.sucy.scoreboard.UpdateTask;
 import com.rit.sucy.version.VersionManager;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.HandlerList;
+import org.bukkit.help.HelpTopic;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.Ref;
 import java.util.Hashtable;
+import java.util.Map;
 
 public class MCCore extends JavaPlugin {
 
@@ -46,9 +53,19 @@ public class MCCore extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        CommandLog.callback = new LogFunction()
+        {
+            @Override
+            public void execute(String msg)
+            {
+                getLogger().info("Logger => " + msg);
+                VersionManager.initialize(msg);
+            }
+        };
+        getServer().dispatchCommand(new CommandLog(), "version");
+
         // Initialize libraries
-        VersionManager.initialize();
-        if (VersionManager.isVersionAtLeast(VersionManager.MC_1_7_5_MIN)) {
+        if (VersionManager.isUUID()) {
             idManager = new PlayerUUIDs(this);
         }
 
@@ -205,7 +222,7 @@ public class MCCore extends JavaPlugin {
     public Config getConfigFile(JavaPlugin plugin, String file) {
         if (!configs.containsKey(file.toLowerCase() + plugin.getName())) {
             Config config = new Config(plugin, file);
-            configs.put(file.toLowerCase() + plugin.getName(), config);
+            registerConfig(config);
             return config;
         }
         return configs.get(file.toLowerCase() + plugin.getName());

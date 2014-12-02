@@ -243,7 +243,7 @@ public class LanguageConfig extends Config {
      */
     public void sendMessage(String key, Collection<UUID> targetIds, FilterType filterType, CustomFilter ... filters) {
         List<String> lines = getMessage(key, true, filterType, filters);
-        if (lines == null || VersionManager.isVersionAtMost(VersionManager.MC_1_7_2_MAX)) return;
+        if (lines == null || !VersionManager.isUUID()) return;
         for (UUID id : targetIds) {
             Player target = Bukkit.getPlayer(id);
             if (target != null) {

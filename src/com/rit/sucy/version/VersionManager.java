@@ -15,70 +15,92 @@ import java.util.UUID;
  */
 public class VersionManager {
 
+    public static int V1_5_2 = 10502;
+    public static int V1_6_2 = 10602;
+    public static int V1_6_4 = 10604;
+    public static int V1_7_2 = 10702;
+    public static int V1_7_5 = 10705;
+    public static int V1_7_8 = 10708;
+    public static int V1_7_9 = 10709;
+    public static int V1_8_0 = 10800;
+
     /**
      * The build number for the first 1.5.2 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_5_2_MIN = 2788;
+    public static int MC_1_5_2_MIN = 10502;
 
     /**
      * The build number for the first 1.6.2 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_6_2_MIN = 2789;
+    public static int MC_1_6_2_MIN = 10602;
 
     /**
      * The build number for the first 1.6.4 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_6_4_MIN = 2880;
+    public static int MC_1_6_4_MIN = 10604;
 
     /**
      * The build number for the first 1.7.2 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_7_2_MIN = 2922;
+    public static int MC_1_7_2_MIN = 10702;
 
     /**
      * The build number for the first 1.7.5 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_7_5_MIN = 3026;
+    public static int MC_1_7_5_MIN = 10705;
 
     /**
      * The build number for the first 1.7.8 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_7_8_MIN = 3043;
+    public static int MC_1_7_8_MIN = 10708;
 
     /**
      * The build number for the first 1.7.9 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_7_9_MIN = 3057;
+    public static int MC_1_7_9_MIN = 10709;
 
     /**
      * The build number for the last 1.5.2 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_5_2_MAX = 2788;
+    public static int MC_1_5_2_MAX = 10502;
 
     /**
      * The build number for the last 1.6.2 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_6_2_MAX = 2879;
+    public static int MC_1_6_2_MAX = 10602;
 
     /**
      * The build number for the last 1.6.4 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_6_4_MAX = 2919;
+    public static int MC_1_6_4_MAX = 10604;
 
     /**
      * The build number for the last 1.7.2 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_7_2_MAX = 3024;
+    public static int MC_1_7_2_MAX = 10702;
 
     /**
      * The build number for the last 1.7.5 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_7_5_MAX = 3042;
+    public static int MC_1_7_5_MAX = 10705;
 
     /**
      * The build number for the last 1.7.8 version
+     * @deprecated change to exact versions rather than ranges
      */
-    public static int MC_1_7_8_MAX = 3055;
+    public static int MC_1_7_8_MAX = 10708;
 
     private static ServerType server;
     private static int version = -1;
@@ -90,72 +112,51 @@ public class VersionManager {
      * data is started to be accessed so you shouldn't
      * ever need to call this method.</p>
      */
-    public static void initialize() {
+    public static void initialize(String vs) {
         try
         {
-            String v = Bukkit.getServer().getVersion();
-
-            // Load the bukkit version if applicable
-            if (v.contains("Cauldron"))
-            {
-                MC_1_5_2_MIN = 152;
-                MC_1_6_2_MIN = 162;
-                MC_1_6_4_MIN = 164;
-                MC_1_7_2_MIN = 172;
-                MC_1_7_5_MIN = 175;
-                MC_1_7_8_MIN = 178;
-                MC_1_7_9_MIN = 179;
-                MC_1_5_2_MAX = 152;
-                MC_1_6_2_MAX = 162;
-                MC_1_6_4_MAX = 164;
-                MC_1_7_2_MAX = 172;
-                MC_1_7_5_MAX = 175;
-                MC_1_7_8_MAX = 178;
-                v = v.split("-")[2];
-                Bukkit.getLogger().info("Detected Cauldron build " + v);
-                v = v.replace(".", "");
-                server = ServerType.CAULDRON;
-            }
-
-            else if (v.contains("jnks"))
-            {
-                v = v.substring(v.indexOf("-b") + 2);
-                v = v.substring(0, v.indexOf("jnks"));
-                Bukkit.getLogger().info("Detected CraftBukkit build " + v);
-                server = ServerType.BUKKIT;
-            }
-
-            // Spigot modification in case someone is using it
-            else
-            {
-                MC_1_5_2_MIN = 832;
-                MC_1_6_2_MIN = 1016;
-                MC_1_6_4_MIN = 1108;
-                MC_1_7_2_MIN = 1141;
-                MC_1_7_5_MIN = 1342;
-                MC_1_7_8_MIN = 1388;
-                MC_1_7_9_MIN = 1434;
-                MC_1_5_2_MAX = 964;
-                MC_1_6_2_MAX = 1107;
-                MC_1_6_4_MAX = 1138;
-                MC_1_7_2_MAX = 1339;
-                MC_1_7_5_MAX = 1387;
-                MC_1_7_8_MAX = 1433;
-                v = v.substring(v.lastIndexOf("-") + 1);
-                v = v.substring(0, v.indexOf(" "));
-                Bukkit.getLogger().info("Detected Spigot build " + v);
-                server = ServerType.SPIGOT;
-            }
-
-            // Get the actual build number
-            version = Integer.parseInt(v);
+            int i = vs.indexOf("MC:") + 4;
+            int j = vs.indexOf(")", i);
+            String v = vs.substring(i, j);
+            Bukkit.getLogger().info(v);
+            String[] pieces = v.split("\\.");
+            version = Integer.parseInt(pieces[0]) * 10000 + Integer.parseInt(pieces[1]) * 100 + Integer.parseInt(pieces[2]);
         }
 
         // Some error occurred, assume an up to date server with all features
         catch (Exception ex) {
+            ex.printStackTrace();
             server = ServerType.UNKNOWN;
             version = 99999;
         }
+        Bukkit.getLogger().info("Version: " + version);
+    }
+
+    /**
+     * Checks whether or not UUIDs are used by the server
+     *
+     * @return true if used, false otherwise
+     */
+    public static boolean isUUID() {
+        return isVersionAtLeast(V1_7_5);
+    }
+
+    /**
+     * Checks whether or not damage dealt can be a double
+     *
+     * @return true if can be a double, false otherwise
+     */
+    public static boolean isDamageDouble() {
+        return isVersionAtLeast(V1_6_2);
+    }
+
+    /**
+     * Checks whether or not the tellraw command is active
+     *
+     * @return true if active, false otherwise
+     */
+    public static boolean isTellRaw() {
+        return isVersionAtLeast(V1_7_9);
     }
 
     /**
@@ -170,7 +171,6 @@ public class VersionManager {
      * @return  true if the actual version is at least the provided one
      */
     public static boolean isVersionAtMost(int v) {
-        if (version == -1) initialize();
         return version <= v;
     }
 
@@ -186,7 +186,6 @@ public class VersionManager {
      * @return  true if the actual version is at most the provided one
      */
     public static boolean isVersionAtLeast(int v) {
-        if (version == -1) initialize();
         return version >= v;
     }
 

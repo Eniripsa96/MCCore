@@ -570,6 +570,21 @@ public class ConfigurableCommand extends Command {
     }
 
     /**
+     * Sends a command message to the sender if the message is not an empty string.
+     *
+     * @param sender         sender of the command
+     * @param key            the message key
+     * @param defaultMessage the message to use if not set
+     * @param filters        filters to use on the message
+     */
+    public void sendMessage(CommandSender sender, String key, String defaultMessage, CustomFilter ... filters) {
+        String str = getMessage(key, defaultMessage, filters);
+        if (str.length() > 0) {
+            sender.sendMessage(str);
+        }
+    }
+
+    /**
      * <p>Loads the command data from the configuration</p>
      * <p>This is handled automatically by MCCore. You generally
      * will not use this command unless you want to override MCCore's

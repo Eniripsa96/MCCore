@@ -322,7 +322,7 @@ public class CommandManager {
         // Get number of entries
         int entries;
         if (sender instanceof Player) {
-            if (VersionManager.isVersionAtLeast(VersionManager.MC_1_7_9_MIN)) {
+            if (VersionManager.isTellRaw()) {
                 entries = playerSize - helpWithButton.size() + 1;
                 if (entries >= keys.size() + 1) entries++;
             }
@@ -354,7 +354,7 @@ public class CommandManager {
         else maxSize += 1;
 
         // Player usage post-1.7.9
-        if (VersionManager.isVersionAtLeast(VersionManager.MC_1_7_9_MIN) && sender instanceof Player) {
+        if (VersionManager.isTellRaw() && sender instanceof Player) {
 
             // Button JSON
             String ends = "PreviousNext";
@@ -409,6 +409,7 @@ public class CommandManager {
 
         // Player usage pre-1.7.9
         else if (sender instanceof Player) {
+
             for (String line : helpNoButton) {
                 if (line.contains("{commands}")) {
                     index = 0;
