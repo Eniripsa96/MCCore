@@ -1,6 +1,7 @@
 package com.rit.sucy.version;
 
 import com.rit.sucy.player.PlayerUUIDs;
+import com.rit.sucy.reflect.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
@@ -127,7 +128,15 @@ public class VersionManager {
         catch (Exception ex) {
             ex.printStackTrace();
             server = ServerType.UNKNOWN;
-            version = 99999;
+            try
+            {
+                OfflinePlayer.class.getDeclaredMethod("getUniqueId");
+                version = 99999;
+            }
+            catch (Exception e)
+            {
+                version = V1_7_2;
+            }
         }
         Bukkit.getLogger().info("Version: " + version);
     }

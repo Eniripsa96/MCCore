@@ -24,7 +24,7 @@ public class Protection {
      * @param target   target of the attack
      * @return         true if the target can be attacked, false otherwise
      */
-    public static boolean canAttack(Player attacker, LivingEntity target) {
+    public static boolean canAttack(LivingEntity attacker, LivingEntity target) {
         return canAttack(attacker, target, false);
     }
 
@@ -36,28 +36,17 @@ public class Protection {
      * @param passiveAlly whether or not passive mobs are considered allies
      * @return            true if the target can be attacked, false otherwise
      */
-    public static boolean canAttack(Player attacker, LivingEntity target, boolean passiveAlly) {
+    public static boolean canAttack(LivingEntity attacker, LivingEntity target, boolean passiveAlly) {
+        if (attacker == target) return false;
         if (target instanceof Tameable) {
             Tameable entity = (Tameable)target;
             if (entity.isTamed()) {
-                return canAttack(attacker, (Player)entity.getOwner());
+                return canAttack(attacker, (Player)entity.getOwner(), false);
             }
         }
         else if (passiveAlly && target instanceof Animals) {
             return false;
         }
-        return canAttack((LivingEntity)attacker, target);
-    }
-
-    /**
-     * Checks if a player can be PvPed
-     *
-     * @param attacker player attacking the other
-     * @param target   player being attacked
-     * @return         true if the attack is allowed
-     */
-    public static boolean canAttack(LivingEntity attacker, LivingEntity target) {
-        if (attacker == target) return false;
         EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(attacker, target, EntityDamageEvent.DamageCause.CUSTOM, 1.0);
         Bukkit.getPluginManager().callEvent(event);
         return !event.isCancelled() && event.getDamage() > 0;
@@ -66,22 +55,22 @@ public class Protection {
     /**
      * Checks if the target is an ally
      *
-     * @param attacker player attacking
+     * @param attacker entity attacking
      * @param target   ally of the player
      * @return         true if ally, false otherwise
      */
-    public static boolean isAlly(Player attacker, LivingEntity target) {
+    public static boolean isAlly(LivingEntity attacker, LivingEntity target) {
         return !canAttack(attacker, target);
     }
 
     /**
-     * Retrieves all living entities the player can attack from the list
+     * Retrieves all living entities the entity can attack from the list
      *
-     * @param attacker player that is attacking
+     * @param attacker entity that is attacking
      * @param targets  targets the player is trying to attack
      * @return         list of targets the player can attack
      */
-    public static List<LivingEntity> canAttack(Player attacker, List<LivingEntity> targets) {
+    public static List<LivingEntity> canAttack(LivingEntity attacker, List<LivingEntity> targets) {
         List<LivingEntity> list = new ArrayList<LivingEntity>();
         for (LivingEntity entity : targets) {
             if (canAttack(attacker, entity)) {
@@ -92,13 +81,13 @@ public class Protection {
     }
 
     /**
-     * Retrieves all living entities the player cannot attack from the list
+     * Retrieves all living entities the entity cannot attack from the list
      *
-     * @param attacker player that is attacking
+     * @param attacker entity that is attacking
      * @param targets  targets the player is trying to attack
      * @return         list of targets the player cannot attack
      */
-    public static List<LivingEntity> cannotAttack(Player attacker, List<LivingEntity> targets) {
+    public static List<LivingEntity> cannotAttack(LivingEntity attacker, List<LivingEntity> targets) {
         List<LivingEntity> list = new ArrayList<LivingEntity>();
         for (LivingEntity entity : targets) {
             if (!canAttack(attacker, entity)) {

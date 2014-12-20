@@ -65,6 +65,7 @@ public class ConfigurableCommand extends Command {
     private String              permission;
     private String              name;
     private String              args;
+    private String              key;
     private boolean             registered;
     private boolean             enabled;
 
@@ -190,6 +191,7 @@ public class ConfigurableCommand extends Command {
         this.function = function;
         this.registered = false;
         this.enabled = true;
+        this.key = key;
         load(key, description, args, permission);
     }
 
@@ -548,8 +550,8 @@ public class ConfigurableCommand extends Command {
         // Get the configuration for this command
         Config pluginConfig = CommandManager.getConfig(plugin);
         ConfigurationSection main = pluginConfig.getConfig();
-        if (!main.contains(this.getName())) main.createSection(key);
-        ConfigurationSection config = main.getConfigurationSection(key);
+        if (!main.contains(this.key)) main.createSection(this.key);
+        ConfigurationSection config = main.getConfigurationSection(this.key);
 
         // Add it to the config if it is new
         ConfigurationSection msgSection = config.getConfigurationSection(MESSAGES_KEY);

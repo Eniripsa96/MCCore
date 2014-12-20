@@ -24,21 +24,34 @@ public class TargetHelper {
      * <p>Gets all entities the player is looking at within the range</p>
      * <p>Has a little bit of tolerance to make targeting easier</p>
      *
-     * @param player player to check
+     * @param source living entity to get the targets of
      * @param range  maximum range to check
      * @return       all entities in the player's vision line
      */
-    public static List<LivingEntity> getLivingTargets(Player player, double range) {
-        List<Entity> list = player.getNearbyEntities(range, range, range);
+    public static List<LivingEntity> getLivingTargets(LivingEntity source, double range) {
+        return getLivingTargets(source, range, 4);
+    }
+
+    /**
+     * <p>Gets all entities the player is looking at within the range using
+     * the given tolerance.</p>
+     *
+     * @param source living entity to get the targets of
+     * @param range  maximum range to check
+     * @param tolerance tolerance of the line calculation
+     * @return       all entities in the player's vision line
+     */
+    public static List<LivingEntity> getLivingTargets(LivingEntity source, double range, double tolerance) {
+        List<Entity> list = source.getNearbyEntities(range, range, range);
         List<LivingEntity> targets = new ArrayList<LivingEntity>();
 
-        Vector facing = player.getLocation().getDirection();
+        Vector facing = source.getLocation().getDirection();
         double fLengthSq = facing.lengthSquared();
 
         for (Entity entity : list) {
-            if (!isInFront(player, entity) || !(entity instanceof LivingEntity)) continue;
+            if (!isInFront(source, entity) || !(entity instanceof LivingEntity)) continue;
 
-            Vector relative = entity.getLocation().subtract(player.getLocation()).toVector();
+            Vector relative = entity.getLocation().subtract(source.getLocation()).toVector();
             double dot = relative.dot(facing);
             double rLengthSq = relative.lengthSquared();
             double cosSquared = (dot * dot) / (rLengthSq * fLengthSq);
@@ -56,17 +69,31 @@ public class TargetHelper {
      * <p>Gets the entity the player is looking at</p>
      * <p>Has a little bit of tolerance to make targeting easier</p>
      *
-     * @param player player to check
+     * @param source living entity to get the target of
      * @param range  maximum range to check
      * @return       entity player is looing at or null if not found
      */
-    public static LivingEntity getLivingTarget(Player player, double range) {
-        List<LivingEntity> targets = getLivingTargets(player, range);
+    public static LivingEntity getLivingTarget(LivingEntity source, double range)
+    {
+        return getLivingTarget(source, range, 4);
+    }
+
+    /**
+     * <p>Gets the entity the player is looking at</p>
+     * <p>Has a little bit of tolerance to make targeting easier</p>
+     *
+     * @param source living entity to get the target of
+     * @param range  maximum range to check
+     * @param tolerance tolerance of the line calculation
+     * @return       entity player is looing at or null if not found
+     */
+    public static LivingEntity getLivingTarget(LivingEntity source, double range, double tolerance) {
+        List<LivingEntity> targets = getLivingTargets(source, range, tolerance);
         if (targets.size() == 0) return null;
         LivingEntity target = targets.get(0);
-        double minDistance = target.getLocation().distanceSquared(player.getLocation());
+        double minDistance = target.getLocation().distanceSquared(source.getLocation());
         for (LivingEntity entity : targets) {
-            double distance = entity.getLocation().distanceSquared(player.getLocation());
+            double distance = entity.getLocation().distanceSquared(source.getLocation());
             if (distance < minDistance) {
                 minDistance = distance;
                 target = entity;
@@ -78,18 +105,18 @@ public class TargetHelper {
     /**
      * Gets the targets in a cone
      *
-     * @param player player to get the targets for
+     * @param source entity to get the targets for
      * @param arc    arc angle of the cone
      * @param range  range of the cone
      * @return       list of targets
      */
-    public static List<LivingEntity> getConeTargets(Player player, double arc, double range) {
+    public static List<LivingEntity> getConeTargets(LivingEntity source, double arc, double range) {
         List<LivingEntity> targets = new ArrayList<LivingEntity>();
-        List<Entity> list = player.getNearbyEntities(range, range, range);
+        List<Entity> list = source.getNearbyEntities(range, range, range);
         if (arc <= 0) return targets;
 
         // Initialize values
-        Vector dir = player.getLocation().getDirection();
+        Vector dir = source.getLocation().getDirection();
         dir.setY(0);
         double cos = Math.cos(arc * Math.PI / 180);
         double cosSq = cos * cos;
@@ -106,7 +133,7 @@ public class TargetHelper {
 
                 // Otherwise, select targets based on dot product
                 else {
-                    Vector relative = entity.getLocation().subtract(player.getLocation()).toVector();
+                    Vector relative = entity.getLocation().subtract(source.getLocation()).toVector();
                     relative.setY(0);
                     double dot = relative.dot(dir);
                     double value = dot * dot / (dirSq * relative.lengthSquared());
