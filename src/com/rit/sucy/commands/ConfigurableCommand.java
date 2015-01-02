@@ -641,8 +641,8 @@ public class ConfigurableCommand extends Command {
 
         // Update the config with any new data
         config.set(NAME_KEY, name);
-        config.set(DESCRIPTION_KEY, description);
-        config.set(PERMISSION_KEY, permission);
+        config.set(DESCRIPTION_KEY, this.description);
+        config.set(PERMISSION_KEY, this.permission);
         config.set(ARGS_KEY, args);
         config.set(SENDER_KEY, senderType.name());
         config.set(ENABLED_KEY, enabled);
