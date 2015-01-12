@@ -118,10 +118,15 @@ public class VersionManager {
         {
             int i = vs.indexOf("MC:") + 4;
             int j = vs.indexOf(")", i);
+            if (i < 0 || j < 0) return;
             String v = vs.substring(i, j);
             Bukkit.getLogger().info(v);
             String[] pieces = v.split("\\.");
-            version = Integer.parseInt(pieces[0]) * 10000 + Integer.parseInt(pieces[1]) * 100 + Integer.parseInt(pieces[2]);
+            version = Integer.parseInt(pieces[0]) * 10000 + Integer.parseInt(pieces[1]) * 100;
+            if (pieces.length > 2)
+            {
+                version += Integer.parseInt(pieces[2]);
+            }
         }
 
         // Some error occurred, assume an up to date server with all features

@@ -106,6 +106,7 @@ public class TextFormatter {
      * @return       colored string
      */
     public static String colorString(String string, char token) {
+        if (string == null) return null;
         return string.replaceAll(token + COLOR_REGEX, ChatColor.COLOR_CHAR + "$1");
     }
 
@@ -125,6 +126,7 @@ public class TextFormatter {
      * @param token color indicator
      */
     public static void colorString(StringBuilder sb, char token) {
+        if (sb == null) return;
         String t = token + "";
         int index = sb.indexOf(t);
         while (index >= 0 && index < sb.length() - 1) {
@@ -168,6 +170,7 @@ public class TextFormatter {
      * @return       split string
      */
     private static String[] split(String string) {
+        if (string == null) return null;
         if (string.contains(" ") || string.contains("_"))
             return string.split("[ _]");
         else return new String[] { string };
