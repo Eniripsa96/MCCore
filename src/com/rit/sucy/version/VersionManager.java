@@ -120,30 +120,32 @@ public class VersionManager {
             int j = vs.indexOf(")", i);
             if (i < 0 || j < 0) return;
             String v = vs.substring(i, j);
-            Bukkit.getLogger().info(v);
             String[] pieces = v.split("\\.");
             version = Integer.parseInt(pieces[0]) * 10000 + Integer.parseInt(pieces[1]) * 100;
             if (pieces.length > 2)
             {
                 version += Integer.parseInt(pieces[2]);
             }
+            Bukkit.getLogger().info("Version: " + version);
         }
 
         // Some error occurred, assume an up to date server with all features
         catch (Exception ex) {
-            ex.printStackTrace();
             server = ServerType.UNKNOWN;
-            try
+            if (version == -1)
             {
-                OfflinePlayer.class.getDeclaredMethod("getUniqueId");
-                version = 99999;
-            }
-            catch (Exception e)
-            {
-                version = V1_7_2;
+                try
+                {
+                    OfflinePlayer.class.getDeclaredMethod("getUniqueId");
+                    version = 99999;
+                }
+                catch (Exception e)
+                {
+                    version = V1_7_2;
+                }
+                Bukkit.getLogger().info("Version: " + version);
             }
         }
-        Bukkit.getLogger().info("Version: " + version);
     }
 
     /**
@@ -233,7 +235,7 @@ public class VersionManager {
         target.setNoDamageTicks(0);
 
         // 1.5.2 and earlier used integer values
-        if (isVersionAtMost(MC_1_5_2_MAX)) {
+        if (isVersionAtMost(V1_5_2)) {
             target.damage((int)damage, damager);
         }
 
@@ -263,7 +265,7 @@ public class VersionManager {
         target.setNoDamageTicks(0);
 
         // 1.5.2 and earlier used integer values
-        if (isVersionAtMost(MC_1_5_2_MAX)) {
+        if (isVersionAtMost(V1_5_2)) {
             target.damage((int)damage);
         }
 
@@ -288,7 +290,7 @@ public class VersionManager {
         double prevHealth = entity.getHealth();
 
         // 1.5.2 and earlier used integer values
-        if (isVersionAtMost(MC_1_5_2_MAX)) {
+        if (isVersionAtMost(V1_5_2)) {
             entity.setMaxHealth((int) amount);
             entity.setHealth((int) Math.min(Math.max(1, prevHealth + amount - prevMax), amount));
         }
@@ -316,7 +318,7 @@ public class VersionManager {
         health = Math.min(entity.getMaxHealth(), health);
 
         // 1.5.2 and earlier used integer values
-        if (isVersionAtMost(MC_1_5_2_MAX)) {
+        if (isVersionAtMost(V1_5_2)) {
             entity.setHealth((int)health);
         }
 
@@ -336,7 +338,7 @@ public class VersionManager {
     public static void setDamage(EntityDamageEvent event, double damage) {
 
         // 1.5.2 and earlier used integer values
-        if (isVersionAtMost(MC_1_5_2_MAX)) {
+        if (isVersionAtMost(V1_5_2)) {
             event.setDamage((int)damage);
         }
 
@@ -356,7 +358,7 @@ public class VersionManager {
      * @return     player or null if not online
      */
     public static Player getPlayer(String name) {
-        if (isVersionAtLeast(MC_1_7_5_MIN)) {
+        if (isVersionAtLeast(V1_7_5)) {
             UUID id = PlayerUUIDs.getUUID(name);
             if (id == null) return null;
             else return Bukkit.getPlayer(id);
@@ -396,7 +398,7 @@ public class VersionManager {
      * @return           offline player or null if unable to query the player data
      */
     public static OfflinePlayer getOfflinePlayer(String name, boolean allowQuery) {
-        if (isVersionAtLeast(MC_1_7_5_MIN)) {
+        if (isVersionAtLeast(V1_7_5)) {
             UUID id = PlayerUUIDs.getUUID(name);
             if (id == null) {
                 if (allowQuery) return Bukkit.getOfflinePlayer(name);

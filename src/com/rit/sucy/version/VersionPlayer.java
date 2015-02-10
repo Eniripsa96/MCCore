@@ -47,7 +47,7 @@ public class VersionPlayer {
      * @param id UUID or name of the player
      */
     public VersionPlayer(Object id) {
-        if (VersionManager.isVersionAtLeast(VersionManager.MC_1_7_5_MIN)) {
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_7_5)) {
             if (ID_PATTERN.matcher(id.toString()).matches()) {
                 this.id = UUID.fromString(id.toString());
             }
@@ -92,7 +92,7 @@ public class VersionPlayer {
      * @param player Bukkit player entity object
      */
     public VersionPlayer(HumanEntity player) {
-        if (VersionManager.isVersionAtLeast(VersionManager.MC_1_7_5_MIN)) {
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_7_5)) {
             this.id = player.getUniqueId();
         }
         else this.id = player.getName();
@@ -131,7 +131,7 @@ public class VersionPlayer {
      * @return name of the player
      */
     public String getName() {
-        if (VersionManager.isVersionAtLeast(VersionManager.MC_1_7_5_MIN)) {
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_7_5)) {
             String name = PlayerUUIDs.getName((UUID) id);
             if (name != null) return name;
             else return getOfflinePlayer().getName();

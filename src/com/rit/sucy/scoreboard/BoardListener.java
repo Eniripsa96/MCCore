@@ -27,9 +27,12 @@ public class BoardListener implements Listener {
      *
      * @param event event details
      */
-    @EventHandler (priority = EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onJoin(PlayerJoinEvent event) {
-        event.getPlayer().setScoreboard(PlayerBoards.EMPTY);
+        if (!BoardManager.getPlayerBoards(event.getPlayer().getName()).hasActiveBoard())
+        {
+            event.getPlayer().setScoreboard(PlayerBoards.EMPTY);
+        }
     }
 
     /**

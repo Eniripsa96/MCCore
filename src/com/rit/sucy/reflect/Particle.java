@@ -1,9 +1,12 @@
 package com.rit.sucy.reflect;
 
+import com.rit.sucy.version.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+
+import java.util.HashMap;
 
 /**
  * <p>A utility class for playing particle effects using reflection to
@@ -12,6 +15,7 @@ import org.bukkit.entity.Player;
 public class Particle {
 
     private static Class<?> packetClass;
+    private static Class<?> particleEnum;
     private static boolean initialized = false;
 
     private static void initialize() {
@@ -19,6 +23,7 @@ public class Particle {
         initialized = true;
 
         // Try to get the packet instance for 1.6.4 and earlier
+        particleEnum = Reflection.getNMSClass("EnumParticle");
         packetClass = Reflection.getNMSClass("Packet63WorldParticles");
 
         // Otherwise get the instance for 1.7.2 and later
@@ -32,7 +37,7 @@ public class Particle {
      *
      * @return true if supported, false otherwise
      */
-    public boolean isSupported() {
+    public static boolean isSupported() {
         if (!initialized) {
             initialize();
         }
@@ -199,20 +204,56 @@ public class Particle {
         if (packetClass == null) {
             return;
         }
-        Object packet = Reflection.getInstance(packetClass);
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_8_0))
+        {
+            if (CONVERSION.containsKey(particle)) {
+                particle = CONVERSION.get(particle);
+            }
+            else particle = particle.toUpperCase().replace(" ", "_");
+            Object[] values = particleEnum.getEnumConstants();
+            Object enumValue = null;
+            for (Object value : values) {
+                if (value.toString().equals(particle)) {
+                    enumValue = value;
+                }
+            }
+            try
+            {
+                Object packet = packetClass.getConstructor(particleEnum, Boolean.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Integer.TYPE, int[].class)
+                        .newInstance(enumValue, true, (float)loc.getX(), (float)loc.getY(), (float)loc.getZ(), dx, dy, dz, speed, count, new int[0]);
 
-        Reflection.setValue(packet, "a", particle);
-        Reflection.setValue(packet, "b", (float) loc.getX());
-        Reflection.setValue(packet, "c", (float) loc.getY());
-        Reflection.setValue(packet, "d", (float) loc.getZ());
-        Reflection.setValue(packet, "e", dx);
-        Reflection.setValue(packet, "f", dy);
-        Reflection.setValue(packet, "g", dz);
-        Reflection.setValue(packet, "h", speed);
-        Reflection.setValue(packet, "i", count);
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            if (player.getWorld() == loc.getWorld() && player.getLocation().distanceSquared(loc) < radius * radius) {
-                Reflection.sendPacket(player, packet);
+                for (Player player : Bukkit.getServer().getOnlinePlayers())
+                {
+                    if (player.getWorld() == loc.getWorld() && player.getLocation().distanceSquared(loc) < radius * radius)
+                    {
+                        Reflection.sendPacket(player, packet);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Do nothing
+            }
+        }
+        else
+        {
+            Object packet = Reflection.getInstance(packetClass);
+
+            Reflection.setValue(packet, "a", particle);
+            Reflection.setValue(packet, "b", (float) loc.getX());
+            Reflection.setValue(packet, "c", (float) loc.getY());
+            Reflection.setValue(packet, "d", (float) loc.getZ());
+            Reflection.setValue(packet, "e", dx);
+            Reflection.setValue(packet, "f", dy);
+            Reflection.setValue(packet, "g", dz);
+            Reflection.setValue(packet, "h", speed);
+            Reflection.setValue(packet, "i", count);
+            for (Player player : Bukkit.getServer().getOnlinePlayers())
+            {
+                if (player.getWorld() == loc.getWorld() && player.getLocation().distanceSquared(loc) < radius * radius)
+                {
+                    Reflection.sendPacket(player, packet);
+                }
             }
         }
     }
@@ -225,4 +266,41 @@ public class Particle {
     private static void play(String particle, Location loc, int radius, float speed) {
         play(particle, loc, radius, 0, 0, 0, speed, 0);
     }
+
+    private static final HashMap<String, String> CONVERSION = new HashMap<String, String>()
+    {{
+            put("angryVillager", "VILLAGER_ANGRY");
+            put("bubble", "WATER_BUBBLE");
+            put("cloud", "CLOUD");
+            put("crit", "CRIT");
+            put("depthSuspend", "SUSPENDED_DEPTH");
+            put("dripLava", "DRIP lAVA");
+            put("dripWater", "DRIP_WATER");
+            put("enchantmenttable", "ENCHANTMENT_TABLE");
+            put("explode", "EXPLOSION_NORMAL");
+            put("fireworksSpark", "FIREWORKS_SPARK");
+            put("flame", "FLAME");
+            put("footstep", "FOOTSTEP");
+            put("happyVillager", "VILLAGER_HAPPY");
+            put("heart", "HEART");
+            put("hugeexplosion", "EXPLOSION_HUGE");
+            put("instantSpell", "SPELL_INSTANT");
+            put("largeexplode", "EXPLOSION_LARGE");
+            put("largesmoke", "SMOKE_LARGE");
+            put("lava", "LAVA");
+            put("magicCrit", "CRIT_MAGIC");
+            put("mobSpell", "SPELL_MOB");
+            put("mobSpellAmbient", "SPELL_MOB_AMBIENT");
+            put("note", "NOTE");
+            put("portal", "PORTAL");
+            put("reddust", "REDSTONE");
+            put("slime", "SLIME");
+            put("snowballpoof", "SNOWBALL");
+            put("snowshovel", "SNOW_SHOVEL");
+            put("spell", "SPELL");
+            put("splash", "WATER_SPLASH");
+            put("suspend", "SUSPENDED");
+            put("townaura", "TOWN_AURA");
+            put("witchMagic", "SPELL_WITCH");
+        }};
 }

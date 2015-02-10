@@ -1,5 +1,6 @@
 package com.rit.sucy.scoreboard;
 
+import com.rit.sucy.version.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -196,7 +197,7 @@ public class BoardManager {
 
         // Assign players to teams
         for (Map.Entry<String, String> teams : playerTeams.entrySet()) {
-            OfflinePlayer p = Bukkit.getOfflinePlayer(teams.getKey());
+            OfflinePlayer p = VersionManager.getOfflinePlayer(teams.getKey());
             if (board.getScoreboard().getPlayerTeam(p) != null) {
                 board.getScoreboard().getPlayerTeam(p).removePlayer(p);
             }

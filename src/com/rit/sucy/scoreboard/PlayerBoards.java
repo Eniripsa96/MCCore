@@ -1,5 +1,7 @@
 package com.rit.sucy.scoreboard;
 
+import com.rit.sucy.player.PlayerUUIDs;
+import com.rit.sucy.version.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -58,7 +60,7 @@ public class PlayerBoards {
         boards.put(fName, board);
         BoardManager.updateBoard(board);
         if (currentBoard == null) {
-            board.showPlayer(Bukkit.getPlayer(player));
+            board.showPlayer(VersionManager.getPlayer(player));
             currentBoard = fName;
         }
     }

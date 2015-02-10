@@ -176,7 +176,7 @@ public class Config {
     public void checkDefaults() {
         ConfigurationSection config = getConfig();
         setDefaults(config);
-        if (config.getDefaultSection() != null) saveConfig();
+        saveConfig();
     }
 
     /**
@@ -198,18 +198,16 @@ public class Config {
      * @param config config section to set the defaults for
      */
     public static void setDefaults(ConfigurationSection config) {
-        if (config.getDefaultSection() != null) {
-            for (String key : config.getDefaultSection().getKeys(false)) {
+        for (String key : config.getKeys(false)) {
 
-                // Recursively set the defaults for the inner sections
-                if (config.isConfigurationSection(key)) {
-                    setDefaults(config.getConfigurationSection(key));
-                }
+            // Recursively set the defaults for the inner sections
+            if (config.isConfigurationSection(key)) {
+                setDefaults(config.getConfigurationSection(key));
+            }
 
-                // Set each default value if not set already
-                else if (!config.isSet(key)) {
-                    config.set(key, config.get(key));
-                }
+            // Set each default value if not set already
+            else if (!config.isSet(key)) {
+                config.set(key, config.get(key));
             }
         }
     }

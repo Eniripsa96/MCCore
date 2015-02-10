@@ -1,5 +1,6 @@
 package com.rit.sucy.player;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -85,7 +86,7 @@ public class TargetHelper {
      * @param source living entity to get the target of
      * @param range  maximum range to check
      * @param tolerance tolerance of the line calculation
-     * @return       entity player is looing at or null if not found
+     * @return       entity player is looking at or null if not found
      */
     public static LivingEntity getLivingTarget(LivingEntity source, double range, double tolerance) {
         List<LivingEntity> targets = getLivingTargets(source, range, tolerance);
@@ -214,5 +215,82 @@ public class TargetHelper {
 
         // Compare the target dot product and the actual result
         return facing.dot(relative) >= dotTarget;
+    }
+
+    /**
+     * Checks whether or not the line between the two points is obstructed
+     *
+     * @param loc1 first location
+     * @param loc2 second location
+     * @return the location of obstruction or null if not obstructed
+     */
+    public static boolean isObstructed(Location loc1, Location loc2)
+    {
+        if (loc1.getX() == loc2.getX() && loc1.getY() == loc2.getY() && loc1.getZ() == loc2.getZ())
+        {
+            return false;
+        }
+        Vector slope = loc2.clone().subtract(loc1).toVector();
+        int steps = (int)(slope.length() * 4) + 1;
+        slope.multiply(1 / steps);
+        Location temp = loc1.clone();
+        for (int i = 0; i < steps; i++)
+        {
+            temp.add(slope);
+            if (temp.getBlock().getType().isSolid())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Retrieves an open location along the line for teleporting or linear targeting
+     *
+     * @param loc1        start location of the path
+     * @param loc2        end location of the path
+     * @param throughWall whether or not going through walls is allowed
+     * @return the farthest open location along the path
+     */
+    public static Location getOpenLocation(Location loc1, Location loc2, boolean throughWall)
+    {
+        // Special case
+        if (loc1.getX() == loc2.getX() && loc1.getY() == loc2.getY() && loc1.getZ() == loc2.getZ())
+        {
+            return loc1;
+        }
+
+        // Common data
+        Vector slope = loc2.clone().subtract(loc1).toVector();
+        int steps = (int)(slope.length() * 4) + 1;
+        slope.multiply(1 / steps);
+
+        // Going through walls starts at the end and traverses backwards
+        if (throughWall)
+        {
+            Location temp = loc2.clone();
+            while (temp.getBlock().getType().isSolid() && steps > 0)
+            {
+                temp.subtract(slope);
+                steps--;
+            }
+            return temp;
+        }
+
+        // Not going through walls starts at the beginning and traverses forward
+        else
+        {
+            Location temp = loc1.clone();
+            for (int i = 0; i < steps; i++)
+            {
+                temp.add(slope);
+                if (temp.getBlock().getType().isSolid())
+                {
+                    temp.subtract(slope.multiply(Math.min(4, i + 1)));
+                }
+            }
+            return loc2;
+        }
     }
 }
