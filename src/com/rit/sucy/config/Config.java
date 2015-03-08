@@ -1,5 +1,7 @@
 package com.rit.sucy.config;
 
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -196,21 +198,11 @@ public class Config {
      * copied over so that user changes aren't overwritten.</p>
      *
      * @param config config section to set the defaults for
+     *
+     * @deprecated use FileConfiguration.options().copyDefaults(true) instead
      */
-    public static void setDefaults(ConfigurationSection config) {
-        for (String key : config.getKeys(false)) {
-
-            // Recursively set the defaults for the inner sections
-            if (config.isConfigurationSection(key)) {
-                setDefaults(config.getConfigurationSection(key));
-            }
-
-            // Set each default value if not set already
-            else if (!config.isSet(key)) {
-                config.set(key, config.get(key));
-            }
-        }
-    }
+    @Deprecated
+    public static void setDefaults(ConfigurationSection config) { }
 
     /**
      * <p>A recursive method to trim the non-default values from a config</p>

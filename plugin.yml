@@ -1,6 +1,6 @@
 name: MCCore
 main: com.rit.sucy.MCCore
-version: 1.28
+version: 1.29
 author: Eniripsa96
 description: A library of helpful functions to speed up and simplify plugin development for all developers.
 
