@@ -186,25 +186,12 @@ public class MapImage
      */
     public void drawTo(MapCanvas canvas, int x, int y)
     {
-        if (width == 128)
+        for (int i = 0; i < data.length; i++)
         {
-            for (int i = 0; i < data.length; i++)
-            {
-                int a = i & 127;
-                int b = i >> 7;
+            int a = i % width;
+            int b = i / width;
 
-                canvas.setPixel(a + x, b + y, data[i]);
-            }
-        }
-        else
-        {
-            for (int i = 0; i < data.length; i++)
-            {
-                int a = i % width;
-                int b = i / width;
-
-                canvas.setPixel(a + x, b + y, data[i]);
-            }
+            canvas.setPixel(a + x, b + y, data[i]);
         }
     }
 
