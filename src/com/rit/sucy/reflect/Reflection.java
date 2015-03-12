@@ -40,13 +40,7 @@ public class Reflection {
      */
     public static Class<?> getNMSClass(String name) {
         if (NMS == null) {
-            String[] pieces = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",");
-            if (pieces.length >= 4) {
-                NMS = "net.minecraft.server." + pieces[3] + ".";
-            }
-            else {
-                NMS = "net.minecraft.server.";
-            }
+            NMS = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().substring(23);
         }
         return getClass(NMS + name);
     }
@@ -59,13 +53,7 @@ public class Reflection {
      */
     public static Class<?> getCraftClass(String name) {
         if (CRAFT == null) {
-            String[] pieces = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",");
-            if (pieces.length >= 4) {
-                CRAFT = "org.bukkit.craftbukkit." + pieces[3] + ".";
-            }
-            else {
-                CRAFT = "org.bukkit.craftbukkit.";
-            }
+            CRAFT = "org.bukkit.craftbukkit." + Bukkit.getServer().getClass().getPackage().getName().substring(23);
         }
         return getClass(CRAFT + name);
     }
@@ -130,9 +118,9 @@ public class Reflection {
      * @param methodName name of the field to retrieve the value from
      * @return           the value of the field or null if not found
      */
-    public static Method getMethod(Object o, String methodName) {
+    public static Method getMethod(Object o, String methodName, Class<?> ... params) {
         try {
-            Method method = o.getClass().getMethod(methodName);
+            Method method = o.getClass().getMethod(methodName, params);
             if (!method.isAccessible()) method.setAccessible(true);
             return method;
         }
