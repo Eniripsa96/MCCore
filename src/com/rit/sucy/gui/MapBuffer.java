@@ -14,6 +14,7 @@ public class MapBuffer extends MapImage
 {
     private Object worldMap;
     private Method flagDirty;
+    private Method flagDirty2;
 
     /**
      * Initializes a new MapBuffer with a size of 128x128 that
@@ -26,6 +27,9 @@ public class MapBuffer extends MapImage
 
         worldMap = Reflection.getValue(view, "worldMap");
         flagDirty = Reflection.getMethod(worldMap, "flagDirty", int.class, int.class);
+        if (flagDirty == null) {
+            flagDirty2 = Reflection.getMethod(worldMap, "flagDirty2", int.class, int.class, int.class);
+        }
     }
 
     /**
@@ -62,6 +66,23 @@ public class MapBuffer extends MapImage
             {
                 // Drawing failed to work, use normal method instead
                 flagDirty = null;
+            }
+        }
+
+        // Fast drawing on older servers
+        else if (flagDirty2 != null)
+        {
+            try
+            {
+                flagDirty2.invoke(worldMap, 0, 0, 127);
+                flagDirty2.invoke(worldMap, 1, 0, 127);
+                Reflection.setValue(canvas, "buffer", getData());
+                fast = true;
+            }
+            catch (Exception ex)
+            {
+                // Didn't work, use normal method instead
+                flagDirty2 = null;
             }
         }
 
