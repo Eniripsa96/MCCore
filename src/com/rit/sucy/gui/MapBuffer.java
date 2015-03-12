@@ -28,7 +28,7 @@ public class MapBuffer extends MapImage
         worldMap = Reflection.getValue(view, "worldMap");
         flagDirty = Reflection.getMethod(worldMap, "flagDirty", int.class, int.class);
         if (flagDirty == null) {
-            flagDirty2 = Reflection.getMethod(worldMap, "flagDirty2", int.class, int.class, int.class);
+            flagDirty2 = Reflection.getMethod(worldMap, "flagDirty", int.class, int.class, int.class);
         }
     }
 
