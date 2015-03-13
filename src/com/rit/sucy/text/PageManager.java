@@ -8,12 +8,13 @@ import java.util.*;
 /**
  * <p>Handles displaying pages of options or details</p>
  */
-public class PageManager {
+public class PageManager
+{
 
     private static final String BREAK = ChatColor.DARK_GRAY + "-----------------------------------------------------";
 
-    private String title;
-    private boolean breakLines;
+    private String       title;
+    private boolean      breakLines;
     private List<String> lines;
 
     /**
@@ -22,7 +23,8 @@ public class PageManager {
      * @param title      title for the display
      * @param breakLines whether or not to use break lines before and after the display
      */
-    public PageManager(String title, boolean breakLines) {
+    public PageManager(String title, boolean breakLines)
+    {
         this.title = title;
         this.breakLines = breakLines;
         this.lines = new ArrayList<String>();
@@ -35,7 +37,8 @@ public class PageManager {
      * @param breakLines whether or not to use break lines before and after the display
      * @param lines      lines to display
      */
-    public PageManager(String title, boolean breakLines, List<String> lines) {
+    public PageManager(String title, boolean breakLines, List<String> lines)
+    {
         this.title = title;
         this.breakLines = breakLines;
         this.lines = lines;
@@ -48,7 +51,8 @@ public class PageManager {
      * @param breakLines whether or not to use break lines before and after the display
      * @param lines      lines to display
      */
-    public PageManager(String title, boolean breakLines, String ... lines) {
+    public PageManager(String title, boolean breakLines, String... lines)
+    {
         this.title = title;
         this.breakLines = breakLines;
         this.lines = Arrays.asList(lines);
@@ -59,7 +63,8 @@ public class PageManager {
      *
      * @param recipient receiver of the display
      */
-    public void display(CommandSender recipient) {
+    public void display(CommandSender recipient)
+    {
         display(recipient, 1);
     }
 
@@ -69,7 +74,8 @@ public class PageManager {
      * @param recipient receiver of the display
      * @param page      page to display
      */
-    public void display(CommandSender recipient, int page) {
+    public void display(CommandSender recipient, int page)
+    {
 
         // Get the lines per page
         int lineCount = 9 - (breakLines ? 2 : 0);
@@ -90,7 +96,8 @@ public class PageManager {
 
         // Display the lines
         int index = -1;
-        for (String line : lines) {
+        for (String line : lines)
+        {
             index++;
             if (index < page * lineCount - lineCount || index >= page * lineCount) continue;
             recipient.sendMessage(line);
@@ -105,7 +112,8 @@ public class PageManager {
      *
      * @param line line to add
      */
-    public void addLine(String line) {
+    public void addLine(String line)
+    {
         lines.add(line);
     }
 
@@ -114,7 +122,8 @@ public class PageManager {
      *
      * @param lines lines to add
      */
-    public void addLines(String ... lines) {
+    public void addLines(String... lines)
+    {
         this.lines.addAll(Arrays.asList(lines));
     }
 
@@ -123,14 +132,16 @@ public class PageManager {
      *
      * @param lines lines to add
      */
-    public void addLines(List<String> lines) {
+    public void addLines(List<String> lines)
+    {
         this.lines.addAll(lines);
     }
 
     /**
      * Sorts the lines being displayed
      */
-    public void sortLines() {
+    public void sortLines()
+    {
         Collections.sort(lines);
     }
 
@@ -139,7 +150,8 @@ public class PageManager {
      *
      * @param comparator comparator to use
      */
-    public void sortLines(Comparator<String> comparator) {
+    public void sortLines(Comparator<String> comparator)
+    {
         Collections.sort(lines, comparator);
     }
 }

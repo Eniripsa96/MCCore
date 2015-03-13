@@ -3,13 +3,13 @@ package com.rit.sucy.chat;
 /**
  * Permission nodes for chat commands
  */
-enum ChatNodes {
+enum ChatNodes
+{
 
-    LIST ("core.chat.list"),
-    NAME ("core.chat.name"),
-    PREFIX ("core.chat.prefix"),
-    RESET ("core.chat.reset"),
-    ;
+    LIST("core.chat.list"),
+    NAME("core.chat.name"),
+    PREFIX("core.chat.prefix"),
+    RESET("core.chat.reset"),;
 
     /**
      * Permission node
@@ -21,14 +21,16 @@ enum ChatNodes {
      *
      * @param node permission node
      */
-    private ChatNodes(String node) {
+    private ChatNodes(String node)
+    {
         this.node = node;
     }
 
     /**
      * @return permission node
      */
-    public String getNode() {
+    public String getNode()
+    {
         return node;
     }
 }

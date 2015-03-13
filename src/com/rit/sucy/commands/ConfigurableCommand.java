@@ -1,13 +1,12 @@
 package com.rit.sucy.commands;
 
-import com.rit.sucy.config.Config;
+import com.rit.sucy.config.CommentedConfig;
 import com.rit.sucy.config.CustomFilter;
-import com.rit.sucy.config.Filter;
+import com.rit.sucy.config.parse.DataSection;
 import com.rit.sucy.text.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,33 +17,34 @@ import java.util.Map;
 
 /**
  * <p>A command that is able to be modified via configuration</p>
- *
+ * <p/>
  * <p>To set up hierarchies of commands, simply start with your root command,
  * then create your sub commands, adding each to the root.</p>
- *
+ * <p/>
  * <p>Example:</p>
  * <code>
- *
- *     // Root commands<br/>
- *     ConfigurableCommand root = new ConfigurableCommand(this, "root", SenderType.ANYONE);<br/>
- *     ConfigurableCommand group;<br/>
- *     <br/>
- *     // Add sub commands<br/>
- *     root.addSubCommands(<br/>
- *     &nbsp;&nbsp;&nbsp;&nbsp;new ConfigurableCommand(this, "list", SenderType.ANYONE, new ListFunction(), "Lists available things", "", "perm.list"),<br/>
- *     &nbsp;&nbsp;&nbsp;&nbsp;group = new ConfigurableCommand(this, "group", SenderType.ANYONE, "Handles group functions")<br/>
- *     );<br/>
- *     group.addSubCommands(<br/>
- *     &nbsp;&nbsp;&nbsp;&nbsp;new ConfigurableCommand(this, "add", SenderType.ANYONE, new AddFunction(), "Adds a member to a group", "<player>", "perm.add"),<br/>
- *     &nbsp;&nbsp;&nbsp;&nbsp;new ConfigurableCommand(this, "remove", SenderType.ANYONE, new RemoveFunction(), "Removes a member from a group", "<player>", "perm.remove")<br/>
- *     );<br/>
- *     <br/>
- *     // Register everything<br/>
- *     CommandManager.registerCommand(root);
- *
+ * <p/>
+ * // Root commands<br/>
+ * ConfigurableCommand root = new ConfigurableCommand(this, "root", SenderType.ANYONE);<br/>
+ * ConfigurableCommand group;<br/>
+ * <br/>
+ * // Add sub commands<br/>
+ * root.addSubCommands(<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;new ConfigurableCommand(this, "list", SenderType.ANYONE, new ListFunction(), "Lists available things", "", "perm.list"),<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;group = new ConfigurableCommand(this, "group", SenderType.ANYONE, "Handles group functions")<br/>
+ * );<br/>
+ * group.addSubCommands(<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;new ConfigurableCommand(this, "add", SenderType.ANYONE, new AddFunction(), "Adds a member to a group", "<player>", "perm.add"),<br/>
+ * &nbsp;&nbsp;&nbsp;&nbsp;new ConfigurableCommand(this, "remove", SenderType.ANYONE, new RemoveFunction(), "Removes a member from a group", "<player>", "perm.remove")<br/>
+ * );<br/>
+ * <br/>
+ * // Register everything<br/>
+ * CommandManager.registerCommand(root);
+ * <p/>
  * </code>
  */
-public class ConfigurableCommand extends Command {
+public class ConfigurableCommand extends Command
+{
 
     private static final String SENDER_KEY      = "sender";
     private static final String ENABLED_KEY     = "enabled";
@@ -55,7 +55,7 @@ public class ConfigurableCommand extends Command {
     private static final String MESSAGES_KEY    = "messages";
 
     private HashMap<String, ConfigurableCommand> subCommands = new HashMap<String, ConfigurableCommand>();
-    private HashMap<String, String> messages    = new HashMap<String, String>();
+    private HashMap<String, String>              messages    = new HashMap<String, String>();
 
     private JavaPlugin          plugin;
     private ConfigurableCommand parent;
@@ -76,10 +76,10 @@ public class ConfigurableCommand extends Command {
     /**
      * <p>Creates a new command that can only hold other commands
      * and displays a command usage for sub commands when executed.</p>
-     *
+     * <p/>
      * <p>The key is used to tell commands apart and is also the default
      * name of the command.</p>
-     *
+     * <p/>
      * <p>The command created by this has no default description.
      * It must be set via the configuration.</p>
      *
@@ -95,7 +95,7 @@ public class ConfigurableCommand extends Command {
     /**
      * <p>Creates a new command that can only hold other commands
      * and displays a command usage for sub commands when executed.</p>
-     *
+     * <p/>
      * <p>The key is used to tell commands apart and is also the default
      * name of the command.</p>
      *
@@ -112,29 +112,30 @@ public class ConfigurableCommand extends Command {
     /**
      * <p>Creates a new command that performs its own action when run but
      * cannot have sub commands.</p>
-     *
+     * <p/>
      * <p>The key is used to tell commands apart and is also the default
      * name of the command.</p>
-     *
+     * <p/>
      * <p>The command created by this has no default description, arguments,
      * or required permission. They must be set via the configuration.</p>
      *
-     * @param plugin      plugin reference
-     * @param key         command key
-     * @param senderType  type of sender needed for the command
-     * @param function    command executor
+     * @param plugin     plugin reference
+     * @param key        command key
+     * @param senderType type of sender needed for the command
+     * @param function   command executor
      */
-    public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType, IFunction function) {
+    public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType, IFunction function)
+    {
         this(plugin, key, senderType, function, null, null, null);
     }
 
     /**
      * <p>Creates a new command that performs its own action when run but
      * cannot have sub commands.</p>
-     *
+     * <p/>
      * <p>The key is used to tell commands apart and is also the default
      * name of the command.</p>
-     *
+     * <p/>
      * <p>The command created by this has no default arguments or required
      * permission. They must be set via the configuration.</p>
      *
@@ -144,17 +145,18 @@ public class ConfigurableCommand extends Command {
      * @param function    command executor
      * @param description default description
      */
-    public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType, IFunction function, String description) {
+    public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType, IFunction function, String description)
+    {
         this(plugin, key, senderType, function, description, null, null);
     }
 
     /**
      * <p>Creates a new command that performs its own action when run but
      * cannot have sub commands.</p>
-     *
+     * <p/>
      * <p>The key is used to tell commands apart and is also the default
      * name of the command.</p>
-     *
+     * <p/>
      * <p>The command created by this has no default required permission. It
      * must be set via the configuration.</p>
      *
@@ -165,14 +167,15 @@ public class ConfigurableCommand extends Command {
      * @param description default description
      * @param args        default arguments
      */
-    public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType, IFunction function, String description, String args) {
+    public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType, IFunction function, String description, String args)
+    {
         this(plugin, key, senderType, function, description, args, null);
     }
 
     /**
      * <p>Creates a new command that performs its own action when run but
      * cannot have sub commands.</p>
-     *
+     * <p/>
      * <p>The key is used to tell commands apart and is also the default
      * name of the command.</p>
      *
@@ -184,7 +187,8 @@ public class ConfigurableCommand extends Command {
      * @param args        default arguments
      * @param permission  default required permission
      */
-    public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType, IFunction function, String description, String args, String permission) {
+    public ConfigurableCommand(JavaPlugin plugin, String key, SenderType senderType, IFunction function, String description, String args, String permission)
+    {
         super(key, description == null ? "" : description, "", new ArrayList<String>());
         this.plugin = plugin;
         this.senderType = senderType;
@@ -196,7 +200,7 @@ public class ConfigurableCommand extends Command {
     }
 
     /**************************************************************************
-                                  Data Accessors
+     Data Accessors
      **************************************************************************/
 
     /**
@@ -204,7 +208,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return true if has a description, false otherwise
      */
-    public boolean hasDescription() {
+    public boolean hasDescription()
+    {
         return description != null;
     }
 
@@ -213,7 +218,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return true if it has described arguments, false otherwise
      */
-    public boolean hasArguments() {
+    public boolean hasArguments()
+    {
         return args != null;
     }
 
@@ -222,7 +228,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return true if requires a permission, false otherwise
      */
-    public boolean requiresPermission() {
+    public boolean requiresPermission()
+    {
         return permission != null;
     }
 
@@ -231,9 +238,11 @@ public class ConfigurableCommand extends Command {
      * <p>This is not case-sensitive</p>
      *
      * @param name sub command name
-     * @return     true if has the sub command, false otherwise
+     *
+     * @return true if has the sub command, false otherwise
      */
-    public boolean hasSubCommand(String name) {
+    public boolean hasSubCommand(String name)
+    {
         return subCommands.containsKey(name.toLowerCase());
     }
 
@@ -241,13 +250,15 @@ public class ConfigurableCommand extends Command {
      * <p>Checks whether or not the sender can use this command</p>
      *
      * @param sender sender of the command
-     * @return       true if can use, false otherwise
+     *
+     * @return true if can use, false otherwise
      */
-    public boolean canUseCommand(CommandSender sender) {
+    public boolean canUseCommand(CommandSender sender)
+    {
         return enabled
-                && (senderType != SenderType.PLAYER_ONLY || sender instanceof Player)
-                && (senderType != SenderType.CONSOLE_ONLY || !(sender instanceof Player))
-                && (permission == null || sender.hasPermission(permission));
+               && (senderType != SenderType.PLAYER_ONLY || sender instanceof Player)
+               && (senderType != SenderType.CONSOLE_ONLY || !(sender instanceof Player))
+               && (permission == null || sender.hasPermission(permission));
     }
 
     /**
@@ -256,7 +267,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return true if root command, false otherwise
      */
-    public boolean isRootCommand() {
+    public boolean isRootCommand()
+    {
         return parent == null;
     }
 
@@ -265,7 +277,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return command name
      */
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
@@ -274,7 +287,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return owning plugin
      */
-    public JavaPlugin getPlugin() {
+    public JavaPlugin getPlugin()
+    {
         return plugin;
     }
 
@@ -284,7 +298,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return required permission or null if none
      */
-    public String getDescription() {
+    public String getDescription()
+    {
         return description == null ? CommandManager.getDescriptionReplacement() : description;
     }
 
@@ -294,7 +309,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return required permission or null if none
      */
-    public String getArgs() {
+    public String getArgs()
+    {
         return args == null ? "" : args;
     }
 
@@ -304,7 +320,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return required permission or null if none
      */
-    public String getPermission() {
+    public String getPermission()
+    {
         return permission;
     }
 
@@ -313,7 +330,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return required sender type
      */
-    public SenderType getSenderType() {
+    public SenderType getSenderType()
+    {
         return senderType;
     }
 
@@ -321,12 +339,16 @@ public class ConfigurableCommand extends Command {
      * <p>Retrieves the list of commands that are usable by the sender</p>
      *
      * @param sender sender of the command
-     * @return       list of usable commands
+     *
+     * @return list of usable commands
      */
-    public List<String> getUsableCommands(CommandSender sender) {
+    public List<String> getUsableCommands(CommandSender sender)
+    {
         ArrayList<String> keys = new ArrayList<String>();
-        for (Map.Entry<String, ConfigurableCommand> entry : subCommands.entrySet()) {
-            if (entry.getValue().canUseCommand(sender)) {
+        for (Map.Entry<String, ConfigurableCommand> entry : subCommands.entrySet())
+        {
+            if (entry.getValue().canUseCommand(sender))
+            {
                 keys.add(entry.getKey());
             }
         }
@@ -339,9 +361,11 @@ public class ConfigurableCommand extends Command {
      * this will return null instead</p>
      *
      * @param name sub command name
-     * @return     sub command or null if not found
+     *
+     * @return sub command or null if not found
      */
-    public ConfigurableCommand getSubCommand(String name) {
+    public ConfigurableCommand getSubCommand(String name)
+    {
         return subCommands.get(name);
     }
 
@@ -352,7 +376,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return true if has a parent, false otherwise
      */
-    public boolean hasParent() {
+    public boolean hasParent()
+    {
         return parent != null;
     }
 
@@ -362,7 +387,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return parent of the command
      */
-    public ConfigurableCommand getParent() {
+    public ConfigurableCommand getParent()
+    {
         return parent;
     }
 
@@ -373,7 +399,8 @@ public class ConfigurableCommand extends Command {
      *
      * @return true if a container command, false otherwise
      */
-    public boolean isContainer() {
+    public boolean isContainer()
+    {
         return function == null;
     }
 
@@ -384,12 +411,13 @@ public class ConfigurableCommand extends Command {
      *
      * @return true if functional command, false otherwise
      */
-    public boolean isFunction() {
+    public boolean isFunction()
+    {
         return function != null;
     }
 
     /**************************************************************************
-                                    Functions
+     Functions
      **************************************************************************/
 
     /**
@@ -399,7 +427,8 @@ public class ConfigurableCommand extends Command {
      * through the CommandManager class. You do not need
      * to use this method.</p>
      */
-    public void markAsRegistered() {
+    public void markAsRegistered()
+    {
         registered = true;
     }
 
@@ -409,12 +438,16 @@ public class ConfigurableCommand extends Command {
      * <p>You cannot register a command if this command is attached to a function</p>
      *
      * @param command sub command to add
-     * @throws java.lang.IllegalStateException when unable to add sub commands
+     *
+     * @throws java.lang.IllegalStateException    when unable to add sub commands
      * @throws java.lang.IllegalArgumentException when the command is registered
      */
-    public void addSubCommand(ConfigurableCommand command) {
-        if (function != null) throw new IllegalStateException("A sub command cannot be added to \"/" + toString() + "\", it's already attached to a function");
-        if (command.registered) throw new IllegalArgumentException("A registered command cannot be added to another command");
+    public void addSubCommand(ConfigurableCommand command)
+    {
+        if (function != null)
+            throw new IllegalStateException("A sub command cannot be added to \"/" + toString() + "\", it's already attached to a function");
+        if (command.registered)
+            throw new IllegalArgumentException("A registered command cannot be added to another command");
 
         command.parent = this;
         subCommands.put(command.name, command);
@@ -426,11 +459,14 @@ public class ConfigurableCommand extends Command {
      * <p>You cannot register a command if this command is attached to a function</p>
      *
      * @param commands sub commands to add
-     * @throws java.lang.IllegalStateException when unable to add sub commands
+     *
+     * @throws java.lang.IllegalStateException    when unable to add sub commands
      * @throws java.lang.IllegalArgumentException when the command is registered
      */
-    public void addSubCommands(ConfigurableCommand ... commands) {
-        for (ConfigurableCommand command : commands) {
+    public void addSubCommands(ConfigurableCommand... commands)
+    {
+        for (ConfigurableCommand command : commands)
+        {
             addSubCommand(command);
         }
     }
@@ -442,10 +478,12 @@ public class ConfigurableCommand extends Command {
      * @param sender sender of the command
      * @param label  label of the command
      * @param args   arguments provided by the sender
-     * @return       true
+     *
+     * @return true
      */
     @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
+    public boolean execute(CommandSender sender, String label, String[] args)
+    {
         return execute(sender, args);
     }
 
@@ -457,20 +495,24 @@ public class ConfigurableCommand extends Command {
      * @param sender sender of the command
      * @param args   arguments provided by the sender
      */
-    public boolean execute(CommandSender sender, String[] args) {
+    public boolean execute(CommandSender sender, String[] args)
+    {
 
         // Cannot use the command
-        if (!canUseCommand(sender)) {
+        if (!canUseCommand(sender))
+        {
             return false;
         }
 
         // Execute the attached function if applicable
-        else if (function != null) {
+        else if (function != null)
+        {
             function.execute(this, plugin, sender, args);
         }
 
         // Otherwise search for a sub command
-        else if (args.length > 0 && hasSubCommand(args[0])) {
+        else if (args.length > 0 && hasSubCommand(args[0]))
+        {
             ConfigurableCommand subCommand = subCommands.get(args[0].toLowerCase());
             args = CommandManager.trimArgs(args);
             subCommand.execute(sender, args);
@@ -492,7 +534,8 @@ public class ConfigurableCommand extends Command {
      *
      * @param sender sender of the command
      */
-    public void displayHelp(CommandSender sender) {
+    public void displayHelp(CommandSender sender)
+    {
         displayHelp(sender, 1);
     }
 
@@ -507,13 +550,17 @@ public class ConfigurableCommand extends Command {
      * @param sender sender of the command
      * @param args   arguments provided by the sender
      */
-    public void displayHelp(CommandSender sender, String[] args) {
+    public void displayHelp(CommandSender sender, String[] args)
+    {
         int page = 1;
-        if (args != null && args.length > 0) {
-            try {
+        if (args != null && args.length > 0)
+        {
+            try
+            {
                 page = Integer.parseInt(args[0]);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 // Do nothing
             }
         }
@@ -532,7 +579,8 @@ public class ConfigurableCommand extends Command {
      * @param sender sender of the command
      * @param page   page number
      */
-    public void displayHelp(CommandSender sender, int page) {
+    public void displayHelp(CommandSender sender, int page)
+    {
         CommandManager.displayUsage(this, sender, page);
     }
 
@@ -543,29 +591,33 @@ public class ConfigurableCommand extends Command {
      * @param key            the message key
      * @param defaultMessage the message to use if not set
      * @param filters        filters to use on the message
-     * @return               the message from the config or default message if not set
+     *
+     * @return the message from the config or default message if not set
      */
     public String getMessage(String key, String defaultMessage, CustomFilter... filters)
     {
         // Get the configuration for this command
-        Config pluginConfig = CommandManager.getConfig(plugin);
-        ConfigurationSection main = pluginConfig.getConfig();
-        if (!main.contains(this.key)) main.createSection(this.key);
-        ConfigurationSection config = main.getConfigurationSection(this.key);
+        CommentedConfig pluginConfig = CommandManager.getConfig(plugin);
+        DataSection main = pluginConfig.getConfig();
+        if (!main.has(this.key)) main.createSection(this.key);
+        DataSection config = main.getSection(this.key);
 
         // Add it to the config if it is new
-        ConfigurationSection msgSection = config.getConfigurationSection(MESSAGES_KEY);
-        if (msgSection == null || !msgSection.contains(key)) {
-            if (msgSection == null) {
+        DataSection msgSection = config.getSection(MESSAGES_KEY);
+        if (msgSection == null || !msgSection.has(key))
+        {
+            if (msgSection == null)
+            {
                 msgSection = config.createSection(MESSAGES_KEY);
             }
             msgSection.set(key, defaultMessage.replace(ChatColor.COLOR_CHAR, '&'));
-            pluginConfig.saveConfig();
+            pluginConfig.save();
         }
 
         // Apply filters before returning
         String msg = TextFormatter.colorString(msgSection.getString(key));
-        for (CustomFilter filter : filters) {
+        for (CustomFilter filter : filters)
+        {
             msg = filter.apply(msg);
         }
         return msg;
@@ -579,9 +631,11 @@ public class ConfigurableCommand extends Command {
      * @param defaultMessage the message to use if not set
      * @param filters        filters to use on the message
      */
-    public void sendMessage(CommandSender sender, String key, String defaultMessage, CustomFilter ... filters) {
+    public void sendMessage(CommandSender sender, String key, String defaultMessage, CustomFilter... filters)
+    {
         String str = getMessage(key, defaultMessage, filters);
-        if (str.length() > 0) {
+        if (str.length() > 0)
+        {
             sender.sendMessage(str);
         }
     }
@@ -592,18 +646,19 @@ public class ConfigurableCommand extends Command {
      * will not use this command unless you want to override MCCore's
      * default configuration.</p>
      *
-     * @param key command key
+     * @param key         command key
      * @param description default description
      * @param args        default arguments
      * @param permission  default required permission
      */
-    private void load(String key, String description, String args, String permission) {
+    private void load(String key, String description, String args, String permission)
+    {
 
         // Get the configuration for this command
-        Config pluginConfig = CommandManager.getConfig(plugin);
-        ConfigurationSection main = pluginConfig.getConfig();
-        if (!main.contains(key)) main.createSection(key);
-        ConfigurationSection config = main.getConfigurationSection(key);
+        CommentedConfig pluginConfig = CommandManager.getConfig(plugin);
+        DataSection main = pluginConfig.getConfig();
+        if (!main.has(key)) main.createSection(key);
+        DataSection config = main.getSection(key);
 
         // Get the command details
         this.name = config.getString(NAME_KEY, key).toLowerCase();
@@ -613,29 +668,32 @@ public class ConfigurableCommand extends Command {
         this.enabled = config.getBoolean(ENABLED_KEY, enabled);
 
         // Configurable messages
-        if (config.contains(MESSAGES_KEY))
+        if (config.has(MESSAGES_KEY))
         {
-            ConfigurationSection msgSection = config.getConfigurationSection(MESSAGES_KEY);
-            for (String msgKey : msgSection.getKeys(false))
+            DataSection msgSection = config.getSection(MESSAGES_KEY);
+            for (String msgKey : msgSection.keys())
             {
                 messages.put(msgKey, msgSection.getString(msgKey));
             }
         }
 
         // Restrict the name to not have spaces
-        if (this.name.contains(" ")) {
+        if (this.name.contains(" "))
+        {
             String noSpaces = this.name.replace(" ", "");
             plugin.getLogger().warning("Invalid command name \"" + this.name + "\", using \"" + noSpaces + "\" instead");
             this.name = noSpaces;
         }
 
         // Get the sender type
-        try {
-            this.senderType = config.contains(SENDER_KEY) ? SenderType.valueOf(config.getString(SENDER_KEY).toUpperCase().replace(" ", "_")) : senderType;
+        try
+        {
+            this.senderType = config.has(SENDER_KEY) ? SenderType.valueOf(config.getString(SENDER_KEY).toUpperCase().replace(" ", "_")) : senderType;
         }
 
         // Invalid sender type
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             plugin.getLogger().warning("Invalid sender type for command \"/" + toString() + "\", using the default instead");
         }
 
@@ -646,7 +704,7 @@ public class ConfigurableCommand extends Command {
         config.set(ARGS_KEY, args);
         config.set(SENDER_KEY, senderType.name());
         config.set(ENABLED_KEY, enabled);
-        pluginConfig.saveConfig();
+        pluginConfig.save();
     }
 
     /**
@@ -659,7 +717,8 @@ public class ConfigurableCommand extends Command {
      * @return command path
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         if (parent == null) return name;
         else return parent.toString() + " " + name;
     }

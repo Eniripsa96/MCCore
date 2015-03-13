@@ -24,27 +24,32 @@ import java.util.Map;
  * <p>Also, primitive arrays such as int[] give the config problems. Where possible, use
  * array lists instead for better compatibility.</p>
  */
-public class ConfigSerializer {
+public class ConfigSerializer
+{
 
     public static final String ALL_FLAG = "ALL";
 
-    private static final HashMap<String, Integer> flags = new HashMap<String, Integer>() {{
-        put(ALL_FLAG, Integer.MAX_VALUE);
-    }};
-    private static int flagCount = 0;
+    private static final HashMap<String, Integer> flags     = new HashMap<String, Integer>()
+    {{
+            put(ALL_FLAG, Integer.MAX_VALUE);
+        }};
+    private static       int                      flagCount = 0;
 
     /**
      * Defines a new flag for field exclusion
      *
      * @param name flag name
      */
-    public static void defineFlag(String name) {
+    public static void defineFlag(String name)
+    {
 
-        if (flagCount == 30) {
+        if (flagCount == 30)
+        {
             throw new IllegalArgumentException("Cannot contain any more flags");
         }
 
-        if (flags.containsKey(name)) {
+        if (flags.containsKey(name))
+        {
             throw new IllegalArgumentException("Flag name already in use: " + name);
         }
 
@@ -57,19 +62,24 @@ public class ConfigSerializer {
      * @param name    flag name
      * @param members names of flags to include in the group
      */
-    public static void defineFlagGroup(String name, String ... members) {
+    public static void defineFlagGroup(String name, String... members)
+    {
 
-        if (flags.containsKey(name)) {
+        if (flags.containsKey(name))
+        {
             throw new IllegalArgumentException("Flag name already in use: " + name);
         }
 
         int value = 0;
-        for (String flag : members) {
-            if (flags.containsKey(flag)) {
+        for (String flag : members)
+        {
+            if (flags.containsKey(flag))
+            {
                 value += flags.get(flag);
             }
         }
-        if (value > 0) {
+        if (value > 0)
+        {
             flags.put(name, value);
         }
     }
@@ -80,7 +90,8 @@ public class ConfigSerializer {
      * @param obj    object to serialize
      * @param config config to serialize to
      */
-    public static void serialize(Object obj, ConfigurationSection config) {
+    public static void serialize(Object obj, ConfigurationSection config)
+    {
         serialize(obj, config, ALL_FLAG);
     }
 
@@ -94,16 +105,20 @@ public class ConfigSerializer {
      * @param config config to serialize into
      * @param flag   flag name
      */
-    public static void serialize(Object obj, ConfigurationSection config, String flag) {
+    public static void serialize(Object obj, ConfigurationSection config, String flag)
+    {
 
         // Validate the parameters
-        if (!flags.containsKey(flag)) {
+        if (!flags.containsKey(flag))
+        {
             throw new IllegalArgumentException("Flag is not registered: " + flag);
         }
-        else if (config == null) {
+        else if (config == null)
+        {
             throw new IllegalArgumentException("Cannot serialize into a null configuration");
         }
-        else if (obj == null) {
+        else if (obj == null)
+        {
             return;
         }
 
@@ -112,63 +127,78 @@ public class ConfigSerializer {
         // Retrieve all fields of the object
         ArrayList<Field> fields = new ArrayList<Field>();
         Class c = obj.getClass();
-        while (c != null) {
+        while (c != null)
+        {
             fields.addAll(Arrays.asList(c.getDeclaredFields()));
             c = c.getSuperclass();
         }
 
         // Go through each field and serialize it if applicable
-        for (Field field : fields) {
+        for (Field field : fields)
+        {
 
             // set accessibility to avoid breaking
             field.setAccessible(true);
 
             // Check if the field has exclude annotations. If so, ignore it
             ExcludeField exclude = field.getAnnotation(ExcludeField.class);
-            if (exclude != null && (flags.get(exclude.flag()) & value) > 0) {
+            if (exclude != null && (flags.get(exclude.flag()) & value) > 0)
+            {
                 continue;
             }
 
             // Serialize the object depending on whether or not it has the serializable annotation
-            try {
+            try
+            {
                 SerializableField serializable = field.getAnnotation(SerializableField.class);
-                if (serializable != null && (flags.get(serializable.flag()) & value) > 0) {
-                    if (!config.contains(field.getName())) {
+                if (serializable != null && (flags.get(serializable.flag()) & value) > 0)
+                {
+                    if (!config.contains(field.getName()))
+                    {
                         config.createSection(field.getName());
                     }
-                    if (serializable.list()) {
+                    if (serializable.list())
+                    {
                         int index = 1;
                         ConfigurationSection listSection = config.getConfigurationSection(field.getName());
-                        for (Object item : (Iterable<?>)field.get(obj)) {
+                        for (Object item : (Iterable<?>) field.get(obj))
+                        {
                             String path = "item" + index;
-                            if (!listSection.contains(path)) {
+                            if (!listSection.contains(path))
+                            {
                                 listSection.createSection(path);
                             }
                             serialize(item, listSection.getConfigurationSection(path));
                         }
                     }
-                    else if (serializable.map()) {
+                    else if (serializable.map())
+                    {
                         ConfigurationSection root = config.getConfigurationSection(field.getName());
-                        HashMap<?, ?> map = (HashMap<?, ?>)serializable;
-                        for (Map.Entry<?, ?> entry : map.entrySet()) {
-                            if (!root.contains(entry.getKey().toString())) {
+                        HashMap<?, ?> map = (HashMap<?, ?>) serializable;
+                        for (Map.Entry<?, ?> entry : map.entrySet())
+                        {
+                            if (!root.contains(entry.getKey().toString()))
+                            {
                                 root.createSection(entry.getKey().toString());
                             }
                             ConfigurationSection mapSection = root.getConfigurationSection(entry.getKey().toString());
                             serialize(entry.getValue(), mapSection);
                         }
                     }
-                    else {
+                    else
+                    {
                         serialize(field.get(obj), config.getConfigurationSection(field.getName()), flag);
                     }
                 }
-                else {
+                else
+                {
                     Object v = field.get(obj);
                     config.set(field.getName(), v);
                 }
             }
 
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 // If for some reason the field could not be accessed, just move on
             }
         }

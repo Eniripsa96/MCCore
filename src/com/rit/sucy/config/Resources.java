@@ -1,6 +1,5 @@
 package com.rit.sucy.config;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -11,7 +10,8 @@ import java.io.OutputStream;
 /**
  * <p>A utility class for copying resource files to the server directory.</p>
  */
-public class Resources {
+public class Resources
+{
 
     /**
      * <p>Copies a resource to the plugin's data folder using the same file name
@@ -20,7 +20,8 @@ public class Resources {
      * @param plugin   plugin reference
      * @param resource resource to copy
      */
-    public static void copy(Plugin plugin, String resource) {
+    public static void copy(Plugin plugin, String resource)
+    {
         copy(plugin, plugin.getDataFolder().getAbsolutePath() + File.separator + resource, resource, true);
     }
 
@@ -32,7 +33,8 @@ public class Resources {
      * @param resource  resource to copy
      * @param overwrite whether or not to overwrite existing files
      */
-    public static void copy(Plugin plugin, String resource, boolean overwrite) {
+    public static void copy(Plugin plugin, String resource, boolean overwrite)
+    {
         copy(plugin, plugin.getDataFolder().getAbsolutePath() + File.separator + resource, resource, overwrite);
     }
 
@@ -44,7 +46,8 @@ public class Resources {
      * @param resource    resource to copy
      * @param destination destination to save the file to
      */
-    public static void copy(Plugin plugin, String resource, String destination) {
+    public static void copy(Plugin plugin, String resource, String destination)
+    {
         copy(plugin, resource, destination, true);
     }
 
@@ -57,10 +60,12 @@ public class Resources {
      * @param destination destination to save the file to
      * @param overwrite   whether or not to overwrite existing files
      */
-    public static void copy(Plugin plugin, String resource, String destination, boolean overwrite) {
+    public static void copy(Plugin plugin, String resource, String destination, boolean overwrite)
+    {
         if (!resource.startsWith(File.separator)) resource = File.separator + resource;
         String folder = null;
-        if (destination.contains(File.separator)) {
+        if (destination.contains(File.separator))
+        {
             folder = destination.substring(0, destination.lastIndexOf(File.separator));
         }
 
@@ -68,21 +73,24 @@ public class Resources {
         File target = new File(destination);
         if (!overwrite && target.exists()) return;
 
-        try {
+        try
+        {
 
             // Prepare to copy the file
             InputStream stream = plugin.getClass().getResourceAsStream(resource);
             OutputStream resStreamOut;
             int readBytes;
             byte[] buffer = new byte[4096];
-            if (folder != null) {
+            if (folder != null)
+            {
                 File directory = new File(folder);
                 directory.mkdirs();
             }
             resStreamOut = new FileOutputStream(target);
 
             // Copy to the file
-            while ((readBytes = stream.read(buffer)) > 0) {
+            while ((readBytes = stream.read(buffer)) > 0)
+            {
                 resStreamOut.write(buffer, 0, readBytes);
             }
 
@@ -92,7 +100,8 @@ public class Resources {
         }
 
         // An error occurred
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             plugin.getLogger().severe("Failed to copy the resource: " + resource);
         }
     }

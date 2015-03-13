@@ -10,7 +10,8 @@ import org.bukkit.plugin.Plugin;
 /**
  * Sets a prefix for a player
  */
-class PrefixCommand implements ICommand {
+class PrefixCommand implements ICommand
+{
 
     /**
      * Executes the command
@@ -21,10 +22,13 @@ class PrefixCommand implements ICommand {
      * @param args    command arguments
      */
     @Override
-    public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args)
+    {
         ChatData data = Chat.getPlayerData(sender.getName());
-        if (data != null && args.length == 1) {
-            if (data.hasPrefix(args[0])) {
+        if (data != null && args.length == 1)
+        {
+            if (data.hasPrefix(args[0]))
+            {
                 data.setPrefix(args[0]);
                 sender.sendMessage(ChatColor.DARK_GREEN + "The prefix has been set!");
             }
@@ -36,7 +40,8 @@ class PrefixCommand implements ICommand {
     /**
      * @return permission needed for this command
      */
-    public String getPermissionNode() {
+    public String getPermissionNode()
+    {
         return ChatNodes.PREFIX.getNode();
     }
 
@@ -44,7 +49,8 @@ class PrefixCommand implements ICommand {
      * @return args string
      */
     @Override
-    public String getArgsString() {
+    public String getArgsString()
+    {
         return "<prefix>";
     }
 
@@ -52,7 +58,8 @@ class PrefixCommand implements ICommand {
      * @return description
      */
     @Override
-    public String getDescription() {
+    public String getDescription()
+    {
         return "Sets your prefix";
     }
 
@@ -60,7 +67,8 @@ class PrefixCommand implements ICommand {
      * Sender required for the command
      */
     @Override
-    public SenderType getSenderType() {
+    public SenderType getSenderType()
+    {
         return SenderType.PLAYER_ONLY;
     }
 }

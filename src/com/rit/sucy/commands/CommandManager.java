@@ -1,6 +1,7 @@
 package com.rit.sucy.commands;
 
-import com.rit.sucy.config.Config;
+import com.rit.sucy.config.CommentedConfig;
+import com.rit.sucy.config.parse.DataSection;
 import com.rit.sucy.text.TextFormatter;
 import com.rit.sucy.text.TextSizer;
 import com.rit.sucy.text.TextSplitter;
@@ -9,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
@@ -28,74 +28,78 @@ import java.util.List;
  * a more flexible structure for your commands and makes them automatically
  * configurable as well.</p>
  */
-public class CommandManager {
+public class CommandManager
+{
 
     private static final HashMap<String, ConfigurableCommand> commands = new HashMap<String, ConfigurableCommand>();
-    private static final HashMap<Plugin, List<String>> plugins = new HashMap<Plugin, List<String>>();
-    private static final HashMap<Plugin, Config> configs = new HashMap<Plugin, Config>();
+    private static final HashMap<Plugin, List<String>>        plugins  = new HashMap<Plugin, List<String>>();
+    private static final HashMap<Plugin, CommentedConfig>     configs  = new HashMap<Plugin, CommentedConfig>();
 
     // Configuration keys for the usage settings
     private static final String
-            HELP_BUTTON = "Format.help-button",
-            HELP_NO_BUTTON = "Format.help-no-button",
-            PAGE = "Format.page",
-            NO_DESCRIPTION = "Format.no-description",
-            COMMAND_USAGE = "Format.command-usage",
-            NO_COMMANDS = "Format.no-commands",
-            NEXT_PAGE = "Format.next-button",
+            HELP_BUTTON     = "Format.help-button",
+            HELP_NO_BUTTON  = "Format.help-no-button",
+            PAGE            = "Format.page",
+            NO_DESCRIPTION  = "Format.no-description",
+            COMMAND_USAGE   = "Format.command-usage",
+            NO_COMMANDS     = "Format.no-commands",
+            NEXT_PAGE       = "Format.next-button",
             NEXT_PAGE_HOVER = "Format.next-button-hover",
-            PREV_PAGE = "Format.prev-button",
+            PREV_PAGE       = "Format.prev-button",
             PREV_PAGE_HOVER = "Foramt.prev-button-hover",
-            COMMAND = "Colors.command",
-            REQUIRED = "Colors.required-args",
-            OPTIONAL = "Colors.optional-args",
-            DESCRIPTION = "Colors.description",
-            PLAYER_SIZE = "player-help-size",
-            CONSOLE_SIZE = "console-help-size";
+            COMMAND         = "Colors.command",
+            REQUIRED        = "Colors.required-args",
+            OPTIONAL        = "Colors.optional-args",
+            DESCRIPTION     = "Colors.description",
+            PLAYER_SIZE     = "player-help-size",
+            CONSOLE_SIZE    = "console-help-size";
 
     // Settings for usage sizes
     private static int
-            playerSize = 10,
+            playerSize  = 10,
             consoleSize = 15;
 
     // Settings for usage display colors
     private static ChatColor
-            command = ChatColor.GOLD,
+            command      = ChatColor.GOLD,
             requiredArgs = ChatColor.LIGHT_PURPLE,
             optionalArgs = ChatColor.GREEN,
-            description = ChatColor.GRAY;
+            description  = ChatColor.GRAY;
 
     // Settings for usage display formatting
     private static String
-            pageFormat = ChatColor.DARK_GREEN + "(" + ChatColor.GOLD + "{page}" + ChatColor.DARK_GREEN + "/" + ChatColor.GOLD + "{max}" + ChatColor.DARK_GREEN + ")",
+            pageFormat    = ChatColor.DARK_GREEN + "(" + ChatColor.GOLD + "{page}" + ChatColor.DARK_GREEN + "/" + ChatColor.GOLD + "{max}" + ChatColor.DARK_GREEN + ")",
             noDescription = "No description available",
-            noCommands = ChatColor.GRAY + "No commands available",
-            nextPage = "Next",
-            prevPage = "Previous",
+            noCommands    = ChatColor.GRAY + "No commands available",
+            nextPage      = "Next",
+            prevPage      = "Previous",
             nextPageHover = "Next Page",
             prevPageHover = "Previous Page";
     private static List<String>
-            helpWithButton = new ArrayList<String>() {{
-                add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
-                add(ChatColor.DARK_GREEN + "{title} - Command Usage {page}");
-                add("{commands}");
-                add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
-                add("{buttons}");
-            }},
-            helpNoButton = new ArrayList<String>() {{
-                add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
-                add(ChatColor.DARK_GREEN + "{title} - Command Usage {page}");
-                add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
-                add("{commands}");
-                add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
-            }},
-            commandUsage = new ArrayList<String>() {{
-                add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
-                add(ChatColor.GOLD + "{command}");
-                add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
-                add(ChatColor.GRAY + "{description}");
-                add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
-            }};
+            helpWithButton = new ArrayList<String>()
+    {{
+            add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
+            add(ChatColor.DARK_GREEN + "{title} - Command Usage {page}");
+            add("{commands}");
+            add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
+            add("{buttons}");
+        }},
+            helpNoButton   = new ArrayList<String>()
+            {{
+                    add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
+                    add(ChatColor.DARK_GREEN + "{title} - Command Usage {page}");
+                    add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
+                    add("{commands}");
+                    add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
+                }},
+            commandUsage   = new ArrayList<String>()
+            {{
+                    add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
+                    add(ChatColor.GOLD + "{command}");
+                    add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
+                    add(ChatColor.GRAY + "{description}");
+                    add(ChatColor.DARK_GRAY + "-----------------------------------------------------");
+                }};
 
     private static boolean invalidRegistration = false;
 
@@ -107,7 +111,8 @@ public class CommandManager {
      *
      * @return true if commands could not be registered, false otherwise
      */
-    public static boolean isInvalidRegistration() {
+    public static boolean isInvalidRegistration()
+    {
         return invalidRegistration;
     }
 
@@ -118,7 +123,8 @@ public class CommandManager {
      *
      * @return description replacement
      */
-    public static String getDescriptionReplacement() {
+    public static String getDescriptionReplacement()
+    {
         return noDescription;
     }
 
@@ -128,31 +134,37 @@ public class CommandManager {
      * linked to the root commands.</p>
      *
      * @param command command to register
+     *
      * @throws java.lang.IllegalArgumentException when trying to register a sub command or when the command's name is already taken
      */
-    public static void registerCommand(ConfigurableCommand command) {
+    public static void registerCommand(ConfigurableCommand command)
+    {
         if (!command.isRootCommand()) throw new IllegalArgumentException("Cannot register a sub command");
-        if (commands.containsKey(command.getName())) throw new IllegalArgumentException("Duplicate command name found: \"" + command.getName() + "\"");
+        if (commands.containsKey(command.getName()))
+            throw new IllegalArgumentException("Duplicate command name found: \"" + command.getName() + "\"");
 
         // Register the command for use
         command.markAsRegistered();
         commands.put(command.getName(), command);
 
         // Register it for the plugin
-        if (!plugins.containsKey(command.getPlugin())) {
+        if (!plugins.containsKey(command.getPlugin()))
+        {
             plugins.put(command.getPlugin(), new ArrayList<String>());
-            configs.put(command.getPlugin(), new Config(command.getPlugin(), "commands"));
+            configs.put(command.getPlugin(), new CommentedConfig(command.getPlugin(), "commands"));
         }
         plugins.get(command.getPlugin()).add(command.getName());
 
         // Register it with Bukkit
-        try {
+        try
+        {
             Field field = SimplePluginManager.class.getDeclaredField("commandMap");
             if (!field.isAccessible()) field.setAccessible(true);
-            CommandMap map = (CommandMap)field.get(Bukkit.getPluginManager());
+            CommandMap map = (CommandMap) field.get(Bukkit.getPluginManager());
             map.register(command.getName(), command);
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             invalidRegistration = true;
             Bukkit.getLogger().severe("Failed to set up commands, using custom implementation instead");
         }
@@ -161,7 +173,7 @@ public class CommandManager {
     /**
      * <p>Unregisters a command</p>
      * <p>If the command wasn't registered, this does nothing</p>
-     *
+     * <p/>
      * <p>Commands are automatically unregistered when your plugin
      * is disabled, so you generally do not need to manually
      * unregister your commands. This would be more for if you want
@@ -170,14 +182,15 @@ public class CommandManager {
      *
      * @param command command to unregister
      */
-    public static void unregisterCommand(ConfigurableCommand command) {
+    public static void unregisterCommand(ConfigurableCommand command)
+    {
         commands.remove(command.getName());
     }
 
     /**
      * <p>Unregisters all of the commands registered by a plugin</p>
      * <p>If the plugin didn't have any registered commands, this does nothing</p>
-     *
+     * <p/>
      * <p>Commands are automatically unregistered when your plugin
      * is disabled, so you generally do not need to manually
      * unregister your commands. This would be more for if you want
@@ -186,12 +199,14 @@ public class CommandManager {
      *
      * @param plugin plugin to unregister for
      */
-    public static void unregisterCommands(Plugin plugin) {
+    public static void unregisterCommands(Plugin plugin)
+    {
         List<String> list = plugins.get(plugin);
         if (list == null) return;
 
         // Unregister everything for the plugin
-        for (String command : list) {
+        for (String command : list)
+        {
             commands.remove(command);
         }
         plugins.remove(plugin);
@@ -201,11 +216,12 @@ public class CommandManager {
     /**
      * <p>Unregisters all commands for all plugins</p>
      * <p>If no commands were registered, this does nothing</p>
-     *
+     * <p/>
      * <p>You shouldn't use this method as it's meant for MCCore to
      * clear the data when it's disabled.</p>
      */
-    public static void unregisterAll() {
+    public static void unregisterAll()
+    {
         plugins.clear();
         commands.clear();
         configs.clear();
@@ -217,9 +233,11 @@ public class CommandManager {
      * this will return null instead.</p>
      *
      * @param name command name
-     * @return     registered command or null if not found
+     *
+     * @return registered command or null if not found
      */
-    public static ConfigurableCommand getCommand(String name) {
+    public static ConfigurableCommand getCommand(String name)
+    {
         return commands.get(name.toLowerCase());
     }
 
@@ -231,11 +249,14 @@ public class CommandManager {
      * own data and generally doesn't need to be used.</p>
      *
      * @param plugin plugin to get the config for
-     * @return       command configuration
+     *
+     * @return command configuration
      */
-    public static Config getConfig(JavaPlugin plugin) {
-        if (!configs.containsKey(plugin)) {
-            configs.put(plugin, new Config(plugin, "commands"));
+    public static CommentedConfig getConfig(JavaPlugin plugin)
+    {
+        if (!configs.containsKey(plugin))
+        {
+            configs.put(plugin, new CommentedConfig(plugin, "commands"));
         }
         return configs.get(plugin);
     }
@@ -243,27 +264,28 @@ public class CommandManager {
     /**
      * <p>Displays the usage help for the command, showing only the commands
      * that the sender can use.</p>
-     *
+     * <p/>
      * <p>The usage display adjusts to the sender, having different spacing
      * for players and the console.</p>
-     *
+     * <p/>
      * <p>When on 1.7.9+, players also can see buttons to navigate through
      * the help menu as long as it is included in the format.</p>
      *
      * @param c      command to show usage for
      * @param sender sender of the command
      */
-    public static void displayUsage(ConfigurableCommand c, CommandSender sender) {
+    public static void displayUsage(ConfigurableCommand c, CommandSender sender)
+    {
         displayUsage(c, sender, 1);
     }
 
     /**
      * <p>Displays the usage help for the command, showing only the commands
      * that the sender can use.</p>
-     *
+     * <p/>
      * <p>The usage display adjusts to the sender, having different spacing
      * for players and the console.</p>
-     *
+     * <p/>
      * <p>When on 1.7.9+, players also can see buttons to navigate through
      * the help menu as long as it is included in the format.</p>
      *
@@ -271,35 +293,46 @@ public class CommandManager {
      * @param sender sender of the command
      * @param page   page to display
      */
-    public static void displayUsage(ConfigurableCommand c, CommandSender sender, int page) {
+    public static void displayUsage(ConfigurableCommand c, CommandSender sender, int page)
+    {
 
         // Get the first command in the chain that can be used
-        while (c.hasParent() && !c.canUseCommand(sender)) {
+        while (c.hasParent() && !c.canUseCommand(sender))
+        {
             c = c.getParent();
         }
 
         // Only show something if the command be used
-        if (c.canUseCommand(sender)) {
-            if (c.isContainer()) {
+        if (c.canUseCommand(sender))
+        {
+            if (c.isContainer())
+            {
                 displayGeneralUsage(c, sender, page);
             }
             else displaySpecificUsage(c, sender);
         }
     }
 
-    private static void displaySpecificUsage(ConfigurableCommand c, CommandSender sender) {
+    private static void displaySpecificUsage(ConfigurableCommand c, CommandSender sender)
+    {
         String command = "/" + c.toString() + " " + c.getArgs().replace("[", optionalArgs + "[").replace("<", requiredArgs + "<");
-        for (String line : commandUsage) {
-            if (line.contains("{description}")) {
-                if (sender instanceof Player) {
+        for (String line : commandUsage)
+        {
+            if (line.contains("{description}"))
+            {
+                if (sender instanceof Player)
+                {
                     List<String> dLines = TextSizer.split(c.getDescription(), 320 - TextSizer.measureString(line.replace("{description}", "")));
-                    for (String d : dLines) {
+                    for (String d : dLines)
+                    {
                         sender.sendMessage(line.replace("{description}", d));
                     }
                 }
-                else {
+                else
+                {
                     List<String> dLines = TextSplitter.getLines(c.getDescription(), 60 - ChatColor.stripColor(line.replace("{description}", "")).length());
-                    for (String d : dLines) {
+                    for (String d : dLines)
+                    {
                         sender.sendMessage(line.replace("{description}", d));
                     }
                 }
@@ -308,11 +341,13 @@ public class CommandManager {
         }
     }
 
-    private static void displayGeneralUsage(ConfigurableCommand c, CommandSender sender, int page) {
+    private static void displayGeneralUsage(ConfigurableCommand c, CommandSender sender, int page)
+    {
         List<String> keys = c.getUsableCommands(sender);
 
         // There are no usable commands
-        if (keys.size() == 0) {
+        if (keys.size() == 0)
+        {
             sender.sendMessage(noCommands);
             return;
         }
@@ -321,8 +356,10 @@ public class CommandManager {
 
         // Get number of entries
         int entries;
-        if (sender instanceof Player) {
-            if (VersionManager.isTellRaw()) {
+        if (sender instanceof Player)
+        {
+            if (VersionManager.isTellRaw())
+            {
                 entries = playerSize - helpWithButton.size() + 1;
                 if (entries >= keys.size() + 1) entries++;
             }
@@ -343,7 +380,8 @@ public class CommandManager {
         // Get the maximum length
         int maxSize = 0;
         int index = 0;
-        for (String key : keys) {
+        for (String key : keys)
+        {
             index++;
             if (index <= (page - 1) * entries || index > page * entries) continue;
             String args = c.getSubCommand(key).getArgs();
@@ -354,52 +392,58 @@ public class CommandManager {
         else maxSize += 1;
 
         // Player usage post-1.7.9
-        if (VersionManager.isTellRaw() && sender instanceof Player) {
+        if (VersionManager.isTellRaw() && sender instanceof Player)
+        {
 
             // Button JSON
             String ends = "PreviousNext";
             String spacing = TextSizer.expand(" ", 320 - TextSizer.measureString(ends), true);
             if (!spacing.startsWith(" ")) spacing = spacing.substring(spacing.indexOf(' '));
             String buttons = "tellraw "
-                    + sender.getName()
-                    + " {\"text\":\"\",\"extra\":[{\"text\":\""
-                    + prevPage
-                    + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\""
-                    + titleString
-                    + " "
-                    + ((page + maxPage - 2) % maxPage + 1)
-                    + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\""
-                    + prevPageHover
-                    + "\"}},{\"text\":\""
-                    + spacing
-                    + "\"},{\"text\":\""
-                    + nextPage
-                    + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\""
-                    + titleString
-                    + " "
-                    + ((page % maxPage + 1))
-                    + "\"},hoverEvent\":{\"action\":\"show_text\",\"value\":\""
-                    + nextPageHover
-                    + "\"}}]}";
+                             + sender.getName()
+                             + " {\"text\":\"\",\"extra\":[{\"text\":\""
+                             + prevPage
+                             + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\""
+                             + titleString
+                             + " "
+                             + ((page + maxPage - 2) % maxPage + 1)
+                             + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\""
+                             + prevPageHover
+                             + "\"}},{\"text\":\""
+                             + spacing
+                             + "\"},{\"text\":\""
+                             + nextPage
+                             + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\""
+                             + titleString
+                             + " "
+                             + ((page % maxPage + 1))
+                             + "\"},hoverEvent\":{\"action\":\"show_text\",\"value\":\""
+                             + nextPageHover
+                             + "\"}}]}";
 
             // Display the usage
-            for (String line : helpWithButton) {
-                if (line.contains("{commands}")) {
+            for (String line : helpWithButton)
+            {
+                if (line.contains("{commands}"))
+                {
                     index = 0;
-                    for (String key : keys) {
+                    for (String key : keys)
+                    {
                         index++;
                         if (index <= (page - 1) * entries || index > page * entries) continue;
 
                         ConfigurableCommand sub = c.getSubCommand(key);
                         String args = sub.getArgs().replace("[", optionalArgs + "[").replace("<", requiredArgs + "<");
                         sender.sendMessage(line.replace("{commands}",
-                                command + "/" + c.toString() + " "
-                                + TextSizer.expand(key + " " + args, maxSize, false)
-                                + ChatColor.GRAY + "- " + description + sub.getDescription()));
+                                                        command + "/" + c.toString() + " "
+                                                        + TextSizer.expand(key + " " + args, maxSize, false)
+                                                        + ChatColor.GRAY + "- " + description + sub.getDescription()));
                     }
                 }
-                else if (line.contains("{buttons}")) {
-                    if (maxPage > 1) {
+                else if (line.contains("{buttons}"))
+                {
+                    if (maxPage > 1)
+                    {
                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), buttons);
                     }
                 }
@@ -408,21 +452,25 @@ public class CommandManager {
         }
 
         // Player usage pre-1.7.9
-        else if (sender instanceof Player) {
+        else if (sender instanceof Player)
+        {
 
-            for (String line : helpNoButton) {
-                if (line.contains("{commands}")) {
+            for (String line : helpNoButton)
+            {
+                if (line.contains("{commands}"))
+                {
                     index = 0;
-                    for (String key : keys) {
+                    for (String key : keys)
+                    {
                         index++;
                         if (index <= (page - 1) * entries || index > page * entries) continue;
 
                         ConfigurableCommand sub = c.getSubCommand(key);
                         String args = sub.getArgs().replace("[", optionalArgs + "[").replace("<", requiredArgs + "<");
                         sender.sendMessage(line.replace("{commands}",
-                                command + "/" + c.toString() + " "
-                                        + TextSizer.expand(key + " " + args, maxSize, false)
-                                        + ChatColor.GRAY + "- " + description + sub.getDescription()));
+                                                        command + "/" + c.toString() + " "
+                                                        + TextSizer.expand(key + " " + args, maxSize, false)
+                                                        + ChatColor.GRAY + "- " + description + sub.getDescription()));
                     }
                 }
                 else sender.sendMessage(line.replace("{title}", titleString).replace("{page}", pageString));
@@ -430,20 +478,24 @@ public class CommandManager {
         }
 
         // Console usage
-        else {
-            for (String line : helpNoButton) {
-                if (line.contains("{commands}")) {
+        else
+        {
+            for (String line : helpNoButton)
+            {
+                if (line.contains("{commands}"))
+                {
                     index = 0;
-                    for (String key : keys) {
+                    for (String key : keys)
+                    {
                         index++;
                         if (index <= (page - 1) * entries || index > page * entries) continue;
 
                         ConfigurableCommand sub = c.getSubCommand(key);
                         String args = sub.getArgs().replace("[", optionalArgs + "[").replace("<", requiredArgs + "<");
                         sender.sendMessage(line.replace("{commands}",
-                                command + "/" + c.toString() + " "
-                                        + TextSizer.expandConsole(key + " " + args, maxSize, false)
-                                        + ChatColor.GRAY + "- " + description + sub.getDescription()));
+                                                        command + "/" + c.toString() + " "
+                                                        + TextSizer.expandConsole(key + " " + args, maxSize, false)
+                                                        + ChatColor.GRAY + "- " + description + sub.getDescription()));
                     }
                 }
                 else sender.sendMessage(line.replace("{title}", titleString).replace("{page}", pageString));
@@ -457,9 +509,11 @@ public class CommandManager {
      * generally will not need to use this.</p>
      *
      * @param args initial args
-     * @return     trimmed args
+     *
+     * @return trimmed args
      */
-    public static String[] trimArgs(String[] args) {
+    public static String[] trimArgs(String[] args)
+    {
 
         // Can't trim a zero-length array
         if (args.length == 0) return args;
@@ -483,7 +537,8 @@ public class CommandManager {
      *
      * @param config configuration to load from
      */
-    public static void loadOptions(ConfigurationSection config) {
+    public static void loadOptions(DataSection config)
+    {
 
         // Sizes
         playerSize = config.getInt(PLAYER_SIZE, playerSize);
@@ -503,14 +558,14 @@ public class CommandManager {
         prevPage = TextFormatter.colorString(config.getString(PREV_PAGE, prevPage));
         nextPageHover = TextFormatter.colorString(config.getString(NEXT_PAGE_HOVER, nextPageHover));
         prevPageHover = TextFormatter.colorString(config.getString(PREV_PAGE_HOVER, prevPageHover));
-        helpWithButton = config.contains(HELP_BUTTON) && config.isList(HELP_BUTTON)
-                ? TextFormatter.colorStringList(config.getStringList(HELP_BUTTON))
+        helpWithButton = config.has(HELP_BUTTON) && config.isList(HELP_BUTTON)
+                ? TextFormatter.colorStringList(config.getList(HELP_BUTTON))
                 : helpWithButton;
-        helpNoButton = config.contains(HELP_NO_BUTTON) && config.isList(HELP_NO_BUTTON)
-                ? TextFormatter.colorStringList(config.getStringList(HELP_NO_BUTTON))
+        helpNoButton = config.has(HELP_NO_BUTTON) && config.isList(HELP_NO_BUTTON)
+                ? TextFormatter.colorStringList(config.getList(HELP_NO_BUTTON))
                 : helpNoButton;
-        commandUsage = config.contains(COMMAND_USAGE) && config.isList(COMMAND_USAGE)
-                ? TextFormatter.colorStringList(config.getStringList(COMMAND_USAGE))
+        commandUsage = config.has(COMMAND_USAGE) && config.isList(COMMAND_USAGE)
+                ? TextFormatter.colorStringList(config.getList(COMMAND_USAGE))
                 : commandUsage;
     }
 
@@ -520,15 +575,20 @@ public class CommandManager {
      *
      * @param input        text to parse
      * @param defaultColor fallback color
-     * @return             resulting color
+     *
+     * @return resulting color
      */
-    private static ChatColor getColor(String input, ChatColor defaultColor) {
+    private static ChatColor getColor(String input, ChatColor defaultColor)
+    {
         if (input == null) return defaultColor;
-        else {
-            try {
+        else
+        {
+            try
+            {
                 return ChatColor.valueOf(input.toUpperCase().replace(' ', '_'));
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return defaultColor;
             }
         }

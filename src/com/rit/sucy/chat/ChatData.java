@@ -13,22 +13,24 @@ import java.util.List;
 /**
  * Contains player data for the chat
  */
-public class ChatData implements ISavable {
+public class ChatData implements ISavable
+{
 
-    MCCore plugin;
+    MCCore            plugin;
     ArrayList<Prefix> pluginPrefixes;
     ArrayList<Prefix> unlockedPrefixes;
-    Prefix playerPrefix;
-    String playerName;
-    String displayName;
+    Prefix            playerPrefix;
+    String            playerName;
+    String            displayName;
 
     /**
      * Initial constructor
      *
      * @param playerName name of the player
      */
-    ChatData(String playerName) {
-        plugin = (MCCore)Bukkit.getPluginManager().getPlugin("MCCore");
+    ChatData(String playerName)
+    {
+        plugin = (MCCore) Bukkit.getPluginManager().getPlugin("MCCore");
         pluginPrefixes = new ArrayList<Prefix>();
         unlockedPrefixes = new ArrayList<Prefix>();
         this.playerName = playerName;
@@ -41,7 +43,8 @@ public class ChatData implements ISavable {
      * @param config     config to load data from
      * @param playerName the name of the player to store the data of
      */
-    ChatData(ConfigurationSection config, String playerName) {
+    ChatData(ConfigurationSection config, String playerName)
+    {
         this(playerName);
         load(config);
     }
@@ -51,19 +54,23 @@ public class ChatData implements ISavable {
      *
      * @return the player's chat tag
      */
-    public String getChatTag() {
+    public String getChatTag()
+    {
         String tag = "<";
-        for (Prefix prefix : pluginPrefixes) {
+        for (Prefix prefix : pluginPrefixes)
+        {
             tag += prefix.braceColor + "[" + prefix.text + prefix.braceColor + "]";
         }
-        if (playerPrefix != null) tag += playerPrefix.braceColor + "[" + playerPrefix.text + playerPrefix.braceColor + "]";
+        if (playerPrefix != null)
+            tag += playerPrefix.braceColor + "[" + playerPrefix.text + playerPrefix.braceColor + "]";
         return tag + ChatColor.WHITE + " " + displayName + ">";
     }
 
     /**
      * @return player display name
      */
-    public String getDisplayName() {
+    public String getDisplayName()
+    {
         return displayName;
     }
 
@@ -72,7 +79,8 @@ public class ChatData implements ISavable {
      *
      * @return prefix chosen by player or null if none are applied
      */
-    public Prefix getPrefix() {
+    public Prefix getPrefix()
+    {
         return playerPrefix;
     }
 
@@ -80,12 +88,15 @@ public class ChatData implements ISavable {
      * Retrieves the current prefix for the given plugin
      *
      * @param pluginName name of the plugin
-     * @return           prefix currently assigned by the plugin
+     *
+     * @return prefix currently assigned by the plugin
      */
-    public Prefix getPrefix(String pluginName) {
+    public Prefix getPrefix(String pluginName)
+    {
 
         // Look for the prefix
-        for (Prefix prefix : pluginPrefixes) {
+        for (Prefix prefix : pluginPrefixes)
+        {
             if (prefix.pluginName.equalsIgnoreCase(pluginName)) return prefix;
         }
 
@@ -97,9 +108,11 @@ public class ChatData implements ISavable {
      * Retrieves a list of all prefixes unlocked through a plugin
      *
      * @param pluginName name of the plugin that gives the prefixes
-     * @return           list of all unlocked prefixes from the plugin
+     *
+     * @return list of all unlocked prefixes from the plugin
      */
-    public List<Prefix> getUnlockedPrefixes(String pluginName) {
+    public List<Prefix> getUnlockedPrefixes(String pluginName)
+    {
         List<Prefix> prefixes = new ArrayList<Prefix>();
         for (Prefix prefix : unlockedPrefixes) if (prefix.pluginName.equalsIgnoreCase(pluginName)) prefixes.add(prefix);
         return prefixes;
@@ -110,7 +123,8 @@ public class ChatData implements ISavable {
      *
      * @param displayName display name
      */
-    public void setDisplayName(String displayName) {
+    public void setDisplayName(String displayName)
+    {
         this.displayName = displayName;
     }
 
@@ -119,9 +133,11 @@ public class ChatData implements ISavable {
      *
      * @param prefix prefix to unlock
      * @param apply  whether or not to apply it right away
-     * @return       true if successful, false if already unlocked
+     *
+     * @return true if successful, false if already unlocked
      */
-    public boolean unlockPrefix(Prefix prefix, boolean apply) {
+    public boolean unlockPrefix(Prefix prefix, boolean apply)
+    {
         if (hasPrefix(prefix.textWithoutColor)) return false;
 
         unlockedPrefixes.add(prefix);
@@ -138,17 +154,22 @@ public class ChatData implements ISavable {
      *
      * @param pluginName name of the plugin that gives the prefix
      * @param prefixText prefix text (with or without color)
-     * @return           true if removed, false if it wasn't unlocked
+     *
+     * @return true if removed, false if it wasn't unlocked
      */
-    public boolean removePrefix(String pluginName, String prefixText) {
+    public boolean removePrefix(String pluginName, String prefixText)
+    {
         prefixText = ChatColor.stripColor(prefixText);
 
-        for (Prefix prefix : unlockedPrefixes) {
+        for (Prefix prefix : unlockedPrefixes)
+        {
             if (prefix.textWithoutColor.equalsIgnoreCase(prefixText)
-                    && prefix.pluginName.equalsIgnoreCase(pluginName)) {
+                && prefix.pluginName.equalsIgnoreCase(pluginName))
+            {
                 unlockedPrefixes.remove(prefix);
                 Bukkit.getPlayer(playerName).sendMessage("You lost the prefix " + prefix.text);
-                if (playerPrefix == prefix) {
+                if (playerPrefix == prefix)
+                {
                     playerPrefix = null;
                     updateDisplayName();
                 }
@@ -163,10 +184,14 @@ public class ChatData implements ISavable {
      *
      * @param pluginName name of the plugin with the prefixes
      */
-    public void removePrefixes(String pluginName) {
-        for (int i = 0; i < unlockedPrefixes.size(); i++) {
-            if (unlockedPrefixes.get(i).pluginName.equalsIgnoreCase(pluginName)) {
-                if (unlockedPrefixes.get(i) == playerPrefix) {
+    public void removePrefixes(String pluginName)
+    {
+        for (int i = 0; i < unlockedPrefixes.size(); i++)
+        {
+            if (unlockedPrefixes.get(i).pluginName.equalsIgnoreCase(pluginName))
+            {
+                if (unlockedPrefixes.get(i) == playerPrefix)
+                {
                     playerPrefix = null;
                     updateDisplayName();
                 }
@@ -184,7 +209,8 @@ public class ChatData implements ISavable {
      *
      * @param prefix prefix data
      */
-    public void setPluginPrefix(Prefix prefix) {
+    public void setPluginPrefix(Prefix prefix)
+    {
 
         // Clear any previous prefix by the plugin
         Prefix currentPrefix = getPrefix(prefix.pluginName);
@@ -199,7 +225,8 @@ public class ChatData implements ISavable {
      *
      * @param pluginName name of the plugin with the prefix
      */
-    public void clearPluginPrefix(String pluginName) {
+    public void clearPluginPrefix(String pluginName)
+    {
         Prefix prefix = getPrefix(pluginName);
         if (prefix != null) pluginPrefixes.remove(prefix);
         updateDisplayName();
@@ -209,10 +236,13 @@ public class ChatData implements ISavable {
      * Checks if the prefix has been obtained for the given plugin
      *
      * @param prefixText the text of the prefix (with or without color)
-     * @return           true if the prefix is unlocked
+     *
+     * @return true if the prefix is unlocked
      */
-    public boolean hasPrefix(String prefixText) {
-        for (Prefix unlocked : unlockedPrefixes) {
+    public boolean hasPrefix(String prefixText)
+    {
+        for (Prefix unlocked : unlockedPrefixes)
+        {
             if (unlocked.textWithoutColor.equalsIgnoreCase(prefixText))
                 return true;
         }
@@ -224,9 +254,12 @@ public class ChatData implements ISavable {
      *
      * @param prefix text of the prefix (with or without color)
      */
-    void setPrefix(String prefix) {
-        for (Prefix unlocked : unlockedPrefixes) {
-            if (unlocked.textWithoutColor.equalsIgnoreCase(prefix)) {
+    void setPrefix(String prefix)
+    {
+        for (Prefix unlocked : unlockedPrefixes)
+        {
+            if (unlocked.textWithoutColor.equalsIgnoreCase(prefix))
+            {
                 playerPrefix = unlocked;
                 updateDisplayName();
                 return;
@@ -239,15 +272,19 @@ public class ChatData implements ISavable {
      *
      * @param pluginName the plugin that gives the prefix
      * @param prefixText prefix (with or without color)
-     * @return           true if the prefix is unlocked, false otherwise
+     *
+     * @return true if the prefix is unlocked, false otherwise
      */
-    boolean isPrefixAvailable(String pluginName, String prefixText) {
+    boolean isPrefixAvailable(String pluginName, String prefixText)
+    {
         prefixText = ChatColor.stripColor(prefixText);
 
         // Search through the prefixes for the one requested
-        for (Prefix prefix : unlockedPrefixes) {
+        for (Prefix prefix : unlockedPrefixes)
+        {
             if (prefix.pluginName.equalsIgnoreCase(pluginName)
-                    && prefix.textWithoutColor.equalsIgnoreCase(prefixText)) {
+                && prefix.textWithoutColor.equalsIgnoreCase(prefixText))
+            {
                 return true;
             }
         }
@@ -259,34 +296,40 @@ public class ChatData implements ISavable {
     /**
      * Updates the display name
      */
-    void updateDisplayName() {
+    void updateDisplayName()
+    {
         if (!plugin.isChatEnabled()) return;
 
         String name = "";
 
         // Add each of the active prefixes
-        for (Prefix prefix : pluginPrefixes) {
+        for (Prefix prefix : pluginPrefixes)
+        {
             if (prefix == null) continue;
             name += prefix.braceColor + "[" + prefix.text + prefix.braceColor + "]";
         }
-        if (playerPrefix != null) name += playerPrefix.braceColor + "[" + playerPrefix.text + playerPrefix.braceColor + "]";
+        if (playerPrefix != null)
+            name += playerPrefix.braceColor + "[" + playerPrefix.text + playerPrefix.braceColor + "]";
         if (name.length() > 0) name += " ";
 
         // Set the display name to the prefixes plus the regular display name
         Player player = Bukkit.getPlayer(playerName);
-        if (player != null) {
-            if (displayName.equalsIgnoreCase(playerName)) {
+        if (player != null)
+        {
+            if (displayName.equalsIgnoreCase(playerName))
+            {
                 displayName = player.getName();
             }
             player.setDisplayName(
-                name + ChatColor.WHITE + displayName);
+                    name + ChatColor.WHITE + displayName);
         }
     }
 
     /**
      * Saves the player data to the config file
      */
-    public void save(ConfigurationSection config, String base) {
+    public void save(ConfigurationSection config, String base)
+    {
         config.set(base + "name", displayName);
         config.set(base + "unlocked", unlockedList());
         config.set(base + "prefixes", setList());
@@ -296,10 +339,12 @@ public class ChatData implements ISavable {
     /**
      * Loads player data from the config file
      */
-    void load(ConfigurationSection config) {
+    void load(ConfigurationSection config)
+    {
 
         // Plugin prefixes
-        for (String prefix : config.getStringList(playerName.toLowerCase() + ".prefixes")) {
+        for (String prefix : config.getStringList(playerName.toLowerCase() + ".prefixes"))
+        {
             pluginPrefixes.add(new Prefix(prefix));
         }
 
@@ -308,12 +353,14 @@ public class ChatData implements ISavable {
         List<String> unlocked = config.getStringList(playerName.toLowerCase() + ".unlocked");
         for (String prefix : unlocked) unlockedPrefixes.add(new Prefix(prefix));
 
-        if (config.contains(playerName.toLowerCase() + ".name")) {
+        if (config.contains(playerName.toLowerCase() + ".name"))
+        {
             displayName = config.getString(playerName.toLowerCase() + ".name");
         }
         else displayName = playerName.toLowerCase();
 
-        if (config.contains(playerName + ".prefix")) {
+        if (config.contains(playerName + ".prefix"))
+        {
             playerPrefix = new Prefix(config.getString(playerName + ".prefix"));
         }
 
@@ -325,7 +372,8 @@ public class ChatData implements ISavable {
      *
      * @return list of all set prefixes as serialized strings
      */
-    private List<String> setList() {
+    private List<String> setList()
+    {
         ArrayList<String> list = new ArrayList<String>();
         for (Prefix prefix : pluginPrefixes) list.add(prefix == null ? null : prefix.toString());
         return list;
@@ -336,7 +384,8 @@ public class ChatData implements ISavable {
      *
      * @return list of all unlocked prefixes as serialized strings
      */
-    private List<String> unlockedList() {
+    private List<String> unlockedList()
+    {
         ArrayList<String> list = new ArrayList<String>();
         for (Prefix prefix : unlockedPrefixes) list.add(prefix.toString());
         return list;

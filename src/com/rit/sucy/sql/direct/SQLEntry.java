@@ -1,7 +1,5 @@
 package com.rit.sucy.sql.direct;
 
-import sun.management.resources.agent;
-
 import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -12,13 +10,14 @@ import java.util.Map;
 /**
  * <p>Represents and individual entry in a MySQL table</p>
  */
-public class SQLEntry {
+public class SQLEntry
+{
 
     private static final DateFormat FORMAT = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
 
     private SQLDatabase database;
-    private SQLTable table;
-    private String name;
+    private SQLTable    table;
+    private String      name;
 
     /**
      * <p>Initializes a new SQL entry</p>
@@ -27,7 +26,8 @@ public class SQLEntry {
      * @param table    table containing the entry
      * @param name     name of the entry
      */
-    public SQLEntry(SQLDatabase database, SQLTable table, String name) {
+    public SQLEntry(SQLDatabase database, SQLTable table, String name)
+    {
         this.database = database;
         this.table = table;
         this.name = name;
@@ -38,7 +38,8 @@ public class SQLEntry {
      *
      * @return entry name
      */
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
@@ -48,18 +49,23 @@ public class SQLEntry {
      * error along the way.</p>
      *
      * @param container container for the entry data
-     * @return          loaded container for the entry data
+     *
+     * @return loaded container for the entry data
      */
-    public <T extends ISQLEntryData> T getData(T container) {
-        try {
+    public <T extends ISQLEntryData> T getData(T container)
+    {
+        try
+        {
             ResultSet set = table.query(name);
-            if (set.next()) {
+            if (set.next())
+            {
                 container.loadData(set);
             }
             set.close();
             return container;
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             return null;
         }
     }
@@ -70,17 +76,21 @@ public class SQLEntry {
      * there is no data set for the entry's value</p>
      *
      * @param key value key
-     * @return    string value
+     *
+     * @return string value
      */
-    public String getString(String key) {
-        try {
+    public String getString(String key)
+    {
+        try
+        {
             ResultSet set = table.query(name);
             set.next();
             String value = set.getString(key);
             set.close();
             return value;
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             return null;
         }
     }
@@ -91,17 +101,21 @@ public class SQLEntry {
      * there is no data set for the entry's value</p>
      *
      * @param key value key
-     * @return    int value
+     *
+     * @return int value
      */
-    public int getInt(String key) {
-        try {
+    public int getInt(String key)
+    {
+        try
+        {
             ResultSet set = table.query(name);
             set.next();
             int value = set.getInt(key);
             set.close();
             return value;
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             return -1;
         }
     }
@@ -112,17 +126,21 @@ public class SQLEntry {
      * there is no data set for the entry's value</p>
      *
      * @param key value key
-     * @return    float value
+     *
+     * @return float value
      */
-    public float getFloat(String key) {
-        try {
+    public float getFloat(String key)
+    {
+        try
+        {
             ResultSet set = table.query(name);
             set.next();
             float value = set.getFloat(key);
             set.close();
             return value;
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             return -1;
         }
     }
@@ -133,17 +151,21 @@ public class SQLEntry {
      * there is no data set for the entry's value</p>
      *
      * @param key value key
-     * @return    double value
+     *
+     * @return double value
      */
-    public double getDouble(String key) {
-        try {
+    public double getDouble(String key)
+    {
+        try
+        {
             ResultSet set = table.query(name);
             set.next();
             double value = set.getDouble(key);
             set.close();
             return value;
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             return -1;
         }
     }
@@ -154,17 +176,21 @@ public class SQLEntry {
      * there is no data set for the entry's value</p>
      *
      * @param key value key
-     * @return    date value
+     *
+     * @return date value
      */
-    public Date getDate(String key) {
-        try {
+    public Date getDate(String key)
+    {
+        try
+        {
             ResultSet set = table.query(name);
             set.next();
             Date value = set.getDate(key);
             set.close();
             return value;
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             return null;
         }
     }
@@ -175,11 +201,14 @@ public class SQLEntry {
      * @param key   key for the value
      * @param value value to set
      */
-    public void set(String key, String value) {
-        try {
+    public void set(String key, String value)
+    {
+        try
+        {
             database.getStatement().execute("UPDATE " + table.getName() + " SET " + key + "='" + value + "' WHERE Name='" + name + "'");
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             database.getLogger().severe("Failed to set a value for \"" + name + "\" - " + ex.getMessage());
         }
     }
@@ -190,11 +219,14 @@ public class SQLEntry {
      * @param key   key for the value
      * @param value value to set
      */
-    public void set(String key, int value) {
-        try {
+    public void set(String key, int value)
+    {
+        try
+        {
             database.getStatement().execute("UPDATE " + table.getName() + " SET " + key + "=" + value + " WHERE Name='" + name + "'");
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             database.getLogger().severe("Failed to set a value for \"" + name + "\" - " + ex.getMessage());
         }
     }
@@ -205,11 +237,14 @@ public class SQLEntry {
      * @param key   key for the value
      * @param value value to set
      */
-    public void set(String key, double value) {
-        try {
+    public void set(String key, double value)
+    {
+        try
+        {
             database.getStatement().execute("UPDATE " + table.getName() + " SET " + key + "=" + value + " WHERE Name='" + name + "'");
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             database.getLogger().severe("Failed to set a value for \"" + name + "\" - " + ex.getMessage());
         }
     }
@@ -220,11 +255,14 @@ public class SQLEntry {
      * @param key   key for the value
      * @param value value to set
      */
-    public void set(String key, float value) {
-        try {
+    public void set(String key, float value)
+    {
+        try
+        {
             database.getStatement().execute("UPDATE " + table.getName() + " SET " + key + "=" + value + " WHERE Name='" + name + "'");
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             database.getLogger().severe("Failed to set a value for \"" + name + "\" - " + ex.getMessage());
         }
     }
@@ -235,11 +273,14 @@ public class SQLEntry {
      * @param key   key for the value
      * @param value value to set
      */
-    public void set(String key, Date value) {
-        try {
-            database.getStatement().execute("UPDATE " + table.getName() + " SET " + key + "='" + FORMAT.format(value)  + "' WHERE Name='" + name + "'");
+    public void set(String key, Date value)
+    {
+        try
+        {
+            database.getStatement().execute("UPDATE " + table.getName() + " SET " + key + "='" + FORMAT.format(value) + "' WHERE Name='" + name + "'");
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             database.getLogger().severe("Failed to set a value for \"" + name + "\" - " + ex.getMessage());
         }
     }
@@ -249,25 +290,29 @@ public class SQLEntry {
      *
      * @param data data to set in the format (ColumnName, Value)
      */
-    public void set(HashMap<String, Object> data) {
+    public void set(HashMap<String, Object> data)
+    {
         StringBuilder sb = new StringBuilder("UPDATE " + table.getName() + " SET ");
-        for (Map.Entry<String, Object> entry : data.entrySet()) {
+        for (Map.Entry<String, Object> entry : data.entrySet())
+        {
             sb.append(entry.getKey());
             sb.append('=');
             boolean num = entry.getValue() instanceof Number;
             if (!num) sb.append('\'');
-            if (entry.getValue() instanceof Date) sb.append(FORMAT.format((Date)entry.getValue()));
+            if (entry.getValue() instanceof Date) sb.append(FORMAT.format((Date) entry.getValue()));
             else sb.append(entry.getValue());
-            if (!num)sb.append('\'');
+            if (!num) sb.append('\'');
             sb.append(" WHERE Name='");
             sb.append(name);
             sb.append('\'');
         }
 
-        try {
+        try
+        {
             database.getStatement().execute(sb.toString());
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             database.getLogger().severe("Failed to set a value for \"" + name + "\" - " + ex.getMessage());
         }
     }

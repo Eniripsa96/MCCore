@@ -1,7 +1,6 @@
 package com.rit.sucy.version;
 
 import com.rit.sucy.player.PlayerUUIDs;
-import com.rit.sucy.reflect.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
@@ -14,7 +13,8 @@ import java.util.UUID;
  * <p>Manages compatibilities between different versions and provides
  * ways to detect what version is currently active.</p>
  */
-public class VersionManager {
+public class VersionManager
+{
 
     public static int V1_5_2 = 10502;
     public static int V1_6_2 = 10602;
@@ -27,78 +27,91 @@ public class VersionManager {
 
     /**
      * The build number for the first 1.5.2 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_5_2_MIN = 10502;
 
     /**
      * The build number for the first 1.6.2 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_6_2_MIN = 10602;
 
     /**
      * The build number for the first 1.6.4 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_6_4_MIN = 10604;
 
     /**
      * The build number for the first 1.7.2 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_7_2_MIN = 10702;
 
     /**
      * The build number for the first 1.7.5 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_7_5_MIN = 10705;
 
     /**
      * The build number for the first 1.7.8 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_7_8_MIN = 10708;
 
     /**
      * The build number for the first 1.7.9 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_7_9_MIN = 10709;
 
     /**
      * The build number for the last 1.5.2 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_5_2_MAX = 10502;
 
     /**
      * The build number for the last 1.6.2 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_6_2_MAX = 10602;
 
     /**
      * The build number for the last 1.6.4 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_6_4_MAX = 10604;
 
     /**
      * The build number for the last 1.7.2 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_7_2_MAX = 10702;
 
     /**
      * The build number for the last 1.7.5 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_7_5_MAX = 10705;
 
     /**
      * The build number for the last 1.7.8 version
+     *
      * @deprecated change to exact versions rather than ranges
      */
     public static int MC_1_7_8_MAX = 10708;
@@ -113,7 +126,8 @@ public class VersionManager {
      * data is started to be accessed so you shouldn't
      * ever need to call this method.</p>
      */
-    public static void initialize(String vs) {
+    public static void initialize(String vs)
+    {
         try
         {
             int i = vs.indexOf("MC:") + 4;
@@ -130,7 +144,8 @@ public class VersionManager {
         }
 
         // Some error occurred, assume an up to date server with all features
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             server = ServerType.UNKNOWN;
             if (version == -1)
             {
@@ -153,7 +168,8 @@ public class VersionManager {
      *
      * @return true if used, false otherwise
      */
-    public static boolean isUUID() {
+    public static boolean isUUID()
+    {
         return isVersionAtLeast(V1_7_5);
     }
 
@@ -162,7 +178,8 @@ public class VersionManager {
      *
      * @return true if can be a double, false otherwise
      */
-    public static boolean isDamageDouble() {
+    public static boolean isDamageDouble()
+    {
         return isVersionAtLeast(V1_6_2);
     }
 
@@ -171,7 +188,8 @@ public class VersionManager {
      *
      * @return true if active, false otherwise
      */
-    public static boolean isTellRaw() {
+    public static boolean isTellRaw()
+    {
         return isVersionAtLeast(V1_7_9);
     }
 
@@ -184,9 +202,11 @@ public class VersionManager {
      * of 1.7.2 or earlier</p>
      *
      * @param v version to check
-     * @return  true if the actual version is at least the provided one
+     *
+     * @return true if the actual version is at least the provided one
      */
-    public static boolean isVersionAtMost(int v) {
+    public static boolean isVersionAtMost(int v)
+    {
         return version <= v;
     }
 
@@ -199,9 +219,11 @@ public class VersionManager {
      * 1.7.2 or later</p>
      *
      * @param v version to check
-     * @return  true if the actual version is at most the provided one
+     *
+     * @return true if the actual version is at most the provided one
      */
-    public static boolean isVersionAtLeast(int v) {
+    public static boolean isVersionAtLeast(int v)
+    {
         return version >= v;
     }
 
@@ -210,7 +232,8 @@ public class VersionManager {
      *
      * @return the type of server that is running
      */
-    public static ServerType getServerType() {
+    public static ServerType getServerType()
+    {
         return server;
     }
 
@@ -228,15 +251,17 @@ public class VersionManager {
      * @param damager entity dealing the damage
      * @param damage  damage to deal
      */
-    public static void damage(LivingEntity target, LivingEntity damager, double damage) {
+    public static void damage(LivingEntity target, LivingEntity damager, double damage)
+    {
 
         // Allow damage to occur
         int ticks = target.getNoDamageTicks();
         target.setNoDamageTicks(0);
 
         // 1.5.2 and earlier used integer values
-        if (isVersionAtMost(V1_5_2)) {
-            target.damage((int)damage, damager);
+        if (isVersionAtMost(V1_5_2))
+        {
+            target.damage((int) damage, damager);
         }
 
         // 1.6.2 and beyond use double values
@@ -255,18 +280,20 @@ public class VersionManager {
      * will go through regardless of whether or not the target
      * has been recently damaged</p>
      *
-     * @param target  target to damage
-     * @param damage  damage to deal
+     * @param target target to damage
+     * @param damage damage to deal
      */
-    public static void damage(LivingEntity target, double damage) {
+    public static void damage(LivingEntity target, double damage)
+    {
 
         // Allow damage to occur
         int ticks = target.getNoDamageTicks();
         target.setNoDamageTicks(0);
 
         // 1.5.2 and earlier used integer values
-        if (isVersionAtMost(V1_5_2)) {
-            target.damage((int)damage);
+        if (isVersionAtMost(V1_5_2))
+        {
+            target.damage((int) damage);
         }
 
         // 1.6.2 and beyond use double values
@@ -285,18 +312,21 @@ public class VersionManager {
      * @param entity entity to set the health for
      * @param amount amount to set the max health to
      */
-    public static void setMaxHealth(LivingEntity entity, double amount) {
+    public static void setMaxHealth(LivingEntity entity, double amount)
+    {
         double prevMax = entity.getMaxHealth();
         double prevHealth = entity.getHealth();
 
         // 1.5.2 and earlier used integer values
-        if (isVersionAtMost(V1_5_2)) {
+        if (isVersionAtMost(V1_5_2))
+        {
             entity.setMaxHealth((int) amount);
             entity.setHealth((int) Math.min(Math.max(1, prevHealth + amount - prevMax), amount));
         }
 
         // 1.6.2 and beyond use double values
-        else {
+        else
+        {
             entity.setMaxHealth(amount);
             entity.setHealth(Math.min(Math.max(1, prevHealth + amount - prevMax), amount));
         }
@@ -311,15 +341,17 @@ public class VersionManager {
      * @param entity entity to heal
      * @param amount amount to heal
      */
-    public static void heal(LivingEntity entity, double amount) {
+    public static void heal(LivingEntity entity, double amount)
+    {
 
         // Cannot go above the enemy health
         double health = entity.getHealth() + amount;
         health = Math.min(entity.getMaxHealth(), health);
 
         // 1.5.2 and earlier used integer values
-        if (isVersionAtMost(V1_5_2)) {
-            entity.setHealth((int)health);
+        if (isVersionAtMost(V1_5_2))
+        {
+            entity.setHealth((int) health);
         }
 
         // 1.6.2 and later use double values
@@ -335,11 +367,13 @@ public class VersionManager {
      * @param event  event details
      * @param damage damage to set
      */
-    public static void setDamage(EntityDamageEvent event, double damage) {
+    public static void setDamage(EntityDamageEvent event, double damage)
+    {
 
         // 1.5.2 and earlier used integer values
-        if (isVersionAtMost(V1_5_2)) {
-            event.setDamage((int)damage);
+        if (isVersionAtMost(V1_5_2))
+        {
+            event.setDamage((int) damage);
         }
 
         // 1.6.2 and later used double values
@@ -355,10 +389,13 @@ public class VersionManager {
      * efficient for the later server versions.</p>
      *
      * @param name name of the player
-     * @return     player or null if not online
+     *
+     * @return player or null if not online
      */
-    public static Player getPlayer(String name) {
-        if (isVersionAtLeast(V1_7_5)) {
+    public static Player getPlayer(String name)
+    {
+        if (isVersionAtLeast(V1_7_5))
+        {
             UUID id = PlayerUUIDs.getUUID(name);
             if (id == null) return null;
             else return Bukkit.getPlayer(id);
@@ -374,9 +411,11 @@ public class VersionManager {
      * getOfflinePlayer(name, false)</p>
      *
      * @param name name of the player
-     * @return     the offline player
+     *
+     * @return the offline player
      */
-    public static OfflinePlayer getOfflinePlayer(String name) {
+    public static OfflinePlayer getOfflinePlayer(String name)
+    {
         return getOfflinePlayer(name, true);
     }
 
@@ -395,12 +434,16 @@ public class VersionManager {
      *
      * @param name       name of the player
      * @param allowQuery whether or not to allow server queries
-     * @return           offline player or null if unable to query the player data
+     *
+     * @return offline player or null if unable to query the player data
      */
-    public static OfflinePlayer getOfflinePlayer(String name, boolean allowQuery) {
-        if (isVersionAtLeast(V1_7_5)) {
+    public static OfflinePlayer getOfflinePlayer(String name, boolean allowQuery)
+    {
+        if (isVersionAtLeast(V1_7_5))
+        {
             UUID id = PlayerUUIDs.getUUID(name);
-            if (id == null) {
+            if (id == null)
+            {
                 if (allowQuery) return Bukkit.getOfflinePlayer(name);
                 else return null;
             }

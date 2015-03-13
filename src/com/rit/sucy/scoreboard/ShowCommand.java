@@ -10,7 +10,8 @@ import org.bukkit.plugin.Plugin;
 /**
  * Shows a desired scoreboard for the player
  */
-public class ShowCommand implements ICommand {
+public class ShowCommand implements ICommand
+{
 
     /**
      * Executes the command
@@ -21,10 +22,13 @@ public class ShowCommand implements ICommand {
      * @param args    command arguments
      */
     @Override
-    public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args) {
-        if (args.length > 0) {
+    public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args)
+    {
+        if (args.length > 0)
+        {
             String name = args[0];
-            for (int i = 1; i < args.length; i++) {
+            for (int i = 1; i < args.length; i++)
+            {
                 name += " " + args[i];
             }
             PlayerBoards board = BoardManager.getPlayerBoards(sender.getName());
@@ -40,7 +44,8 @@ public class ShowCommand implements ICommand {
      * @return permission needed for this command
      */
     @Override
-    public String getPermissionNode() {
+    public String getPermissionNode()
+    {
         return ScoreboardNodes.SHOW.getNode();
     }
 
@@ -48,7 +53,8 @@ public class ShowCommand implements ICommand {
      * @return args string
      */
     @Override
-    public String getArgsString() {
+    public String getArgsString()
+    {
         return "<boardName>";
     }
 
@@ -56,7 +62,8 @@ public class ShowCommand implements ICommand {
      * @return description
      */
     @Override
-    public String getDescription() {
+    public String getDescription()
+    {
         return "Shows the scoreboard";
     }
 
@@ -64,7 +71,8 @@ public class ShowCommand implements ICommand {
      * Sender required for the command
      */
     @Override
-    public SenderType getSenderType() {
+    public SenderType getSenderType()
+    {
         return SenderType.PLAYER_ONLY;
     }
 }

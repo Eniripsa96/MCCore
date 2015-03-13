@@ -10,14 +10,16 @@ import org.bukkit.event.player.PlayerQuitEvent;
 /**
  * Listens for players joining/quitting to load and clear data appropriately
  */
-public class ChatListener implements Listener {
+public class ChatListener implements Listener
+{
 
     /**
      * Constructor
      *
      * @param plugin plugin hosting this listener
      */
-    public ChatListener(MCCore plugin) {
+    public ChatListener(MCCore plugin)
+    {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -26,8 +28,9 @@ public class ChatListener implements Listener {
      *
      * @param event event details
      */
-    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onJoin(PlayerJoinEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onJoin(PlayerJoinEvent event)
+    {
         Chat.getPlayerData(event.getPlayer().getName());
     }
 
@@ -36,8 +39,9 @@ public class ChatListener implements Listener {
      *
      * @param event event details
      */
-    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onQuit(PlayerQuitEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onQuit(PlayerQuitEvent event)
+    {
         Chat.players.remove(event.getPlayer().getName());
     }
 }

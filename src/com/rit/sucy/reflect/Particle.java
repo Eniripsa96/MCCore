@@ -12,13 +12,15 @@ import java.util.HashMap;
  * <p>A utility class for playing particle effects using reflection to
  * allow for particles not normally supported by Bukkit.</p>
  */
-public class Particle {
+public class Particle
+{
 
     private static Class<?> packetClass;
     private static Class<?> particleEnum;
     private static boolean initialized = false;
 
-    private static void initialize() {
+    private static void initialize()
+    {
 
         initialized = true;
 
@@ -27,7 +29,8 @@ public class Particle {
         packetClass = Reflection.getNMSClass("Packet63WorldParticles");
 
         // Otherwise get the instance for 1.7.2 and later
-        if (packetClass == null) {
+        if (packetClass == null)
+        {
             packetClass = Reflection.getNMSClass("PacketPlayOutWorldParticles");
         }
     }
@@ -37,8 +40,10 @@ public class Particle {
      *
      * @return true if supported, false otherwise
      */
-    public static boolean isSupported() {
-        if (!initialized) {
+    public static boolean isSupported()
+    {
+        if (!initialized)
+        {
             initialize();
         }
         return packetClass != null;
@@ -51,7 +56,8 @@ public class Particle {
      * @param loc      location to play at
      * @param radius   radius of the effect
      */
-    public static void play(ParticleType particle, Location loc, int radius) {
+    public static void play(ParticleType particle, Location loc, int radius)
+    {
         play(particle.getPacketString(), loc, radius, 1.0f);
     }
 
@@ -63,7 +69,8 @@ public class Particle {
      * @param radius   radius of the effect
      * @param speed    speed of the particle
      */
-    public static void play(ParticleType particle, Location loc, int radius, float speed) {
+    public static void play(ParticleType particle, Location loc, int radius, float speed)
+    {
         play(particle.getPacketString(), loc, radius, speed);
     }
 
@@ -76,7 +83,8 @@ public class Particle {
      * @param loc    location to play at
      * @param radius radius of the effect
      */
-    public static void playBlockCrack(Material mat, short data, Location loc, int radius) {
+    public static void playBlockCrack(Material mat, short data, Location loc, int radius)
+    {
         if (mat == null) return;
         playBlockCrack(mat.getId(), data, loc, radius, 1.0f);
     }
@@ -91,7 +99,8 @@ public class Particle {
      * @param radius radius of the effect
      * @param speed  speed of the particle
      */
-    public static void playBlockCrack(Material mat, short data, Location loc, int radius, float speed) {
+    public static void playBlockCrack(Material mat, short data, Location loc, int radius, float speed)
+    {
         if (mat == null) return;
         playBlockCrack(mat.getId(), data, loc, radius, speed);
     }
@@ -134,7 +143,8 @@ public class Particle {
      * @param loc    location to play at
      * @param radius radius of the effect
      */
-    public static void playIconCrack(Material mat, short data, Location loc, int radius) {
+    public static void playIconCrack(Material mat, short data, Location loc, int radius)
+    {
         if (mat == null) return;
         playIconCrack(mat.getId(), data, loc, radius, 1.0f);
     }
@@ -149,7 +159,8 @@ public class Particle {
      * @param radius radius of the effect
      * @param speed  the speed of the particle
      */
-    public static void playIconCrack(Material mat, short data, Location loc, int radius, float speed) {
+    public static void playIconCrack(Material mat, short data, Location loc, int radius, float speed)
+    {
         if (mat == null) return;
         playIconCrack(mat.getId(), data, loc, radius, speed);
     }
@@ -178,7 +189,8 @@ public class Particle {
      * @param radius radius of the effect
      * @param speed  speed of the particle
      */
-    public static void playIconCrack(int mat, short data, Location loc, int radius, float speed){
+    public static void playIconCrack(int mat, short data, Location loc, int radius, float speed)
+    {
 
         play("iconcrack_" + mat + "_" + data, loc, radius, speed);
     }
@@ -197,30 +209,36 @@ public class Particle {
      * @param speed    particle speed
      * @param count    number of particles
      */
-    public static void play(String particle, Location loc, int radius, float dx, float dy, float dz, float speed, int count) {
-        if (!initialized) {
+    public static void play(String particle, Location loc, int radius, float dx, float dy, float dz, float speed, int count)
+    {
+        if (!initialized)
+        {
             initialize();
         }
-        if (packetClass == null) {
+        if (packetClass == null)
+        {
             return;
         }
         if (VersionManager.isVersionAtLeast(VersionManager.V1_8_0))
         {
-            if (CONVERSION.containsKey(particle)) {
+            if (CONVERSION.containsKey(particle))
+            {
                 particle = CONVERSION.get(particle);
             }
             else particle = particle.toUpperCase().replace(" ", "_");
             Object[] values = particleEnum.getEnumConstants();
             Object enumValue = null;
-            for (Object value : values) {
-                if (value.toString().equals(particle)) {
+            for (Object value : values)
+            {
+                if (value.toString().equals(particle))
+                {
                     enumValue = value;
                 }
             }
             try
             {
                 Object packet = packetClass.getConstructor(particleEnum, Boolean.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Integer.TYPE, int[].class)
-                        .newInstance(enumValue, true, (float)loc.getX(), (float)loc.getY(), (float)loc.getZ(), dx, dy, dz, speed, count, new int[0]);
+                        .newInstance(enumValue, true, (float) loc.getX(), (float) loc.getY(), (float) loc.getZ(), dx, dy, dz, speed, count, new int[0]);
 
                 for (Player player : Bukkit.getServer().getOnlinePlayers())
                 {
@@ -263,7 +281,8 @@ public class Particle {
         play(particle, loc, radius, 1.0f);
     }
 
-    private static void play(String particle, Location loc, int radius, float speed) {
+    private static void play(String particle, Location loc, int radius, float speed)
+    {
         play(particle, loc, radius, 0, 0, 0, speed, 0);
     }
 

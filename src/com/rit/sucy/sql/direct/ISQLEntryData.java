@@ -8,7 +8,8 @@ import java.sql.SQLException;
  * <p>This is to be implemented by other plugins to match their
  * data structures.</p>
  */
-public interface ISQLEntryData {
+public interface ISQLEntryData
+{
 
     /**
      * <p>Loads the needed data from the result set.</p>
@@ -16,6 +17,7 @@ public interface ISQLEntryData {
      * anywhere as it will be closed to prevent leaks.</p>
      *
      * @param set set to load from
+     *
      * @throws java.sql.SQLException when retrieving a value from the result set goes wrong
      */
     public void loadData(ResultSet set) throws SQLException;

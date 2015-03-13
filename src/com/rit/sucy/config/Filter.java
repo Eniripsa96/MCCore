@@ -5,13 +5,14 @@ package com.rit.sucy.config;
  * repeatedly. To set the replacement, just do .setReplacement(String). This method
  * also returns the filter back so you can put it straight in the sendMessage
  * or getMessage calls.</p>
- *
+ * <p/>
  * <p>Note: you are not limited to this list. You can create your own filters using
  * just the CustomFilter constructor. This list is merely for slight optimizations
  * by avoiding creating filters constantly. You can make your own global filters
  * as well to make your own optimizations as well.</p>
  */
-public class Filter {
+public class Filter
+{
 
     /**
      * <p>Filter for player names</p>

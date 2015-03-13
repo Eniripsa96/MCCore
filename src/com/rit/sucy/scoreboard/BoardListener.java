@@ -11,14 +11,16 @@ import org.bukkit.plugin.Plugin;
 /**
  * Listener for players quitting
  */
-public class BoardListener implements Listener {
+public class BoardListener implements Listener
+{
 
     /**
      * Constructor
      *
      * @param plugin plugin reference
      */
-    public BoardListener(Plugin plugin) {
+    public BoardListener(Plugin plugin)
+    {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -27,8 +29,9 @@ public class BoardListener implements Listener {
      *
      * @param event event details
      */
-    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onJoin(PlayerJoinEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onJoin(PlayerJoinEvent event)
+    {
         if (!BoardManager.getPlayerBoards(event.getPlayer().getName()).hasActiveBoard())
         {
             event.getPlayer().setScoreboard(PlayerBoards.EMPTY);
@@ -41,7 +44,8 @@ public class BoardListener implements Listener {
      * @param event event details
      */
     @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
+    public void onQuit(PlayerQuitEvent event)
+    {
         BoardManager.clearPlayer(event.getPlayer().getName());
     }
 
@@ -51,7 +55,8 @@ public class BoardListener implements Listener {
      * @param event event details
      */
     @EventHandler
-    public void onKick(PlayerKickEvent event) {
+    public void onKick(PlayerKickEvent event)
+    {
         BoardManager.clearPlayer(event.getPlayer().getName());
     }
 }

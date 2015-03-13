@@ -12,9 +12,10 @@ import java.util.regex.Pattern;
 /**
  * A player implementation compatible across versions
  */
-public class VersionPlayer {
+public class VersionPlayer
+{
 
-    private static final String ID_REGEX = ".{8}-.{4}-.{4}-.{4}-.{12}";
+    private static final String  ID_REGEX   = ".{8}-.{4}-.{4}-.{4}-.{12}";
     private static final Pattern ID_PATTERN = Pattern.compile(ID_REGEX);
 
     private Object id;
@@ -27,7 +28,8 @@ public class VersionPlayer {
      *
      * @param id ID of the player
      */
-    public VersionPlayer(UUID id) {
+    public VersionPlayer(UUID id)
+    {
         this.id = id;
         this.idString = id.toString().toLowerCase();
     }
@@ -46,12 +48,16 @@ public class VersionPlayer {
      *
      * @param id UUID or name of the player
      */
-    public VersionPlayer(Object id) {
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_7_5)) {
-            if (ID_PATTERN.matcher(id.toString()).matches()) {
+    public VersionPlayer(Object id)
+    {
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_7_5))
+        {
+            if (ID_PATTERN.matcher(id.toString()).matches())
+            {
                 this.id = UUID.fromString(id.toString());
             }
-            else {
+            else
+            {
                 this.id = VersionManager.getOfflinePlayer(id.toString()).getUniqueId();
             }
         }
@@ -66,8 +72,9 @@ public class VersionPlayer {
      *
      * @param player Bukkit player object
      */
-    public VersionPlayer(Player player) {
-        this((OfflinePlayer)player);
+    public VersionPlayer(Player player)
+    {
+        this((OfflinePlayer) player);
     }
 
     /**
@@ -76,8 +83,10 @@ public class VersionPlayer {
      *
      * @param player Bukkit player object
      */
-    public VersionPlayer(OfflinePlayer player) {
-        if (VersionManager.isVersionAtLeast(VersionManager.MC_1_7_5_MIN)) {
+    public VersionPlayer(OfflinePlayer player)
+    {
+        if (VersionManager.isVersionAtLeast(VersionManager.MC_1_7_5_MIN))
+        {
             this.id = player.getUniqueId();
         }
         else this.id = player.getName();
@@ -91,8 +100,10 @@ public class VersionPlayer {
      *
      * @param player Bukkit player entity object
      */
-    public VersionPlayer(HumanEntity player) {
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_7_5)) {
+    public VersionPlayer(HumanEntity player)
+    {
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_7_5))
+        {
             this.id = player.getUniqueId();
         }
         else this.id = player.getName();
@@ -108,7 +119,8 @@ public class VersionPlayer {
      *
      * @return player ID or name
      */
-    public Object getId() {
+    public Object getId()
+    {
         return id;
     }
 
@@ -121,7 +133,8 @@ public class VersionPlayer {
      *
      * @return string representation of player's ID
      */
-    public String getIdString() {
+    public String getIdString()
+    {
         return idString;
     }
 
@@ -130,13 +143,16 @@ public class VersionPlayer {
      *
      * @return name of the player
      */
-    public String getName() {
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_7_5)) {
+    public String getName()
+    {
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_7_5))
+        {
             String name = PlayerUUIDs.getName((UUID) id);
             if (name != null) return name;
             else return getOfflinePlayer().getName();
         }
-        else {
+        else
+        {
             Player p = Bukkit.getPlayer(id.toString());
             if (p != null) return p.getName();
             else return Bukkit.getOfflinePlayer(id.toString()).getName();
@@ -148,11 +164,14 @@ public class VersionPlayer {
      *
      * @return Bukkit player object
      */
-    public Player getPlayer() {
-        if (id instanceof String) {
+    public Player getPlayer()
+    {
+        if (id instanceof String)
+        {
             return Bukkit.getPlayer(id.toString());
         }
-        else {
+        else
+        {
             return Bukkit.getPlayer((UUID) id);
         }
     }
@@ -162,11 +181,14 @@ public class VersionPlayer {
      *
      * @return Bukkit offline player object
      */
-    public OfflinePlayer getOfflinePlayer() {
-        if (id instanceof String) {
+    public OfflinePlayer getOfflinePlayer()
+    {
+        if (id instanceof String)
+        {
             return Bukkit.getOfflinePlayer(id.toString());
         }
-        else {
+        else
+        {
             return Bukkit.getOfflinePlayer((UUID) id);
         }
     }

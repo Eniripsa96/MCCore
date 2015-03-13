@@ -21,7 +21,8 @@ import java.util.HashMap;
  * by another plugin as it will cause duplicate results leading to
  * undesired behavior.</p>
  */
-public class EquipListener implements Listener {
+public class EquipListener implements Listener
+{
 
     private final HashMap<String, ItemStack[]> equipment = new HashMap<String, ItemStack[]>();
     private final MCCore plugin;
@@ -33,12 +34,14 @@ public class EquipListener implements Listener {
      *
      * @param plugin plugin reference
      */
-    public EquipListener(MCCore plugin) {
+    public EquipListener(MCCore plugin)
+    {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         // Load player equipment for equip events
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
+        for (Player player : plugin.getServer().getOnlinePlayers())
+        {
             equipment.put(new VersionPlayer(player).getIdString(), player.getEquipment().getArmorContents());
         }
     }
@@ -48,10 +51,13 @@ public class EquipListener implements Listener {
      *
      * @param event event details
      */
-    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onClick(InventoryClickEvent event) {
-        if (event.getInventory().getType() == InventoryType.CRAFTING || event.getInventory().getType() == InventoryType.PLAYER) {
-            if (event.getSlotType() == InventoryType.SlotType.ARMOR || event.isShiftClick()) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onClick(InventoryClickEvent event)
+    {
+        if (event.getInventory().getType() == InventoryType.CRAFTING || event.getInventory().getType() == InventoryType.PLAYER)
+        {
+            if (event.getSlotType() == InventoryType.SlotType.ARMOR || event.isShiftClick())
+            {
                 Player player = new VersionPlayer(event.getWhoClicked()).getPlayer();
                 checkEquips(player);
             }
@@ -63,9 +69,11 @@ public class EquipListener implements Listener {
      *
      * @param event event details
      */
-    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onInteract(PlayerInteractEvent event)
+    {
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
+        {
             String name = event.getPlayer().getItemInHand().getType().name();
             if (name.contains("_CHESTPLATE") || name.contains("_LEGGINGS") || name.contains("_BOOTS") || name.contains("_HELMET"))
                 checkEquips(event.getPlayer());
@@ -77,8 +85,9 @@ public class EquipListener implements Listener {
      *
      * @param event event details
      */
-    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onDeath (PlayerDeathEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onDeath(PlayerDeathEvent event)
+    {
         checkEquips(event.getEntity());
     }
 
@@ -87,19 +96,24 @@ public class EquipListener implements Listener {
      *
      * @param player player to evaluate
      */
-    private void checkEquips(final Player player) {
-        plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+    private void checkEquips(final Player player)
+    {
+        plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 String id = new VersionPlayer(player).getIdString();
                 ItemStack[] equips = player.getEquipment().getArmorContents();
                 ItemStack[] previous = equipment.get(id);
-                for (int i = 0; i < equips.length; i++) {
+                for (int i = 0; i < equips.length; i++)
+                {
                     if (equips[i] == null && (previous != null && previous[i] != null))
                         plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, previous[i]));
                     else if (equips[i] != null && (previous == null || previous[i] == null))
                         plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, equips[i]));
-                    else if (previous != null && !equips[i].toString().equalsIgnoreCase(previous[i].toString())) {
+                    else if (previous != null && !equips[i].toString().equalsIgnoreCase(previous[i].toString()))
+                    {
                         plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, previous[i]));
                         plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, equips[i]));
                     }

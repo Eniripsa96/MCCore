@@ -10,7 +10,8 @@ import org.bukkit.plugin.Plugin;
 /**
  * Changes a player's display name
  */
-class NameCommand implements ICommand {
+class NameCommand implements ICommand
+{
 
     /**
      * Executs the command
@@ -21,9 +22,11 @@ class NameCommand implements ICommand {
      * @param args    command arguments
      */
     @Override
-    public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args)
+    {
         ChatData data = Chat.getPlayerData(sender.getName());
-        if (data != null && args.length > 0) {
+        if (data != null && args.length > 0)
+        {
             String name = "";
             for (String piece : args)
                 name += piece.replace('&', ChatColor.COLOR_CHAR) + " ";
@@ -37,7 +40,8 @@ class NameCommand implements ICommand {
     /**
      * @return permission needed for this command
      */
-    public String getPermissionNode() {
+    public String getPermissionNode()
+    {
         return ChatNodes.NAME.getNode();
     }
 
@@ -45,7 +49,8 @@ class NameCommand implements ICommand {
      * @return args string
      */
     @Override
-    public String getArgsString() {
+    public String getArgsString()
+    {
         return "<name>";
     }
 
@@ -53,7 +58,8 @@ class NameCommand implements ICommand {
      * @return description
      */
     @Override
-    public String getDescription() {
+    public String getDescription()
+    {
         return "Sets your display name";
     }
 
@@ -61,7 +67,8 @@ class NameCommand implements ICommand {
      * Sender required for the command
      */
     @Override
-    public SenderType getSenderType() {
+    public SenderType getSenderType()
+    {
         return SenderType.PLAYER_ONLY;
     }
 }

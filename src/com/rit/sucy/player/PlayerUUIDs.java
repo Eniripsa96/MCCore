@@ -20,12 +20,13 @@ import java.util.UUID;
  * limited to only players who have played since MCCore has been
  * installed, but that shouldn't be a problem since it only takes one
  * login.</p>
- *
+ * <p/>
  * <p>The main usage of this class is the static methods.</p>
  */
-public class PlayerUUIDs implements Listener {
+public class PlayerUUIDs implements Listener
+{
 
-    private static final HashMap<String, UUID> ids = new HashMap<String, UUID>();
+    private static final HashMap<String, UUID> ids   = new HashMap<String, UUID>();
     private static final HashMap<UUID, String> names = new HashMap<UUID, String>();
 
     private Config config;
@@ -34,19 +35,21 @@ public class PlayerUUIDs implements Listener {
      * <p>Sets up the listener to update player UUIDs</p>
      * <p>This class should not be instantiated on older servers
      * where UUIDs do not exist.</p>
-     *
+     * <p/>
      * <p>MCCore sets this up by default so you should not
      * instantiate this yourself.</p>
      *
      * @param plugin plugin reference
      */
-    public PlayerUUIDs(MCCore plugin) {
+    public PlayerUUIDs(MCCore plugin)
+    {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         config = new Config(plugin, "uuid");
 
         // Load previous data
         ConfigurationSection section = config.getConfig();
-        for (String key : section.getKeys(false)) {
+        for (String key : section.getKeys(false))
+        {
             UUID id = UUID.fromString(section.getString(key));
             ids.put(key.toLowerCase(), id);
             names.put(id, key);
@@ -56,10 +59,12 @@ public class PlayerUUIDs implements Listener {
     /**
      * <p>Saves the UUID data to the config</p>
      */
-    public void save() {
+    public void save()
+    {
         ConfigurationSection section = config.getConfig();
-        for (Map.Entry<UUID, String> id : names.entrySet()) {
-           section.set(id.getValue(), id.getKey().toString());
+        for (Map.Entry<UUID, String> id : names.entrySet())
+        {
+            section.set(id.getValue(), id.getKey().toString());
         }
         config.save();
     }
@@ -70,7 +75,8 @@ public class PlayerUUIDs implements Listener {
      * @param event event details
      */
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
+    public void onJoin(PlayerJoinEvent event)
+    {
         ids.put(event.getPlayer().getName().toLowerCase(), event.getPlayer().getUniqueId());
         names.put(event.getPlayer().getUniqueId(), event.getPlayer().getName());
     }
@@ -80,9 +86,11 @@ public class PlayerUUIDs implements Listener {
      * <p>This is not case sensitive</p>
      *
      * @param name name of the player
-     * @return     UUID of the player or null if not found
+     *
+     * @return UUID of the player or null if not found
      */
-    public static UUID getUUID(String name) {
+    public static UUID getUUID(String name)
+    {
         return ids.get(name.toLowerCase());
     }
 
@@ -92,9 +100,11 @@ public class PlayerUUIDs implements Listener {
      * this will return null</p>
      *
      * @param id player UUID
-     * @return   player name or null if not found
+     *
+     * @return player name or null if not found
      */
-    public static String getName(UUID id) {
+    public static String getName(UUID id)
+    {
         return names.get(id);
     }
 
@@ -104,9 +114,11 @@ public class PlayerUUIDs implements Listener {
      * this returns null</p>
      *
      * @param name name of the player
-     * @return     offline player or null if not found
+     *
+     * @return offline player or null if not found
      */
-    public static OfflinePlayer getOfflinePlayer(String name) {
+    public static OfflinePlayer getOfflinePlayer(String name)
+    {
         UUID id = getUUID(name);
         if (id != null) return Bukkit.getServer().getOfflinePlayer(id);
         else return null;
@@ -117,9 +129,11 @@ public class PlayerUUIDs implements Listener {
      * </p>If the player is not online, this returns null</p>
      *
      * @param name name of the player
-     * @return     offline player or null if not found
+     *
+     * @return offline player or null if not found
      */
-    public static Player getPlayer(String name) {
+    public static Player getPlayer(String name)
+    {
         UUID id = getUUID(name);
         if (id != null) return Bukkit.getServer().getPlayer(id);
         else return null;

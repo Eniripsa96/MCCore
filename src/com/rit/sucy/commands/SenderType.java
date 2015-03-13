@@ -4,7 +4,8 @@ package com.rit.sucy.commands;
  * <p>Type of sender that a command requires</p>
  * <p>For use with CommandHandler and ICommand</p>
  */
-public enum SenderType {
+public enum SenderType
+{
 
     /**
      * Only players can use the command

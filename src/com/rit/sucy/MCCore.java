@@ -6,37 +6,36 @@ import com.rit.sucy.commands.CommandListener;
 import com.rit.sucy.commands.CommandLog;
 import com.rit.sucy.commands.CommandManager;
 import com.rit.sucy.commands.LogFunction;
+import com.rit.sucy.config.CommentedConfig;
 import com.rit.sucy.config.Config;
+import com.rit.sucy.config.parse.DataSection;
 import com.rit.sucy.economy.Economy;
 import com.rit.sucy.economy.EconomyPlugin;
 import com.rit.sucy.event.EquipListener;
 import com.rit.sucy.items.DurabilityListener;
 import com.rit.sucy.player.PlayerUUIDs;
-import com.rit.sucy.reflect.Reflection;
 import com.rit.sucy.scoreboard.BoardListener;
 import com.rit.sucy.scoreboard.CycleTask;
 import com.rit.sucy.scoreboard.ScoreboardCommander;
 import com.rit.sucy.scoreboard.UpdateTask;
 import com.rit.sucy.version.VersionManager;
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.HandlerList;
-import org.bukkit.help.HelpTopic;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.sql.Ref;
 import java.util.Hashtable;
-import java.util.Map;
 
-public class MCCore extends JavaPlugin {
+public class MCCore extends JavaPlugin
+{
 
     private static Hashtable<String, Config> configs = new Hashtable<String, Config>();
 
-    private Economy economy;
-    private CycleTask cTask;
-    private UpdateTask uTask;
+    private CommentedConfig config;
+
+    private Economy     economy;
+    private CycleTask   cTask;
+    private UpdateTask  uTask;
     private PlayerUUIDs idManager;
 
     // Settings
@@ -45,13 +44,14 @@ public class MCCore extends JavaPlugin {
     private boolean equipEventsEnabled;
     private boolean durabilityEnabled;
     private boolean durabilityMessageEnabled;
-    private String durabilityMessage;
+    private String  durabilityMessage;
 
     /**
      * Sets up commands and listeners
      */
     @Override
-    public void onEnable() {
+    public void onEnable()
+    {
 
         CommandLog.callback = new LogFunction()
         {
@@ -65,42 +65,55 @@ public class MCCore extends JavaPlugin {
         getServer().dispatchCommand(new CommandLog(), "version");
 
         // Initialize libraries
-        if (VersionManager.isUUID()) {
+        if (VersionManager.isUUID())
+        {
             idManager = new PlayerUUIDs(this);
         }
 
         // Load settings
-        saveDefaultConfig();
-        Config.trim(getConfig());
-        Config.setDefaults(getConfig());
-        chatEnabled = getConfig().getBoolean("Features.chat-enabled", true);
-        scoreboardsEnabled = getConfig().getBoolean("Features.scoreboards-enabled", true);
-        equipEventsEnabled = getConfig().getBoolean("Features.equip-events-enabled", true);
-        durabilityEnabled = getConfig().getBoolean("Features.durability-enabled", true);
+        config = new CommentedConfig(this, "config");
+        config.saveDefaultConfig();
+        config.trim();
+        config.checkDefaults();
+        config.save();
 
-        durabilityMessageEnabled = getConfig().getBoolean("Settings.durability-message-enabled", true);
-        durabilityMessage = getConfig().getString("Settings.durability-message", "&6{current}&7/&6{max} &2Durability left on your &r{item}&r");
+        DataSection settings = config.getConfig();
+        chatEnabled = settings.getBoolean("Features.chat-enabled", true);
+        scoreboardsEnabled = settings.getBoolean("Features.scoreboards-enabled", true);
+        equipEventsEnabled = settings.getBoolean("Features.equip-events-enabled", true);
+        durabilityEnabled = settings.getBoolean("Features.durability-enabled", true);
 
-        if (chatEnabled) {
+        durabilityMessageEnabled = settings.getBoolean("Settings.durability-message-enabled", true);
+        durabilityMessage = settings.getString("Settings.durability-message", "&6{current}&7/&6{max} &2Durability left on your &r{item}&r");
+
+        CommandManager.loadOptions(settings.getSection("Commands"));
+
+        if (chatEnabled)
+        {
             new ChatCommander(this);
             new ChatListener(this);
         }
-        if (scoreboardsEnabled) {
+        if (scoreboardsEnabled)
+        {
             new ScoreboardCommander(this);
             new BoardListener(this);
             cTask = new CycleTask(this);
             uTask = new UpdateTask(this);
         }
-        if (equipEventsEnabled) {
+        if (equipEventsEnabled)
+        {
             new EquipListener(this);
         }
-        if (durabilityEnabled) {
+        if (durabilityEnabled)
+        {
             new DurabilityListener(this);
         }
         new CommandListener(this);
 
-        for (Plugin plugin : getServer().getPluginManager().getPlugins()) {
-            if (plugin instanceof EconomyPlugin) {
+        for (Plugin plugin : getServer().getPluginManager().getPlugins())
+        {
+            if (plugin instanceof EconomyPlugin)
+            {
                 this.economy = ((EconomyPlugin) plugin).getEconomy();
                 break;
             }
@@ -111,14 +124,16 @@ public class MCCore extends JavaPlugin {
      * Disables commands and listeners and saves applicable configs
      */
     @Override
-    public void onDisable() {
+    public void onDisable()
+    {
 
         HandlerList.unregisterAll(this);
         if (idManager != null) idManager.save();
         for (Config config : configs.values())
             config.save();
         configs.clear();
-        if (isScoreboardsEnabled()) {
+        if (isScoreboardsEnabled())
+        {
             cTask.cancel();
             uTask.cancel();
         }
@@ -130,7 +145,8 @@ public class MCCore extends JavaPlugin {
      *
      * @return active economy
      */
-    public Economy getEconomy() {
+    public Economy getEconomy()
+    {
         return economy;
     }
 
@@ -139,7 +155,8 @@ public class MCCore extends JavaPlugin {
      *
      * @return true if enabled, false otherwise
      */
-    public boolean isChatEnabled() {
+    public boolean isChatEnabled()
+    {
         return chatEnabled;
     }
 
@@ -148,7 +165,8 @@ public class MCCore extends JavaPlugin {
      *
      * @return true if enabled, false otherwise
      */
-    public boolean isScoreboardsEnabled() {
+    public boolean isScoreboardsEnabled()
+    {
         return scoreboardsEnabled;
     }
 
@@ -157,7 +175,8 @@ public class MCCore extends JavaPlugin {
      *
      * @return true if enabled, false otherwise
      */
-    public boolean isEquipEventsEnabled() {
+    public boolean isEquipEventsEnabled()
+    {
         return equipEventsEnabled;
     }
 
@@ -166,7 +185,8 @@ public class MCCore extends JavaPlugin {
      *
      * @return true if enabled, false otherwise
      */
-    public boolean isDurabilityEnabled() {
+    public boolean isDurabilityEnabled()
+    {
         return durabilityEnabled;
     }
 
@@ -176,7 +196,8 @@ public class MCCore extends JavaPlugin {
      *
      * @return true if enabled, false otherwise
      */
-    public boolean isDurabilityMessageEnabled() {
+    public boolean isDurabilityMessageEnabled()
+    {
         return durabilityMessageEnabled;
     }
 
@@ -185,7 +206,8 @@ public class MCCore extends JavaPlugin {
      *
      * @return durability message
      */
-    public String getDurabilityMessage() {
+    public String getDurabilityMessage()
+    {
         return durabilityMessage;
     }
 
@@ -199,11 +221,13 @@ public class MCCore extends JavaPlugin {
      * that admins may want to edit while the server is running
      * as the auto save will overwrite any changes they make.</p>
      *
-     * @param file          file name
-     * @return              config for the file
+     * @param file file name
+     *
+     * @return config for the file
      */
-    public ConfigurationSection getConfig(JavaPlugin plugin, String file) {
-        return getConfigFile(plugin,file).getConfig();
+    public ConfigurationSection getConfig(JavaPlugin plugin, String file)
+    {
+        return getConfigFile(plugin, file).getConfig();
     }
 
     /**
@@ -217,10 +241,13 @@ public class MCCore extends JavaPlugin {
      * as the auto save will overwrite any changes they make.</p>
      *
      * @param file file name
-     * @return     config manager for the file
+     *
+     * @return config manager for the file
      */
-    public Config getConfigFile(JavaPlugin plugin, String file) {
-        if (!configs.containsKey(file.toLowerCase() + plugin.getName())) {
+    public Config getConfigFile(JavaPlugin plugin, String file)
+    {
+        if (!configs.containsKey(file.toLowerCase() + plugin.getName()))
+        {
             Config config = new Config(plugin, file);
             registerConfig(config);
             return config;
@@ -235,7 +262,8 @@ public class MCCore extends JavaPlugin {
      *
      * @param config config to register
      */
-    public void registerConfig(Config config) {
+    public void registerConfig(Config config)
+    {
         configs.put(config.getFile().toLowerCase() + config.getPlugin().getName(), config);
     }
 }

@@ -13,7 +13,8 @@ import org.bukkit.util.Vector;
 /**
  * Spawns thrown splash potions that break upon hitting the ground
  */
-public class SplashPotion {
+public class SplashPotion
+{
 
     /**
      * Spawns a splash potion from an entity
@@ -22,9 +23,11 @@ public class SplashPotion {
      * @param level    potion level
      * @param extended whether or not the potion has an extended duration
      * @param source   entity to spawn from
-     * @return         the potion that was spawned
+     *
+     * @return the potion that was spawned
      */
-    public static ThrownPotion spawnPotion(PotionType type, int level, boolean extended, LivingEntity source) {
+    public static ThrownPotion spawnPotion(PotionType type, int level, boolean extended, LivingEntity source)
+    {
 
         // Create the splash potion
         Potion potion = new Potion(type, level);
@@ -49,9 +52,11 @@ public class SplashPotion {
      * @param level    potion level
      * @param extended whether or not the potion has an extended duration
      * @param loc      target location
-     * @return         the potion that was spawned
+     *
+     * @return the potion that was spawned
      */
-    public static ThrownPotion spawnPotion(PotionType type, int level, boolean extended, Location loc) {
+    public static ThrownPotion spawnPotion(PotionType type, int level, boolean extended, Location loc)
+    {
         Bat bat = loc.getWorld().spawn(loc, Bat.class);
         ThrownPotion potion = spawnPotion(type, level, extended, bat);
         bat.remove();

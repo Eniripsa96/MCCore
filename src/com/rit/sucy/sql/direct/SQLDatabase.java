@@ -1,7 +1,6 @@
 package com.rit.sucy.sql.direct;
 
 import com.rit.sucy.sql.ColumnType;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 
@@ -13,7 +12,8 @@ import java.util.logging.Logger;
 /**
  * Manager for connection to and interacting with a MySQL database
  */
-public class SQLDatabase {
+public class SQLDatabase
+{
 
     private final HashMap<String, SQLTable> tables = new HashMap<String, SQLTable>();
 
@@ -34,7 +34,8 @@ public class SQLDatabase {
      * @param username username
      * @param password password
      */
-    public SQLDatabase(Plugin plugin, String host, String port, String database, String username, String password) {
+    public SQLDatabase(Plugin plugin, String host, String port, String database, String username, String password)
+    {
         this.plugin = plugin;
         this.connectionURL = "jdbc:mysql://" + host + ":" + port + "/" + database;
         this.user = username;
@@ -46,17 +47,18 @@ public class SQLDatabase {
      * <p>The format must be the following (not necessarily in the same
      * order) for it to be recognized:</p>
      * <code>
-     *     host: example
-     *     port: 12345
-     *     databse: someDatabase
-     *     username: myUser
-     *     password: myPassword
+     * host: example
+     * port: 12345
+     * databse: someDatabase
+     * username: myUser
+     * password: myPassword
      * </code>
      *
      * @param plugin plugin reference
      * @param config configuration to loaf from
      */
-    public SQLDatabase(Plugin plugin, ConfigurationSection config) {
+    public SQLDatabase(Plugin plugin, ConfigurationSection config)
+    {
         this.plugin = plugin;
         this.connectionURL = "jdbc:mysql://" + config.getString("host") + ":" + config.getString("port") + "/" + config.getString("database");
         this.user = config.getString("username");
@@ -68,7 +70,8 @@ public class SQLDatabase {
      *
      * @return logger of the owning plugin
      */
-    public Logger getLogger() {
+    public Logger getLogger()
+    {
         return plugin.getLogger();
     }
 
@@ -76,9 +79,11 @@ public class SQLDatabase {
      * <p>Retrieves the metadata of the connection.</p>
      *
      * @return metadata of the active connection
+     *
      * @throws SQLException
      */
-    public DatabaseMetaData getMeta() throws SQLException {
+    public DatabaseMetaData getMeta() throws SQLException
+    {
         return isConnected() ? connection.getMetaData() : null;
     }
 
@@ -87,7 +92,8 @@ public class SQLDatabase {
      *
      * @return true if connected, false otherwise
      */
-    public boolean isConnected() {
+    public boolean isConnected()
+    {
         return connection != null;
     }
 
@@ -96,17 +102,20 @@ public class SQLDatabase {
      *
      * @return true if connected successfully, false otherwise
      */
-    public boolean openConnection() {
+    public boolean openConnection()
+    {
 
         // Connect to the server
-        try {
+        try
+        {
             plugin.getLogger().info("Connecting to MySQL database...");
             connection = DriverManager.getConnection(connectionURL, this.user, this.password);
             plugin.getLogger().info("Connected to the MySQL database successfully");
         }
 
         // Unable to connect to the server
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             plugin.getLogger().log(Level.SEVERE, "Failed to connect to the MySQL server: " + ex.getMessage());
         }
 
@@ -116,13 +125,16 @@ public class SQLDatabase {
     /**
      * Closes the connection to the database
      */
-    public void closeConnection() {
+    public void closeConnection()
+    {
 
         // Must have a connection to close it
-        if (connection != null) {
+        if (connection != null)
+        {
 
             // Close the database connection
-            try {
+            try
+            {
                 plugin.getLogger().info("Closing connection to the MySQL database...");
                 connection.close();
                 connection = null;
@@ -130,7 +142,8 @@ public class SQLDatabase {
             }
 
             // Unable to close the database connection
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 plugin.getLogger().severe("Could not close the MySQL connection: " + ex.getMessage());
                 ex.printStackTrace();
             }
@@ -141,13 +154,17 @@ public class SQLDatabase {
      * <p>Prepares a statement for the connection.</p>
      *
      * @param sql SQL for the statement
-     * @return    prepared statement or null if not connected or failed to prepare it
+     *
+     * @return prepared statement or null if not connected or failed to prepare it
      */
-    public PreparedStatement getStatement(String sql) {
-        try {
+    public PreparedStatement getStatement(String sql)
+    {
+        try
+        {
             return isConnected() ? connection.prepareStatement(sql) : null;
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             plugin.getLogger().severe("Failed to prepare an SQL statement");
             return null;
         }
@@ -158,11 +175,14 @@ public class SQLDatabase {
      *
      * @return empty statement
      */
-    public Statement getStatement() {
-        try {
+    public Statement getStatement()
+    {
+        try
+        {
             return connection.createStatement();
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             return null;
         }
     }
@@ -171,9 +191,11 @@ public class SQLDatabase {
      * Checks if a table with the name exists
      *
      * @param name table name
-     * @return     true if exists, false otherwise
+     *
+     * @return true if exists, false otherwise
      */
-    public boolean tableExists(String name) {
+    public boolean tableExists(String name)
+    {
         return tableExists(plugin, name);
     }
 
@@ -182,14 +204,17 @@ public class SQLDatabase {
      *
      * @param plugin plugin to check for
      * @param name   table name
-     * @return       true if exists, false otherwise
+     *
+     * @return true if exists, false otherwise
      */
-    public boolean tableExists(Plugin plugin, String name) {
+    public boolean tableExists(Plugin plugin, String name)
+    {
         name = plugin.getName() + "_" + name;
         if (tables.containsKey(name)) return true;
 
         // Check if the table exists
-        try {
+        try
+        {
             DatabaseMetaData meta = connection.getMetaData();
             ResultSet result = meta.getTables(null, null, name, null);
             boolean exists = result.next();
@@ -198,7 +223,8 @@ public class SQLDatabase {
         }
 
         // An error occurred
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             plugin.getLogger().severe("Unable to validate table: " + ex.getMessage());
         }
 
@@ -211,7 +237,8 @@ public class SQLDatabase {
      *
      * @param name name of the table
      */
-    public SQLTable createTable(String name) {
+    public SQLTable createTable(String name)
+    {
         return createTable(plugin, name);
     }
 
@@ -222,25 +249,29 @@ public class SQLDatabase {
      * @param plugin plugin to create it for
      * @param name   name of the table
      */
-    public SQLTable createTable(Plugin plugin, String name) {
+    public SQLTable createTable(Plugin plugin, String name)
+    {
 
         // Make the name plugin-specific to prevent collisions
         String full = plugin.getName() + "_" + name;
 
         // Special cases
-        if (!isConnected()) {
+        if (!isConnected())
+        {
             plugin.getLogger().severe("A plugin tried to create a table while not connected to the SQL database");
             return null;
         }
         if (tables.containsKey(full)) return tables.get(full);
-        if (tableExists(plugin, name)) {
+        if (tableExists(plugin, name))
+        {
             SQLTable table = new SQLTable(this, full);
             tables.put(full, table);
             return table;
         }
 
         // Create the table
-        try {
+        try
+        {
             getStatement().execute("CREATE TABLE " + full + " (Name " + ColumnType.STRING_64.toString() + ")");
             SQLTable table = new SQLTable(this, full);
             tables.put(full, table);
@@ -249,7 +280,8 @@ public class SQLDatabase {
         }
 
         // An error occurred
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             plugin.getLogger().severe("Failed to create table \"" + name + "\" - " + ex.getMessage());
         }
 
@@ -260,9 +292,11 @@ public class SQLDatabase {
      * <p>Deletes a table from the database.</p>
      *
      * @param name name of the table to delete
-     * @return     true if successful, false otherwise
+     *
+     * @return true if successful, false otherwise
      */
-    public boolean deleteTable(String name) {
+    public boolean deleteTable(String name)
+    {
         return deleteTable(plugin, name);
     }
 
@@ -271,17 +305,22 @@ public class SQLDatabase {
      *
      * @param plugin plugin to delete the table for
      * @param name   name of the table to delete
-     * @return       true if successful, false otherwise
+     *
+     * @return true if successful, false otherwise
      */
-    public boolean deleteTable(Plugin plugin, String name) {
-        if (isConnected() && tableExists(plugin, name)) {
-            try {
+    public boolean deleteTable(Plugin plugin, String name)
+    {
+        if (isConnected() && tableExists(plugin, name))
+        {
+            try
+            {
                 String full = plugin.getName() + "_" + name;
                 getStatement().execute("DROP TABLE " + full);
                 tables.remove(full);
                 return true;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 plugin.getLogger().severe("Failed to delete table \"" + name + "\" - " + ex.getMessage());
             }
         }

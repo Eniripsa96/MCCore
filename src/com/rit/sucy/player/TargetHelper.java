@@ -3,7 +3,6 @@ package com.rit.sucy.player;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -12,7 +11,8 @@ import java.util.List;
 /**
  * <p>Helper class for getting targets using various methods</p>
  */
-public class TargetHelper {
+public class TargetHelper
+{
 
     /**
      * <p>Number of pixels that end up displaying about 1 degree of vision in the client window</p>
@@ -27,9 +27,11 @@ public class TargetHelper {
      *
      * @param source living entity to get the targets of
      * @param range  maximum range to check
-     * @return       all entities in the player's vision line
+     *
+     * @return all entities in the player's vision line
      */
-    public static List<LivingEntity> getLivingTargets(LivingEntity source, double range) {
+    public static List<LivingEntity> getLivingTargets(LivingEntity source, double range)
+    {
         return getLivingTargets(source, range, 4);
     }
 
@@ -37,19 +39,22 @@ public class TargetHelper {
      * <p>Gets all entities the player is looking at within the range using
      * the given tolerance.</p>
      *
-     * @param source living entity to get the targets of
-     * @param range  maximum range to check
+     * @param source    living entity to get the targets of
+     * @param range     maximum range to check
      * @param tolerance tolerance of the line calculation
-     * @return       all entities in the player's vision line
+     *
+     * @return all entities in the player's vision line
      */
-    public static List<LivingEntity> getLivingTargets(LivingEntity source, double range, double tolerance) {
+    public static List<LivingEntity> getLivingTargets(LivingEntity source, double range, double tolerance)
+    {
         List<Entity> list = source.getNearbyEntities(range, range, range);
         List<LivingEntity> targets = new ArrayList<LivingEntity>();
 
         Vector facing = source.getLocation().getDirection();
         double fLengthSq = facing.lengthSquared();
 
-        for (Entity entity : list) {
+        for (Entity entity : list)
+        {
             if (!isInFront(source, entity) || !(entity instanceof LivingEntity)) continue;
 
             Vector relative = entity.getLocation().subtract(source.getLocation()).toVector();
@@ -60,7 +65,7 @@ public class TargetHelper {
             double dSquared = rLengthSq * sinSquared;
 
             // If close enough to vision line, return the entity
-            if (dSquared < 4) targets.add((LivingEntity)entity);
+            if (dSquared < 4) targets.add((LivingEntity) entity);
         }
 
         return targets;
@@ -72,7 +77,8 @@ public class TargetHelper {
      *
      * @param source living entity to get the target of
      * @param range  maximum range to check
-     * @return       entity player is looing at or null if not found
+     *
+     * @return entity player is looing at or null if not found
      */
     public static LivingEntity getLivingTarget(LivingEntity source, double range)
     {
@@ -83,19 +89,23 @@ public class TargetHelper {
      * <p>Gets the entity the player is looking at</p>
      * <p>Has a little bit of tolerance to make targeting easier</p>
      *
-     * @param source living entity to get the target of
-     * @param range  maximum range to check
+     * @param source    living entity to get the target of
+     * @param range     maximum range to check
      * @param tolerance tolerance of the line calculation
-     * @return       entity player is looking at or null if not found
+     *
+     * @return entity player is looking at or null if not found
      */
-    public static LivingEntity getLivingTarget(LivingEntity source, double range, double tolerance) {
+    public static LivingEntity getLivingTarget(LivingEntity source, double range, double tolerance)
+    {
         List<LivingEntity> targets = getLivingTargets(source, range, tolerance);
         if (targets.size() == 0) return null;
         LivingEntity target = targets.get(0);
         double minDistance = target.getLocation().distanceSquared(source.getLocation());
-        for (LivingEntity entity : targets) {
+        for (LivingEntity entity : targets)
+        {
             double distance = entity.getLocation().distanceSquared(source.getLocation());
-            if (distance < minDistance) {
+            if (distance < minDistance)
+            {
                 minDistance = distance;
                 target = entity;
             }
@@ -109,9 +119,11 @@ public class TargetHelper {
      * @param source entity to get the targets for
      * @param arc    arc angle of the cone
      * @param range  range of the cone
-     * @return       list of targets
+     *
+     * @return list of targets
      */
-    public static List<LivingEntity> getConeTargets(LivingEntity source, double arc, double range) {
+    public static List<LivingEntity> getConeTargets(LivingEntity source, double arc, double range)
+    {
         List<LivingEntity> targets = new ArrayList<LivingEntity>();
         List<Entity> list = source.getNearbyEntities(range, range, range);
         if (arc <= 0) return targets;
@@ -124,22 +136,26 @@ public class TargetHelper {
         double dirSq = dir.lengthSquared();
 
         // Get the targets in the cone
-        for (Entity entity : list) {
-            if (entity instanceof LivingEntity) {
+        for (Entity entity : list)
+        {
+            if (entity instanceof LivingEntity)
+            {
 
                 // Greater than 360 degrees is all targets
-                if (arc >= 360) {
-                    targets.add((LivingEntity)entity);
+                if (arc >= 360)
+                {
+                    targets.add((LivingEntity) entity);
                 }
 
                 // Otherwise, select targets based on dot product
-                else {
+                else
+                {
                     Vector relative = entity.getLocation().subtract(source.getLocation()).toVector();
                     relative.setY(0);
                     double dot = relative.dot(dir);
                     double value = dot * dot / (dirSq * relative.lengthSquared());
-                    if (arc < 180 && dot > 0 && value >= cosSq) targets.add((LivingEntity)entity);
-                    else if (arc >= 180 && (dot > 0 || dot <= cosSq)) targets.add((LivingEntity)entity);
+                    if (arc < 180 && dot > 0 && value >= cosSq) targets.add((LivingEntity) entity);
+                    else if (arc >= 180 && (dot > 0 || dot <= cosSq)) targets.add((LivingEntity) entity);
                 }
             }
         }
@@ -152,9 +168,11 @@ public class TargetHelper {
      *
      * @param entity entity to check for
      * @param target target to check against
-     * @return       true if the target is in front of the entity
+     *
+     * @return true if the target is in front of the entity
      */
-    public static boolean isInFront(Entity entity, Entity target) {
+    public static boolean isInFront(Entity entity, Entity target)
+    {
 
         // Get the necessary vectors
         Vector facing = entity.getLocation().getDirection();
@@ -170,9 +188,11 @@ public class TargetHelper {
      * @param entity entity to check for
      * @param target target to check against
      * @param angle  angle to restrict it to (0-360)
-     * @return       true if the target is in front of the entity
+     *
+     * @return true if the target is in front of the entity
      */
-    public static boolean isInFront(Entity entity, Entity target, double angle) {
+    public static boolean isInFront(Entity entity, Entity target, double angle)
+    {
         if (angle <= 0) return false;
         if (angle >= 360) return true;
 
@@ -190,9 +210,11 @@ public class TargetHelper {
      *
      * @param entity entity to check for
      * @param target target to check against
-     * @return       true if the target is behind the entity
+     *
+     * @return true if the target is behind the entity
      */
-    public static boolean isBehind(Entity entity, Entity target) {
+    public static boolean isBehind(Entity entity, Entity target)
+    {
         return !isInFront(entity, target);
     }
 
@@ -202,9 +224,11 @@ public class TargetHelper {
      * @param entity entity to check for
      * @param target target to check against
      * @param angle  angle to restrict it to (0-360)
-     * @return       true if the target is behind the entity
+     *
+     * @return true if the target is behind the entity
      */
-    public static boolean isBehind(Entity entity, Entity target, double angle) {
+    public static boolean isBehind(Entity entity, Entity target, double angle)
+    {
         if (angle <= 0) return false;
         if (angle >= 360) return true;
 
@@ -222,6 +246,7 @@ public class TargetHelper {
      *
      * @param loc1 first location
      * @param loc2 second location
+     *
      * @return the location of obstruction or null if not obstructed
      */
     public static boolean isObstructed(Location loc1, Location loc2)
@@ -231,7 +256,7 @@ public class TargetHelper {
             return false;
         }
         Vector slope = loc2.clone().subtract(loc1).toVector();
-        int steps = (int)(slope.length() * 4) + 1;
+        int steps = (int) (slope.length() * 4) + 1;
         slope.multiply(1 / steps);
         Location temp = loc1.clone();
         for (int i = 0; i < steps; i++)
@@ -251,6 +276,7 @@ public class TargetHelper {
      * @param loc1        start location of the path
      * @param loc2        end location of the path
      * @param throughWall whether or not going through walls is allowed
+     *
      * @return the farthest open location along the path
      */
     public static Location getOpenLocation(Location loc1, Location loc2, boolean throughWall)
@@ -263,7 +289,7 @@ public class TargetHelper {
 
         // Common data
         Vector slope = loc2.clone().subtract(loc1).toVector();
-        int steps = (int)(slope.length() * 4) + 1;
+        int steps = (int) (slope.length() * 4) + 1;
         slope.multiply(1 / steps);
 
         // Going through walls starts at the end and traverses backwards

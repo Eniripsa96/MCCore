@@ -6,14 +6,16 @@ import org.bukkit.scheduler.BukkitRunnable;
 /**
  * Updates stat boards periodically
  */
-public class UpdateTask extends BukkitRunnable {
+public class UpdateTask extends BukkitRunnable
+{
 
     /**
      * Constructor
      *
      * @param plugin plugin reference
      */
-    public UpdateTask(Plugin plugin) {
+    public UpdateTask(Plugin plugin)
+    {
         runTaskTimer(plugin, 10, 10);
     }
 
@@ -21,11 +23,14 @@ public class UpdateTask extends BukkitRunnable {
      * Updates stat boards
      */
     @Override
-    public void run() {
-        for (PlayerBoards player : BoardManager.getAllPlayerBoards()) {
+    public void run()
+    {
+        for (PlayerBoards player : BoardManager.getAllPlayerBoards())
+        {
             if (!player.hasActiveBoard()) continue;
             Board board = player.getActiveBoard();
-            if (board instanceof StatBoard) {
+            if (board instanceof StatBoard)
+            {
                 ((StatBoard) board).update();
             }
         }

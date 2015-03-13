@@ -24,6 +24,7 @@ public class InventoryManager
      * @param key   key to mark the inventory with
      * @param rows  number of rows in the inventory
      * @param title title for the inventory
+     *
      * @return the created inventory
      */
     public static Inventory createInventory(String key, int rows, String title)
@@ -41,11 +42,12 @@ public class InventoryManager
      *
      * @param inventory inventory to check
      * @param key       key to check against
+     *
      * @return true if matches, false otherwise
      */
     public static boolean isMatching(Inventory inventory, String key)
     {
-        return inventory.getHolder() instanceof Holder && ((Holder)inventory.getHolder()).getKey().equals(key);
+        return inventory.getHolder() instanceof Holder && ((Holder) inventory.getHolder()).getKey().equals(key);
     }
 }
 

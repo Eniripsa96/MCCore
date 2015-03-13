@@ -6,7 +6,8 @@ import org.bukkit.plugin.Plugin;
 /**
  * Interface for handlers for commands
  */
-public interface ICommand {
+public interface ICommand
+{
 
     /**
      * Executes a command

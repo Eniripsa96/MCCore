@@ -1,6 +1,5 @@
 package com.rit.sucy.scoreboard;
 
-import com.rit.sucy.player.PlayerUUIDs;
 import com.rit.sucy.version.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,13 +12,14 @@ import java.util.Hashtable;
 /**
  * Scoreboard data for a player
  */
-public class PlayerBoards {
+public class PlayerBoards
+{
 
     public static final Scoreboard EMPTY = Bukkit.getScoreboardManager().getNewScoreboard();
 
     final Hashtable<String, Board> boards = new Hashtable<String, Board>();
     private final String player;
-    private String currentBoard;
+    private       String currentBoard;
 
     /**
      * Whether or not the player's scoreboard is cycling
@@ -31,7 +31,8 @@ public class PlayerBoards {
      *
      * @param playerName name of the player
      */
-    public PlayerBoards(String playerName) {
+    public PlayerBoards(String playerName)
+    {
         this.player = playerName;
         cycling = true;
     }
@@ -39,14 +40,16 @@ public class PlayerBoards {
     /**
      * @return owning player reference
      */
-    public Player getPlayer() {
+    public Player getPlayer()
+    {
         return Bukkit.getPlayer(player);
     }
 
     /**
      * @return name of the owning player
      */
-    public String getPlayerName() {
+    public String getPlayerName()
+    {
         return player;
     }
 
@@ -55,11 +58,13 @@ public class PlayerBoards {
      *
      * @param board board to add
      */
-    public void addBoard(Board board) {
+    public void addBoard(Board board)
+    {
         String fName = format(board.getName());
         boards.put(fName, board);
         BoardManager.updateBoard(board);
-        if (currentBoard == null) {
+        if (currentBoard == null)
+        {
             board.showPlayer(VersionManager.getPlayer(player));
             currentBoard = fName;
         }
@@ -70,7 +75,8 @@ public class PlayerBoards {
      *
      * @param board board to remove
      */
-    public void removeBoard(Board board) {
+    public void removeBoard(Board board)
+    {
 
         String fName = format(board.getName());
         if (!boards.containsKey(fName))
@@ -85,10 +91,13 @@ public class PlayerBoards {
      *
      * @param plugin plugin name
      */
-    public void removeBoards(String plugin) {
+    public void removeBoards(String plugin)
+    {
         ArrayList<Board> list = new ArrayList<Board>(boards.values());
-        for (Board board : list) {
-            if (board.plugin.equalsIgnoreCase(plugin)) {
+        for (Board board : list)
+        {
+            if (board.plugin.equalsIgnoreCase(plugin))
+            {
                 boards.remove(format(board.getName()));
             }
         }
@@ -98,13 +107,16 @@ public class PlayerBoards {
     /**
      * Validates that the current board is active
      */
-    private void validateBoard() {
+    private void validateBoard()
+    {
         if (currentBoard == null)
             return;
-        if (!boards.contains(currentBoard)) {
+        if (!boards.contains(currentBoard))
+        {
             if (boards.size() > 0)
                 showNextBoard();
-            else {
+            else
+            {
                 currentBoard = null;
                 Bukkit.getPlayer(player).setScoreboard(EMPTY);
             }
@@ -115,12 +127,15 @@ public class PlayerBoards {
      * Shows a scoreboard for the player
      *
      * @param name name of the scoreboard
-     * @return     true if successful, false otherwise
+     *
+     * @return true if successful, false otherwise
      */
-    public boolean showBoard(String name) {
+    public boolean showBoard(String name)
+    {
 
         name = format(name);
-        if (boards.containsKey(name)) {
+        if (boards.containsKey(name))
+        {
             Bukkit.getPlayer(player).setScoreboard(boards.get(name).getScoreboard());
             currentBoard = name;
             return true;
@@ -132,21 +147,26 @@ public class PlayerBoards {
     /**
      * Shows the next scoreboard
      */
-    public void showNextBoard() {
+    public void showNextBoard()
+    {
         if (boards.size() == 0)
             return;
 
         ArrayList<Board> boards = new ArrayList<Board>(this.boards.values());
 
-        if (boards.size() == 1 || currentBoard == null) {
-            if (currentBoard == null) {
+        if (boards.size() == 1 || currentBoard == null)
+        {
+            if (currentBoard == null)
+            {
                 showBoard(boards.get(0).getName());
             }
             return;
         }
 
-        for (int i = 0; i < boards.size(); i++) {
-            if (format(boards.get(i).getName()).equalsIgnoreCase(currentBoard)) {
+        for (int i = 0; i < boards.size(); i++)
+        {
+            if (format(boards.get(i).getName()).equalsIgnoreCase(currentBoard))
+            {
                 showBoard(boards.get((i + 1) % boards.size()).getName());
                 return;
             }
@@ -157,9 +177,11 @@ public class PlayerBoards {
      * Formats the name for the hash table
      *
      * @param name board name
-     * @return     formatted board name
+     *
+     * @return formatted board name
      */
-    private String format(String name) {
+    private String format(String name)
+    {
         return ChatColor.stripColor(name.toLowerCase());
     }
 
@@ -167,9 +189,11 @@ public class PlayerBoards {
      * Retrieves a board manager
      *
      * @param name scoreboard name
-     * @return     board manager
+     *
+     * @return board manager
      */
-    public Board getBoard(String name) {
+    public Board getBoard(String name)
+    {
         return boards.get(name.toLowerCase());
     }
 
@@ -178,7 +202,8 @@ public class PlayerBoards {
      *
      * @return active board
      */
-    public Board getActiveBoard() {
+    public Board getActiveBoard()
+    {
         return boards.get(currentBoard);
     }
 
@@ -187,35 +212,40 @@ public class PlayerBoards {
      *
      * @return true if has an active scoreboard, false otherwise
      */
-    public boolean hasActiveBoard() {
+    public boolean hasActiveBoard()
+    {
         return boards.size() > 0;
     }
 
     /**
      * @return the boards attached to the player
      */
-    public Hashtable<String, Board> getBoards() {
+    public Hashtable<String, Board> getBoards()
+    {
         return boards;
     }
 
     /**
      * @return true if cycling, false otherwise
      */
-    public boolean isCycling() {
+    public boolean isCycling()
+    {
         return cycling;
     }
 
     /**
      * Makes the player's scoreboard cycle
      */
-    public void startCycling() {
+    public void startCycling()
+    {
         cycling = true;
     }
 
     /**
      * Makes the player's scoreboard stop cycling
      */
-    public void stopCycling() {
+    public void stopCycling()
+    {
         cycling = false;
     }
 
@@ -224,8 +254,10 @@ public class PlayerBoards {
      *
      * @param label health label
      */
-    public void setHealthLabel(String label) {
-        for (Board board : boards.values()) {
+    public void setHealthLabel(String label)
+    {
+        for (Board board : boards.values())
+        {
             board.setHealthLabel(label);
             Player player = Bukkit.getPlayer(this.player);
             player.setHealth(player.getHealth());

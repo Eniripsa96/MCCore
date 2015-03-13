@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,8 +24,9 @@ import java.util.regex.Pattern;
  * <p>The language configuration works off of the defaults you include in the
  * file when you build your plugin. At least one default is required to
  * instantiate this class.</p>
+ * <p>This config supports comments and UTF-8 encoding for Strings.</p>
  */
-public class LanguageConfig extends Config
+public class CommentedLanguageConfig extends CommentedConfig
 {
 
     private static final String  EXPAND_FONT_REGEX = "\\{expandFront\\((.+),([0-9]+),([0-9]+)\\)\\}";
@@ -42,17 +42,12 @@ public class LanguageConfig extends Config
      * @param plugin plugin reference
      * @param file   path to the language file
      */
-    public LanguageConfig(JavaPlugin plugin, String file)
+    public CommentedLanguageConfig(JavaPlugin plugin, String file)
     {
         super(plugin, file);
 
-        // The configuration must have a default section
-        ConfigurationSection config = getConfig();
-        if (config.getDefaultSection() == null)
-            throw new IllegalArgumentException("Invalid language configuration - no defaults found");
-
         // Update the config, making sure all defaults
-        // // are present and trimming incorrect values
+        // are present and trimming incorrect values
         saveDefaultConfig();
         trim();
         checkDefaults();
@@ -91,8 +86,8 @@ public class LanguageConfig extends Config
     {
 
         List<String> lines;
-        if (!getConfig().contains(key)) return null;
-        else if (getConfig().isList(key)) lines = getConfig().getStringList(key);
+        if (!getConfig().has(key)) return null;
+        else if (getConfig().isList(key)) lines = getConfig().getList(key);
         else
         {
             lines = new ArrayList<String>();

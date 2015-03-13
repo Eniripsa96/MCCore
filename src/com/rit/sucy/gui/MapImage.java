@@ -17,8 +17,8 @@ import java.util.Arrays;
 public class MapImage
 {
     private byte[] data;
-    private int width;
-    private int height;
+    private int    width;
+    private int    height;
 
     /**
      * Initializes a default map image matching
@@ -63,6 +63,7 @@ public class MapImage
      * it to a format that works better with the map canvas
      *
      * @param file file to load from
+     *
      * @throws IOException
      */
     public MapImage(File file) throws IOException
@@ -108,7 +109,7 @@ public class MapImage
      */
     public void clear()
     {
-        Arrays.fill(data, (byte)0);
+        Arrays.fill(data, (byte) 0);
     }
 
     /**
@@ -154,6 +155,7 @@ public class MapImage
      * @param str  string to draw
      * @param x    starting horizontal position
      * @param y    baseline position of the text
+     *
      * @return x-coordinate at the end of the render
      */
     public int drawString(MapFont font, byte color, String str, int x, int y)
@@ -242,6 +244,7 @@ public class MapImage
      * @param r red channel
      * @param g green channel
      * @param b blue channel
+     *
      * @return color object
      */
     private static Color c(int r, int g, int b)
@@ -255,9 +258,11 @@ public class MapImage
      *
      * @param c1 first color to compare
      * @param c2 second color to compare
+     *
      * @return the weighted similarity value between the two
      */
-    private static double getDistance(Color c1, Color c2) {
+    private static double getDistance(Color c1, Color c2)
+    {
         double rmean = (c1.getRed() + c2.getRed()) / 2.0D;
         double r = c1.getRed() - c2.getRed();
         double g = c1.getGreen() - c2.getGreen();
@@ -272,6 +277,7 @@ public class MapImage
      * Converts an image to a byte array to use for map drawing
      *
      * @param image image to convert
+     *
      * @return data byte array
      */
     private static byte[] imageToBytes(Image image)
@@ -285,7 +291,8 @@ public class MapImage
         temp.getRGB(0, 0, temp.getWidth(), temp.getHeight(), pixels, 0, temp.getWidth());
 
         byte[] result = new byte[temp.getWidth() * temp.getHeight()];
-        for (int i = 0; i < pixels.length; i++) {
+        for (int i = 0; i < pixels.length; i++)
+        {
             result[i] = matchColor(new Color(pixels[i], true));
         }
         return result;
@@ -296,6 +303,7 @@ public class MapImage
      * is available for the map canvas.
      *
      * @param color color to convert to a map palette color
+     *
      * @return map palette color closest to the original
      */
     public static byte matchColor(Color color)
@@ -305,22 +313,25 @@ public class MapImage
         int index = 0;
         double best = -1.0D;
 
-        for (int i = 4; i < colors.length; i++) {
+        for (int i = 4; i < colors.length; i++)
+        {
             double distance = getDistance(color, colors[i]);
-            if ((distance < best) || (best == -1.0D)) {
+            if ((distance < best) || (best == -1.0D))
+            {
                 best = distance;
                 index = i;
             }
 
         }
 
-        return (byte)(index < 128 ? index : -129 + (index - 127));
+        return (byte) (index < 128 ? index : -129 + (index - 127));
     }
 
     /**
      * Retrieves a color by a given Map Palette ID
      *
      * @param id map palette ID
+     *
      * @return java color represented by the ID
      */
     public static Color getColor(byte id)

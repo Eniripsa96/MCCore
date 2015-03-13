@@ -7,9 +7,11 @@ import java.util.ArrayList;
 /**
  * Simple interface for providing stats for a scoreboard
  */
-public interface StatHolder {
+public interface StatHolder
+{
 
     public ArrayList<OfflinePlayer> getStats();
+
     public ArrayList<Integer> getValues();
 
 }

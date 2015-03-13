@@ -3,7 +3,8 @@ package com.rit.sucy.reflect;
 /**
  * List of particle types usable in the reflection particle class
  */
-public enum ParticleType {
+public enum ParticleType
+{
 
     /**
      * A cracked gray heart used when attacking a villager

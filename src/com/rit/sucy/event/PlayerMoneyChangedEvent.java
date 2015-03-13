@@ -8,9 +8,9 @@ import org.bukkit.event.HandlerList;
  * <p>Event for when someone gains or loses money</p>
  * <p>Note: This event is not automatically fired. It is to
  * be implemented by economy plugins.</p>
- *
  */
-public class PlayerMoneyChangedEvent extends Event {
+public class PlayerMoneyChangedEvent extends Event
+{
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -25,7 +25,8 @@ public class PlayerMoneyChangedEvent extends Event {
      * @param change  amount the balance changed by
      * @param balance new balance of the player
      */
-    public PlayerMoneyChangedEvent(Player player, double change, double balance) {
+    public PlayerMoneyChangedEvent(Player player, double change, double balance)
+    {
         this.player = player;
         this.change = change;
         this.balance = balance;
@@ -34,21 +35,24 @@ public class PlayerMoneyChangedEvent extends Event {
     /**
      * @return plyer that equipped the item
      */
-    public Player getPlayer() {
+    public Player getPlayer()
+    {
         return player;
     }
 
     /**
      * @return amount the player's balance changed by
      */
-    public double getAmount() {
+    public double getAmount()
+    {
         return change;
     }
 
     /**
      * @return new balance of the player
      */
-    public double getBalance() {
+    public double getBalance()
+    {
         return balance;
     }
 
@@ -56,14 +60,16 @@ public class PlayerMoneyChangedEvent extends Event {
      * @return handlers for this event
      */
     @Override
-    public HandlerList getHandlers() {
+    public HandlerList getHandlers()
+    {
         return handlers;
     }
 
     /**
      * @return handlers for this event
      */
-    public static HandlerList getHandlerList() {
+    public static HandlerList getHandlerList()
+    {
         return handlers;
     }
 }

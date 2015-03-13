@@ -3,67 +3,68 @@ package com.rit.sucy.sql;
 /**
  * Types of columns supported
  */
-public enum ColumnType {
+public enum ColumnType
+{
 
     /**
      * <p>A string that can be up to 16 characters long</p>
      */
-    STRING_16 ("VARCHAR(16)"),
+    STRING_16("VARCHAR(16)"),
 
     /**
      * A string that can be up to 32 characters long
      */
-    STRING_32 ("VARCHAR(32)"),
+    STRING_32("VARCHAR(32)"),
 
     /**
      * <p>A string that can be up to 64 characters long</p>
      */
-    STRING_64 ("VARCHAR(64)"),
+    STRING_64("VARCHAR(64)"),
 
     /**
      * <p>A string that can be up to 128 characters long</p>
      */
-    STRING_128 ("VARCHAR(128)"),
+    STRING_128("VARCHAR(128)"),
 
     /**
      * <p>A string that can be up to 256 characters long</p>
      */
-    STRING_255 ("VARCHAR(255)"),
+    STRING_255("VARCHAR(255)"),
 
     /**
      * <p>A string that can be up to 1000 characters long</p>
      */
-    STRING_1000 ("VARCHAR(1000)"),
+    STRING_1000("VARCHAR(1000)"),
 
     /**
      * <p>A string that can be up to 4000 characters long</p>
      */
-    STRING_4000 ("VARCHAR(4000)"),
+    STRING_4000("VARCHAR(4000)"),
 
     /**
      * <p>A string that can be up to 8000 characters long</p>
      */
-    STRING_8000 ("VARCHAR(8000)"),
+    STRING_8000("VARCHAR(8000)"),
 
     /**
      * A standard integer
      */
-    INT ("INT"),
+    INT("INT"),
 
     /**
      * A standard long
      */
-    LONG ("BIGINT"),
+    LONG("BIGINT"),
 
     /**
      * <p>A standard 4-byte float value</p>
      */
-    FLOAT ("FLOAT(24)"),
+    FLOAT("FLOAT(24)"),
 
     /**
      * <p>A standard 8-byte double value</p>
      */
-    DOUBLE ("FLOAT(53)"),
+    DOUBLE("FLOAT(53)"),
 
     /**
      * <p>A integer increment to put a number ID on each entry</p>
@@ -73,9 +74,7 @@ public enum ColumnType {
     /**
      * <p>A date/time value in the format YYYY-MM-DD HH:MM:SS</p>
      */
-    DATE_TIME("DATETIME"),
-
-    ;
+    DATE_TIME("DATETIME"),;
 
     private final String key;
 
@@ -84,7 +83,8 @@ public enum ColumnType {
      *
      * @param key type key
      */
-    private ColumnType(String key) {
+    private ColumnType(String key)
+    {
         this.key = key;
     }
 
@@ -92,7 +92,8 @@ public enum ColumnType {
      * @return type key
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return this.key;
     }
 
@@ -103,19 +104,31 @@ public enum ColumnType {
      *
      * @param type type of the column
      * @param size size of the column
-     * @return     column type representation
+     *
+     * @return column type representation
      */
-    public static ColumnType getByValues(String type, int size) {
-        if (type.equalsIgnoreCase("VARCHAR")) {
-            switch (size) {
-                case 16: return STRING_16;
-                case 32: return STRING_32;
-                case 64: return STRING_64;
-                case 128: return STRING_128;
-                case 255: return STRING_255;
-                case 1000: return STRING_1000;
-                case 4000: return STRING_4000;
-                case 8000: return STRING_8000;
+    public static ColumnType getByValues(String type, int size)
+    {
+        if (type.equalsIgnoreCase("VARCHAR"))
+        {
+            switch (size)
+            {
+                case 16:
+                    return STRING_16;
+                case 32:
+                    return STRING_32;
+                case 64:
+                    return STRING_64;
+                case 128:
+                    return STRING_128;
+                case 255:
+                    return STRING_255;
+                case 1000:
+                    return STRING_1000;
+                case 4000:
+                    return STRING_4000;
+                case 8000:
+                    return STRING_8000;
                 default:
                     if (size > 4000) return STRING_8000;
                     if (size > 1000) return STRING_4000;
@@ -127,19 +140,24 @@ public enum ColumnType {
                     else return STRING_16;
             }
         }
-        else if (type.equalsIgnoreCase("INT")) {
+        else if (type.equalsIgnoreCase("INT"))
+        {
             return INT;
         }
-        else if (type.equals("FLOAT")) {
+        else if (type.equals("FLOAT"))
+        {
             return FLOAT;
         }
-        else if (type.equals("DOUBLE")) {
+        else if (type.equals("DOUBLE"))
+        {
             return DOUBLE;
         }
-        else if (type.equals("DATETIME")) {
+        else if (type.equals("DATETIME"))
+        {
             return DATE_TIME;
         }
-        else if (type.equals("BIGINT")) {
+        else if (type.equals("BIGINT"))
+        {
             return LONG;
         }
 

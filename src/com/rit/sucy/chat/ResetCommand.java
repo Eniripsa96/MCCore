@@ -10,7 +10,8 @@ import org.bukkit.plugin.Plugin;
 /**
  * Resets the player's display name
  */
-class ResetCommand implements ICommand {
+class ResetCommand implements ICommand
+{
 
     /**
      * Executes the command
@@ -21,9 +22,11 @@ class ResetCommand implements ICommand {
      * @param args    command arguments
      */
     @Override
-    public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args)
+    {
         ChatData data = Chat.getPlayerData(sender.getName());
-        if (data != null) {
+        if (data != null)
+        {
             data.setDisplayName(sender.getName());
             sender.sendMessage(ChatColor.DARK_GREEN + "Your name has been reset to its default");
         }
@@ -33,7 +36,8 @@ class ResetCommand implements ICommand {
     /**
      * @return permission needed for this command
      */
-    public String getPermissionNode() {
+    public String getPermissionNode()
+    {
         return ChatNodes.RESET.getNode();
     }
 
@@ -41,7 +45,8 @@ class ResetCommand implements ICommand {
      * @return args string
      */
     @Override
-    public String getArgsString() {
+    public String getArgsString()
+    {
         return "";
     }
 
@@ -49,7 +54,8 @@ class ResetCommand implements ICommand {
      * @return description
      */
     @Override
-    public String getDescription() {
+    public String getDescription()
+    {
         return "Resets your display name";
     }
 
@@ -57,7 +63,8 @@ class ResetCommand implements ICommand {
      * Sender required for the command
      */
     @Override
-    public SenderType getSenderType() {
+    public SenderType getSenderType()
+    {
         return SenderType.PLAYER_ONLY;
     }
 }

@@ -3,7 +3,8 @@ package com.rit.sucy.economy;
 /**
  * Manager for accessing banks and player accounts
  */
-public interface Economy {
+public interface Economy
+{
 
     /**
      * @return true if the economy supports multiple worlds, false otherwise
@@ -19,7 +20,8 @@ public interface Economy {
      * Retrieves the bank with the given name
      *
      * @param name bank name
-     * @return     the bank
+     *
+     * @return the bank
      */
     public Bank getBank(String name);
 
@@ -28,7 +30,8 @@ public interface Economy {
      *
      * @param name  bank name
      * @param world world name
-     * @return      the bane
+     *
+     * @return the bane
      */
     public Bank getBank(String name, String world);
 
@@ -36,7 +39,8 @@ public interface Economy {
      * Checks if the bank exists
      *
      * @param name bank name
-     * @return     true if exists, false otherwise
+     *
+     * @return true if exists, false otherwise
      */
     public boolean hasBank(String name);
 
@@ -45,7 +49,8 @@ public interface Economy {
      *
      * @param name  bank name
      * @param world world name
-     * @return      true if exists, false otherwise
+     *
+     * @return true if exists, false otherwise
      */
     public boolean hasBank(String name, String world);
 
@@ -54,7 +59,8 @@ public interface Economy {
      *
      * @param name  bank name
      * @param funds initial funds
-     * @return      the bank
+     *
+     * @return the bank
      */
     public Bank createBank(String name, double funds);
 
@@ -64,7 +70,8 @@ public interface Economy {
      * @param name  bank name
      * @param world world name
      * @param funds initial funds
-     * @return      the bank
+     *
+     * @return the bank
      */
     public Bank createBank(String name, String world, double funds);
 
@@ -87,7 +94,8 @@ public interface Economy {
      * Retrieves a player account
      *
      * @param name player name
-     * @return     player account
+     *
+     * @return player account
      */
     public Account getAccount(String name);
 
@@ -96,7 +104,8 @@ public interface Economy {
      *
      * @param name  player name
      * @param world world name
-     * @return      player account
+     *
+     * @return player account
      */
     public Account getAccount(String name, String world);
 
@@ -104,7 +113,8 @@ public interface Economy {
      * Checks if the player account exists
      *
      * @param name player name
-     * @return     true if exists, false otherwise
+     *
+     * @return true if exists, false otherwise
      */
     public boolean hasAccount(String name);
 
@@ -113,7 +123,8 @@ public interface Economy {
      *
      * @param name  player name
      * @param world world name
-     * @return      true if exists, false otherwise
+     *
+     * @return true if exists, false otherwise
      */
     public boolean hasAccount(String name, String world);
 
@@ -122,7 +133,8 @@ public interface Economy {
      *
      * @param name  player name
      * @param funds initial funds
-     * @return      player account
+     *
+     * @return player account
      */
     public Account createAccount(String name, double funds);
 
@@ -132,7 +144,8 @@ public interface Economy {
      * @param name  player name
      * @param world world name
      * @param funds initial funds
-     * @return      player account
+     *
+     * @return player account
      */
     public Account createAccount(String name, String world, double funds);
 
@@ -155,7 +168,8 @@ public interface Economy {
      * Formats the money into a string
      *
      * @param money money to format
-     * @return      money string
+     *
+     * @return money string
      */
     public String format(double money);
 

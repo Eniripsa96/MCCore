@@ -12,14 +12,16 @@ import java.util.List;
 /**
  * Interface for regions
  */
-public abstract class Region {
+public abstract class Region
+{
 
     protected World world;
 
     /**
      * @return world containing to the region
      */
-    public World getWorld() {
+    public World getWorld()
+    {
         return world;
     }
 
@@ -27,7 +29,8 @@ public abstract class Region {
      * Checks if the player is contained within the region
      *
      * @param player player to check
-     * @return       true if in the cuboid, false otherwise
+     *
+     * @return true if in the cuboid, false otherwise
      */
     public abstract boolean contains(Player player);
 
@@ -35,7 +38,8 @@ public abstract class Region {
      * Checks if the location is contained within the region
      *
      * @param loc location to check
-     * @return    true if in the cuboid, false otherwise
+     *
+     * @return true if in the cuboid, false otherwise
      */
     public abstract boolean contains(Location loc);
 
@@ -46,7 +50,8 @@ public abstract class Region {
      * @param x x-position
      * @param y y-position
      * @param z z-position
-     * @return  true if in the cuboid, false otherwise
+     *
+     * @return true if in the cuboid, false otherwise
      */
     public abstract boolean contains(World w, int x, int y, int z);
 
@@ -55,10 +60,13 @@ public abstract class Region {
      *
      * @return list of all players in the cuboid
      */
-    public List<Player> getPlayers() {
+    public List<Player> getPlayers()
+    {
         ArrayList<Player> list = new ArrayList<Player>();
-        for (Player player : getWorld().getPlayers()) {
-            if (contains(player)) {
+        for (Player player : getWorld().getPlayers())
+        {
+            if (contains(player))
+            {
                 list.add(player);
             }
         }

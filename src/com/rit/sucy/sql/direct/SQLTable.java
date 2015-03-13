@@ -16,7 +16,8 @@ import java.util.List;
  * as it uses prepared statements from that connection. Get the tables
  * each time you connect to the database rather than saving them.</p>
  */
-public class SQLTable {
+public class SQLTable
+{
 
     private final HashMap<String, SQLEntry> entries = new HashMap<String, SQLEntry>();
 
@@ -27,7 +28,7 @@ public class SQLTable {
             DELETE_ENTRY;
 
     private SQLDatabase database;
-    private String name;
+    private String      name;
 
     /**
      * <p>Constructs a new table. This should only be called by
@@ -37,7 +38,8 @@ public class SQLTable {
      * @param sql  sql connection
      * @param name name of the table
      */
-    public SQLTable(SQLDatabase sql, String name) {
+    public SQLTable(SQLDatabase sql, String name)
+    {
         this.database = sql;
         this.name = name;
 
@@ -52,7 +54,8 @@ public class SQLTable {
      *
      * @return table name
      */
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
@@ -60,12 +63,15 @@ public class SQLTable {
      * <p>Checks whether or not a column exists in the table.</p>
      *
      * @param name name of the column
-     * @return     true if exists, false otherwise
+     *
+     * @return true if exists, false otherwise
      */
-    public boolean columnExists(String name) {
+    public boolean columnExists(String name)
+    {
 
         // Check if the table exists
-        try {
+        try
+        {
             DatabaseMetaData meta = database.getMeta();
             ResultSet result = meta.getColumns(null, null, this.name, name);
             boolean exists = result.next();
@@ -74,7 +80,8 @@ public class SQLTable {
         }
 
         // An error occurred
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             database.getLogger().severe("Unable to validate table: " + ex.getMessage());
         }
 
@@ -87,13 +94,16 @@ public class SQLTable {
      * @param name name of the column
      * @param type type of the column
      */
-    public void createColumn(String name, ColumnType type) {
+    public void createColumn(String name, ColumnType type)
+    {
         if (columnExists(name)) return;
-        try {
+        try
+        {
             Statement statement = database.getStatement();
             statement.execute("ALTER TABLE " + this.name + " ADD " + name + " " + type.toString());
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             database.getLogger().severe("Failed to add the column \"" + name + "\" to the table \"" + this.name + "\" - " + ex.getMessage());
         }
     }
@@ -101,19 +111,23 @@ public class SQLTable {
     /**
      * Queries the MySQL table for a specific entry
      *
-     * @param name  entry name
-     * @return      query results
+     * @param name entry name
+     *
+     * @return query results
      */
-    public ResultSet query(String name) {
+    public ResultSet query(String name)
+    {
 
         // Query the database
-        try {
+        try
+        {
             QUERY_NAME.setString(1, name);
             return QUERY_NAME.executeQuery();
         }
 
         // Problems occurred
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             database.getLogger().severe("Failed to query SQL database: " + ex.getMessage());
             return null;
         }
@@ -122,17 +136,20 @@ public class SQLTable {
     /**
      * Queries the MySQL table
      *
-     * @return      query results
+     * @return query results
      */
-    public ResultSet queryAll() {
+    public ResultSet queryAll()
+    {
 
         // Query the database
-        try {
+        try
+        {
             return QUERY_ALL.executeQuery();
         }
 
         // Problems occurred
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             database.getLogger().severe("Failed to query SQL database: " + ex.getMessage());
             return null;
         }
@@ -145,13 +162,17 @@ public class SQLTable {
      *
      * @param c   the data class to use
      * @param <T> the type of the data class
-     * @return    the list of loaded data
+     *
+     * @return the list of loaded data
      */
-    public <T extends ISQLEntryData> List<T> getAllData(Class<T> c) {
+    public <T extends ISQLEntryData> List<T> getAllData(Class<T> c)
+    {
         ArrayList<T> list = new ArrayList<T>();
-        try {
+        try
+        {
             ResultSet set = queryAll();
-            while (set.next()) {
+            while (set.next())
+            {
                 T container = c.newInstance();
                 container.loadData(set);
                 list.add(container);
@@ -159,7 +180,8 @@ public class SQLTable {
             set.close();
             return list;
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             return null;
         }
     }
@@ -167,25 +189,30 @@ public class SQLTable {
     /**
      * Checks if an entry already exists
      *
-     * @param name  entry name
-     * @return      true if exists, false otherwise
+     * @param name entry name
+     *
+     * @return true if exists, false otherwise
      */
-    public boolean entryExists(String name) {
+    public boolean entryExists(String name)
+    {
         if (entries.containsKey(name)) return true;
 
         // Query for the player
         ResultSet result = query(name);
 
         // Try to get the next result
-        if (result != null) {
-            try {
+        if (result != null)
+        {
+            try
+            {
                 boolean exists = result.next();
                 result.close();
                 return exists;
             }
 
             // Failed to get the next result
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 database.getLogger().severe("Failed to check for an existing entry: " + ex.getMessage());
             }
         }
@@ -198,9 +225,11 @@ public class SQLTable {
      * <p>If the entry already exists, that will be returned instead.</p>
      *
      * @param name name of the entry
-     * @return     entry representation
+     *
+     * @return entry representation
      */
-    public SQLEntry createEntry(String name) {
+    public SQLEntry createEntry(String name)
+    {
 
         // Special cases
         if (!database.isConnected()) return null;
@@ -208,7 +237,8 @@ public class SQLTable {
         if (entryExists(name)) return new SQLEntry(database, this, name);
 
         // Create the table
-        try {
+        try
+        {
             CREATE_ENTRY.setString(1, name);
             CREATE_ENTRY.execute();
             SQLEntry entry = new SQLEntry(database, this, name);
@@ -218,7 +248,8 @@ public class SQLTable {
         }
 
         // An error occurred
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             database.getLogger().severe("Failed to create entry \"" + name + "\" - " + ex.getMessage());
         }
 
@@ -229,17 +260,22 @@ public class SQLTable {
      * <p>Deletes an entry from the table.</p>
      *
      * @param name entry name
-     * @return     true if successful, false otherwise
+     *
+     * @return true if successful, false otherwise
      */
-    public boolean deleteEntry(String name) {
-        if (database.isConnected()) {
-            try {
+    public boolean deleteEntry(String name)
+    {
+        if (database.isConnected())
+        {
+            try
+            {
                 DELETE_ENTRY.setString(1, name);
                 DELETE_ENTRY.execute();
                 entries.remove(name);
                 return true;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 database.getLogger().severe("Failed to delete table \"" + name + "\" - " + ex.getMessage());
             }
         }

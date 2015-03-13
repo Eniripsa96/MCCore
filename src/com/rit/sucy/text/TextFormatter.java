@@ -10,12 +10,13 @@ import java.util.regex.Pattern;
 /**
  * Formats strings into various forms
  */
-public class TextFormatter {
+public class TextFormatter
+{
 
     /**
      * Regex string for finding color patterns
      */
-    private static final String COLOR_REGEX = "([0-9a-fl-orA-FL-OR])";
+    private static final String  COLOR_REGEX   = "([0-9a-fl-orA-FL-OR])";
     private static final Pattern COLOR_PATTERN = Pattern.compile(COLOR_REGEX);
 
     /**
@@ -23,15 +24,18 @@ public class TextFormatter {
      * (e.g. This Would Be A Result)
      *
      * @param string string to format
-     * @return       formatted string
+     *
+     * @return formatted string
      */
-    public static String format(String string) {
+    public static String format(String string)
+    {
         if (string == null || string.length() == 0)
             return string;
 
         String[] pieces = split(string);
         String result = pieces[0].substring(0, 1).toUpperCase() + pieces[0].substring(1).toLowerCase();
-        for (int i = 1; i < pieces.length; i++) {
+        for (int i = 1; i < pieces.length; i++)
+        {
             result += " " + pieces[i].substring(0, 1).toUpperCase() + pieces[i].substring(1).toLowerCase();
         }
         return result;
@@ -42,9 +46,11 @@ public class TextFormatter {
      * (e.g. thisWouldBeAResult
      *
      * @param string string to be formatted
-     * @return       formatted string
+     *
+     * @return formatted string
      */
-    public static String formatLowerCamel(String string) {
+    public static String formatLowerCamel(String string)
+    {
         if (string == null || string.length() == 0)
             return string;
 
@@ -60,9 +66,11 @@ public class TextFormatter {
      * (e.g. ThisWouldBeAResult)
      *
      * @param string string to be formatted
-     * @return       formatted string
+     *
+     * @return formatted string
      */
-    public static String formatUpperCamel(String string) {
+    public static String formatUpperCamel(String string)
+    {
         if (string == null || string.length() == 0)
             return string;
 
@@ -79,9 +87,11 @@ public class TextFormatter {
      * @param number   number to format
      * @param decimals how many decimal places should be used
      * @param commas   whether or not to add commas (e.g. 1,210,321)
-     * @return         formatted number
+     *
+     * @return formatted number
      */
-    public static String formatNumber(double number, int decimals, boolean commas) {
+    public static String formatNumber(double number, int decimals, boolean commas)
+    {
         String formatString = commas ? "#,###,###,##0" : "#########0";
         if (decimals >= 1) formatString += ".0";
         for (int i = 1; i < decimals; i++) formatString += "0";
@@ -92,9 +102,11 @@ public class TextFormatter {
      * Colors a string using & as the color indicator
      *
      * @param string string to color
-     * @return       colored string
+     *
+     * @return colored string
      */
-    public static String colorString(String string) {
+    public static String colorString(String string)
+    {
         return colorString(string, '&');
     }
 
@@ -103,9 +115,11 @@ public class TextFormatter {
      *
      * @param string string to color
      * @param token  color indicator
-     * @return       colored string
+     *
+     * @return colored string
      */
-    public static String colorString(String string, char token) {
+    public static String colorString(String string, char token)
+    {
         if (string == null) return null;
         return string.replaceAll(token + COLOR_REGEX, ChatColor.COLOR_CHAR + "$1");
     }
@@ -115,7 +129,8 @@ public class TextFormatter {
      *
      * @param sb string builder to color
      */
-    public static void colorString(StringBuilder sb) {
+    public static void colorString(StringBuilder sb)
+    {
         colorString(sb, '&');
     }
 
@@ -125,13 +140,16 @@ public class TextFormatter {
      * @param sb    string builder to color
      * @param token color indicator
      */
-    public static void colorString(StringBuilder sb, char token) {
+    public static void colorString(StringBuilder sb, char token)
+    {
         if (sb == null) return;
         String t = token + "";
         int index = sb.indexOf(t);
-        while (index >= 0 && index < sb.length() - 1) {
+        while (index >= 0 && index < sb.length() - 1)
+        {
             ChatColor color = ChatColor.getByChar(sb.charAt(index + 1));
-            if (color != null) {
+            if (color != null)
+            {
                 sb.setCharAt(index, ChatColor.COLOR_CHAR);
             }
             index = sb.indexOf(t);
@@ -142,9 +160,11 @@ public class TextFormatter {
      * Colors a list of strings using & as the color indicator
      *
      * @param list string list
-     * @return     colored string list
+     *
+     * @return colored string list
      */
-    public static List<String> colorStringList(List<String> list) {
+    public static List<String> colorStringList(List<String> list)
+    {
         return colorStringList(list, '&');
     }
 
@@ -153,11 +173,14 @@ public class TextFormatter {
      *
      * @param list  string list
      * @param token color indicator
-     * @return     colored string list
+     *
+     * @return colored string list
      */
-    public static List<String> colorStringList(List<String> list, char token) {
+    public static List<String> colorStringList(List<String> list, char token)
+    {
         ArrayList<String> copy = new ArrayList<String>();
-        for (String string : list) {
+        for (String string : list)
+        {
             copy.add(colorString(string, token));
         }
         return copy;
@@ -167,9 +190,11 @@ public class TextFormatter {
      * Splits a string
      *
      * @param string string to split
-     * @return       split string
+     *
+     * @return split string
      */
-    private static String[] split(String string) {
+    private static String[] split(String string)
+    {
         if (string == null) return null;
         if (string.contains(" ") || string.contains("_"))
             return string.split("[ _]");

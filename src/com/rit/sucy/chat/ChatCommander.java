@@ -9,14 +9,16 @@ import org.bukkit.plugin.Plugin;
 /**
  * Controls commands for the chat API
  */
-public class ChatCommander extends CommandHandler {
+public class ChatCommander extends CommandHandler
+{
 
     /**
      * Constructor
      *
      * @param plugin plugin reference
      */
-    public ChatCommander(Plugin plugin) {
+    public ChatCommander(Plugin plugin)
+    {
         super(plugin, "Chat", "chat");
     }
 
@@ -24,7 +26,8 @@ public class ChatCommander extends CommandHandler {
      * Registers the sub-commands
      */
     @Override
-    protected void registerCommands() {
+    protected void registerCommands()
+    {
         registerCommand("list", new ListCommand());
         registerCommand("name", new NameCommand());
         registerCommand("prefix", new PrefixCommand());
@@ -37,8 +40,10 @@ public class ChatCommander extends CommandHandler {
      * @param sender sender of the command
      */
     @Override
-    public void displayUsage(CommandSender sender) {
-        if (!(sender instanceof Player)) {
+    public void displayUsage(CommandSender sender)
+    {
+        if (!(sender instanceof Player))
+        {
             sender.sendMessage(ChatColor.DARK_RED + "Chat commands are for players only!");
         }
         else super.displayUsage(sender);

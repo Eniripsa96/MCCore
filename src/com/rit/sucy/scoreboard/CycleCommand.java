@@ -11,7 +11,8 @@ import org.bukkit.plugin.Plugin;
 /**
  * Makes a player's scoreboard start cycling
  */
-public class CycleCommand implements ICommand {
+public class CycleCommand implements ICommand
+{
 
     /**
      * Executes the command
@@ -22,12 +23,15 @@ public class CycleCommand implements ICommand {
      * @param args    command arguments
      */
     @Override
-    public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args) {
-        if (sender instanceof Player) {
+    public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args)
+    {
+        if (sender instanceof Player)
+        {
             PlayerBoards board = BoardManager.getPlayerBoards(sender.getName());
             if (board.isCycling())
                 sender.sendMessage(ChatColor.DARK_RED + "Your scoreboard is already cycling");
-            else {
+            else
+            {
                 board.startCycling();
                 sender.sendMessage(ChatColor.DARK_GREEN + "Your scoreboard is now cycling");
             }
@@ -39,7 +43,8 @@ public class CycleCommand implements ICommand {
      * @return permission needed for this command
      */
     @Override
-    public String getPermissionNode() {
+    public String getPermissionNode()
+    {
         return ScoreboardNodes.CYCLE.getNode();
     }
 
@@ -47,7 +52,8 @@ public class CycleCommand implements ICommand {
      * @return args string
      */
     @Override
-    public String getArgsString() {
+    public String getArgsString()
+    {
         return "";
     }
 
@@ -55,7 +61,8 @@ public class CycleCommand implements ICommand {
      * @return description
      */
     @Override
-    public String getDescription() {
+    public String getDescription()
+    {
         return "Makes the scoreboard cycle";
     }
 
@@ -63,7 +70,8 @@ public class CycleCommand implements ICommand {
      * Sender required for the command
      */
     @Override
-    public SenderType getSenderType() {
+    public SenderType getSenderType()
+    {
         return SenderType.PLAYER_ONLY;
     }
 }

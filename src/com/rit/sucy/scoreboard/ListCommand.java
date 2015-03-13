@@ -10,7 +10,8 @@ import org.bukkit.plugin.Plugin;
 /**
  * Displays a list of all active scoreboards for a player
  */
-public class ListCommand implements ICommand {
+public class ListCommand implements ICommand
+{
 
     /**
      * Executes the command
@@ -21,10 +22,12 @@ public class ListCommand implements ICommand {
      * @param args    command arguments
      */
     @Override
-    public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(CommandHandler handler, Plugin plugin, CommandSender sender, String[] args)
+    {
         String message = ChatColor.DARK_GREEN + "Active Scoreboards: ";
         PlayerBoards boards = BoardManager.getPlayerBoards(sender.getName());
-        for (Board board : boards.boards.values()) {
+        for (Board board : boards.boards.values())
+        {
             message += ChatColor.GOLD + ChatColor.stripColor(board.getName()) + ChatColor.GRAY + ", ";
         }
         sender.sendMessage(message);
@@ -34,7 +37,8 @@ public class ListCommand implements ICommand {
      * @return permission required by the command
      */
     @Override
-    public String getPermissionNode() {
+    public String getPermissionNode()
+    {
         return ScoreboardNodes.LIST.getNode();
     }
 
@@ -42,7 +46,8 @@ public class ListCommand implements ICommand {
      * @return arguments used by the command
      */
     @Override
-    public String getArgsString() {
+    public String getArgsString()
+    {
         return "";
     }
 
@@ -50,7 +55,8 @@ public class ListCommand implements ICommand {
      * @return command description
      */
     @Override
-    public String getDescription() {
+    public String getDescription()
+    {
         return "Displays a list of active scoreboards";
     }
 
@@ -58,7 +64,8 @@ public class ListCommand implements ICommand {
      * Sender required for the command
      */
     @Override
-    public SenderType getSenderType() {
+    public SenderType getSenderType()
+    {
         return SenderType.PLAYER_ONLY;
     }
 }

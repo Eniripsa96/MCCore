@@ -11,7 +11,8 @@ import java.lang.reflect.Method;
  * <p>Utility class for performing reflection operations. Only use
  * this class if you know what you're doing.</p>
  */
-public class Reflection {
+public class Reflection
+{
 
     private static String CRAFT;
     private static String NMS;
@@ -21,13 +22,17 @@ public class Reflection {
      * Retrieves a class by name
      *
      * @param name name of the class including packages
-     * @return     class object or null if invalid
+     *
+     * @return class object or null if invalid
      */
-    public static Class<?> getClass(String name) {
-        try {
+    public static Class<?> getClass(String name)
+    {
+        try
+        {
             return Class.forName(name);
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             return null;
         }
     }
@@ -36,10 +41,13 @@ public class Reflection {
      * Retrieves an NMS class by name
      *
      * @param name name of the class including packages
-     * @return     class object or null if invalid
+     *
+     * @return class object or null if invalid
      */
-    public static Class<?> getNMSClass(String name) {
-        if (NMS == null) {
+    public static Class<?> getNMSClass(String name)
+    {
+        if (NMS == null)
+        {
             NMS = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().substring(23);
         }
         return getClass(NMS + name);
@@ -49,10 +57,13 @@ public class Reflection {
      * Retrieves a CraftBukkit class by name
      *
      * @param name name of the class including packages
-     * @return     class object or null if invalid
+     *
+     * @return class object or null if invalid
      */
-    public static Class<?> getCraftClass(String name) {
-        if (CRAFT == null) {
+    public static Class<?> getCraftClass(String name)
+    {
+        if (CRAFT == null)
+        {
             CRAFT = "org.bukkit.craftbukkit." + Bukkit.getServer().getClass().getPackage().getName().substring(23);
         }
         return getClass(CRAFT + name);
@@ -63,18 +74,24 @@ public class Reflection {
      *
      * @param c    class to get an instance of
      * @param args constructor arguments
-     * @return     instance of the class or null if unable to create the object
+     *
+     * @return instance of the class or null if unable to create the object
      */
-    public static Object getInstance(Class<?> c, Object ... args) {
+    public static Object getInstance(Class<?> c, Object... args)
+    {
         if (c == null) return null;
-        try {
-            for (Constructor<?> constructor : c.getDeclaredConstructors()) {
-                if (constructor.getGenericParameterTypes().length == args.length) {
+        try
+        {
+            for (Constructor<?> constructor : c.getDeclaredConstructors())
+            {
+                if (constructor.getGenericParameterTypes().length == args.length)
+                {
                     return constructor.newInstance(args);
                 }
             }
         }
-        catch (Exception ex) { /* */ }
+        catch (Exception ex)
+        { /* */ }
         return null;
     }
 
@@ -85,13 +102,16 @@ public class Reflection {
      * @param fieldName name of the field to set
      * @param value     value to set
      */
-    public static void setValue(Object o, String fieldName, Object value) {
-        try {
+    public static void setValue(Object o, String fieldName, Object value)
+    {
+        try
+        {
             Field field = o.getClass().getDeclaredField(fieldName);
             if (!field.isAccessible()) field.setAccessible(true);
             field.set(o, value);
         }
-        catch (Exception ex) { /* Do Nothing */ }
+        catch (Exception ex)
+        { /* Do Nothing */ }
     }
 
     /**
@@ -99,15 +119,19 @@ public class Reflection {
      *
      * @param o         object reference
      * @param fieldName name of the field to retrieve the value from
-     * @return          the value of the field or null if not found
+     *
+     * @return the value of the field or null if not found
      */
-    public static Object getValue(Object o, String fieldName) {
-        try {
+    public static Object getValue(Object o, String fieldName)
+    {
+        try
+        {
             Field field = o.getClass().getDeclaredField(fieldName);
             if (!field.isAccessible()) field.setAccessible(true);
             return field.get(o);
         }
-        catch (Exception ex) { /* Do nothing */ }
+        catch (Exception ex)
+        { /* Do nothing */ }
         return null;
     }
 
@@ -116,15 +140,19 @@ public class Reflection {
      *
      * @param o          object reference
      * @param methodName name of the field to retrieve the value from
-     * @return           the value of the field or null if not found
+     *
+     * @return the value of the field or null if not found
      */
-    public static Method getMethod(Object o, String methodName, Class<?> ... params) {
-        try {
+    public static Method getMethod(Object o, String methodName, Class<?>... params)
+    {
+        try
+        {
             Method method = o.getClass().getMethod(methodName, params);
             if (!method.isAccessible()) method.setAccessible(true);
             return method;
         }
-        catch (Exception ex) { /* Do nothing */ }
+        catch (Exception ex)
+        { /* Do nothing */ }
         return null;
     }
 
@@ -134,13 +162,16 @@ public class Reflection {
      * @param player player to send to
      * @param packet packet to send
      */
-    public static void sendPacket(Player player, Object packet) {
-        try {
+    public static void sendPacket(Player player, Object packet)
+    {
+        try
+        {
             Object handle = player.getClass().getMethod("getHandle").invoke(player);
             Object connection = handle.getClass().getField("playerConnection").get(handle);
             connection.getClass().getMethod("sendPacket", packetClass).invoke(connection, packet);
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             ex.printStackTrace();
         }
     }

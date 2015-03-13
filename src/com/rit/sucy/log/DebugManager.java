@@ -9,17 +9,19 @@ import org.bukkit.plugin.java.JavaPlugin;
  * them active. Simply adding a config option and using that
  * for the debugging level can remove any unwanted messages</p>
  */
-public class DebugManager {
+public class DebugManager
+{
 
     private JavaPlugin plugin;
-    private int activeLevel;
+    private int        activeLevel;
 
     /**
      * Constructor
      *
      * @param activeLevel debugging message level
      */
-    public DebugManager(JavaPlugin plugin, int activeLevel) {
+    public DebugManager(JavaPlugin plugin, int activeLevel)
+    {
         this.plugin = plugin;
         this.activeLevel = activeLevel;
     }
@@ -30,8 +32,10 @@ public class DebugManager {
      * @param message message to send
      * @param level   debugging level of the message
      */
-    public void info(String message, int level) {
-        if (activeLevel >= level) {
+    public void info(String message, int level)
+    {
+        if (activeLevel >= level)
+        {
             plugin.getLogger().info(message);
         }
     }
@@ -42,8 +46,10 @@ public class DebugManager {
      * @param message message to send
      * @param level   debugging level for the message
      */
-    public void severe(String message, int level) {
-        if (activeLevel >= level) {
+    public void severe(String message, int level)
+    {
+        if (activeLevel >= level)
+        {
             plugin.getLogger().severe(message);
         }
     }
@@ -54,8 +60,10 @@ public class DebugManager {
      * @param message message to send
      * @param level   debugging level for the message
      */
-    public void warning(String message, int level) {
-        if (activeLevel >= level) {
+    public void warning(String message, int level)
+    {
+        if (activeLevel >= level)
+        {
             plugin.getLogger().warning(message);
         }
     }

@@ -4,7 +4,6 @@ import com.rit.sucy.MCCore;
 import com.rit.sucy.event.ItemGainDurabilityEvent;
 import com.rit.sucy.event.ItemLoseDurabilityEvent;
 import com.rit.sucy.text.TextFormatter;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +14,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -24,7 +22,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 /**
  * <p>Listener for handling custom durabilities</p>
  */
-public class DurabilityListener implements Listener {
+public class DurabilityListener implements Listener
+{
 
     private MCCore plugin;
 
@@ -35,7 +34,8 @@ public class DurabilityListener implements Listener {
      *
      * @param plugin MCCore reference
      */
-    public DurabilityListener(MCCore plugin) {
+    public DurabilityListener(MCCore plugin)
+    {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
@@ -46,8 +46,10 @@ public class DurabilityListener implements Listener {
      * @param event event details
      */
     @EventHandler
-    public void onBreak(BlockBreakEvent event) {
-        if (event.getPlayer() != null && Durability.canHaveCustomDurability(event.getPlayer().getItemInHand())) {
+    public void onBreak(BlockBreakEvent event)
+    {
+        if (event.getPlayer() != null && Durability.canHaveCustomDurability(event.getPlayer().getItemInHand()))
+        {
             new DurabilityTask(event.getPlayer(), event.getPlayer().getItemInHand());
         }
     }
@@ -58,11 +60,15 @@ public class DurabilityListener implements Listener {
      * @param event event details
      */
     @EventHandler
-    public void onDamaged(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Player player = (Player)event.getEntity();
-            for (ItemStack item : player.getInventory().getArmorContents()) {
-                if (item != null && Durability.canHaveCustomDurability(item)) {
+    public void onDamaged(EntityDamageEvent event)
+    {
+        if (event.getEntity() instanceof Player)
+        {
+            Player player = (Player) event.getEntity();
+            for (ItemStack item : player.getInventory().getArmorContents())
+            {
+                if (item != null && Durability.canHaveCustomDurability(item))
+                {
                     new DurabilityTask(player, item);
                 }
             }
@@ -75,10 +81,13 @@ public class DurabilityListener implements Listener {
      * @param event event details
      */
     @EventHandler
-    public void onHit(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player) {
-            Player player = (Player)event.getDamager();
-            if (Durability.canHaveCustomDurability(player.getItemInHand())) {
+    public void onHit(EntityDamageByEntityEvent event)
+    {
+        if (event.getDamager() instanceof Player)
+        {
+            Player player = (Player) event.getDamager();
+            if (Durability.canHaveCustomDurability(player.getItemInHand()))
+            {
                 new DurabilityTask(player, player.getItemInHand());
             }
         }
@@ -90,9 +99,11 @@ public class DurabilityListener implements Listener {
      * @param event event details
      */
     @EventHandler
-    public void onLaunch(EntityShootBowEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Player player = (Player)event.getEntity();
+    public void onLaunch(EntityShootBowEvent event)
+    {
+        if (event.getEntity() instanceof Player)
+        {
+            Player player = (Player) event.getEntity();
             new DurabilityTask(player, player.getItemInHand());
         }
     }
@@ -103,9 +114,12 @@ public class DurabilityListener implements Listener {
      * @param event event details
      */
     @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (Durability.canHaveCustomDurability(event.getPlayer().getItemInHand())) {
+    public void onInteract(PlayerInteractEvent event)
+    {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK)
+        {
+            if (Durability.canHaveCustomDurability(event.getPlayer().getItemInHand()))
+            {
                 new DurabilityTask(event.getPlayer(), event.getPlayer().getItemInHand());
             }
         }
@@ -117,7 +131,8 @@ public class DurabilityListener implements Listener {
      * @param event event details
      */
     @EventHandler
-    public void onShear(PlayerShearEntityEvent event) {
+    public void onShear(PlayerShearEntityEvent event)
+    {
         new DurabilityTask(event.getPlayer(), event.getPlayer().getItemInHand());
     }
 
@@ -127,19 +142,21 @@ public class DurabilityListener implements Listener {
      * @param event event details
      */
     @EventHandler
-    public void onFish(PlayerFishEvent event) {
+    public void onFish(PlayerFishEvent event)
+    {
         new DurabilityTask(event.getPlayer(), event.getPlayer().getItemInHand());
     }
 
     /**
      * A delayed task for updating item durabilities
      */
-    private class DurabilityTask extends BukkitRunnable {
+    private class DurabilityTask extends BukkitRunnable
+    {
 
-        Player player;
+        Player    player;
         ItemStack item;
-        int actualDurability;
-        int vanillaDurability;
+        int       actualDurability;
+        int       vanillaDurability;
 
         /**
          * Initializes a new task to check for changes in item durability
@@ -147,7 +164,8 @@ public class DurabilityListener implements Listener {
          * @param player player owning the item
          * @param item   item to check
          */
-        public DurabilityTask(Player player, ItemStack item) {
+        public DurabilityTask(Player player, ItemStack item)
+        {
             this.player = player;
             this.item = item;
             this.actualDurability = Durability.getDurability(item);
@@ -159,7 +177,8 @@ public class DurabilityListener implements Listener {
          * Runs the task, checking for differences in durability on the item
          */
         @Override
-        public void run() {
+        public void run()
+        {
 
             // Get the difference
             int difference = vanillaDurability - item.getDurability();
@@ -167,30 +186,34 @@ public class DurabilityListener implements Listener {
             // Do nothing when there's no difference
             if (difference == 0) return;
 
-            // Losing durability
-            else if (difference < 0) {
+                // Losing durability
+            else if (difference < 0)
+            {
                 ItemLoseDurabilityEvent event = new ItemLoseDurabilityEvent(player, item, -difference);
                 plugin.getServer().getPluginManager().callEvent(event);
                 difference = -event.getAmount();
             }
 
             // Gaining durability
-            else if (difference > 0) {
+            else if (difference > 0)
+            {
                 ItemGainDurabilityEvent event = new ItemGainDurabilityEvent(player, item, difference);
                 plugin.getServer().getPluginManager().callEvent(event);
                 difference = event.getAmount();
             }
 
-            if (difference != 0) {
+            if (difference != 0)
+            {
 
                 // Send the message if applicable
                 ItemMeta meta = item.hasItemMeta() ? item.getItemMeta() : null;
                 String name = meta != null && meta.hasDisplayName() ? item.getItemMeta().getDisplayName() : ItemManager.getVanillaName(item);
-                if (player.isOnline() && player.isValid() && plugin.isDurabilityMessageEnabled()) {
+                if (player.isOnline() && player.isValid() && plugin.isDurabilityMessageEnabled())
+                {
                     player.sendMessage(TextFormatter.colorString(plugin.getDurabilityMessage()
-                            .replace("{current}", (actualDurability + difference) + "")
-                            .replace("{max}", Durability.getMaxDurability(item) + "")
-                            .replace("{item}", name))
+                                                                         .replace("{current}", (actualDurability + difference) + "")
+                                                                         .replace("{max}", Durability.getMaxDurability(item) + "")
+                                                                         .replace("{item}", name))
                     );
                 }
 

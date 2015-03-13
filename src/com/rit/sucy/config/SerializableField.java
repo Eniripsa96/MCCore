@@ -17,7 +17,8 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SerializableField {
+public @interface SerializableField
+{
 
     /**
      * @return the flag in which this field is serializable

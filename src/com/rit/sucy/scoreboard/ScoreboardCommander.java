@@ -9,14 +9,16 @@ import org.bukkit.plugin.Plugin;
 /**
  * Handles commands for scoreboards
  */
-public class ScoreboardCommander extends CommandHandler {
+public class ScoreboardCommander extends CommandHandler
+{
 
     /**
      * Constructor
      *
      * @param plugin plugin reference
      */
-    public ScoreboardCommander(Plugin plugin) {
+    public ScoreboardCommander(Plugin plugin)
+    {
         super(plugin, "Scoreboard", "board");
     }
 
@@ -24,7 +26,8 @@ public class ScoreboardCommander extends CommandHandler {
      * Registers commands
      */
     @Override
-    protected void registerCommands() {
+    protected void registerCommands()
+    {
         registerCommand("cycle", new CycleCommand());
         registerCommand("list", new ListCommand());
         registerCommand("show", new ShowCommand());
@@ -37,8 +40,10 @@ public class ScoreboardCommander extends CommandHandler {
      * @param sender sender of the command
      */
     @Override
-    public void displayUsage(CommandSender sender) {
-        if (!(sender instanceof Player)) {
+    public void displayUsage(CommandSender sender)
+    {
+        if (!(sender instanceof Player))
+        {
             sender.sendMessage(ChatColor.DARK_RED + "Scoreboard commands are for players only!");
         }
         else super.displayUsage(sender);

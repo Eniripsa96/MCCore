@@ -5,7 +5,8 @@ import org.bukkit.entity.Player;
 /**
  * A player account - personal or a bank account
  */
-public interface Account {
+public interface Account
+{
 
     /**
      * @return money in this account
@@ -16,19 +17,22 @@ public interface Account {
      * Checks if the account has at least the given amount
      *
      * @param amount amount
-     * @return       true if the account has it, false otherwise
+     *
+     * @return true if the account has it, false otherwise
      */
     public boolean has(double amount);
 
     /**
      * @param amount withdraws money from the account
-     * @return       amount of money left in the account
+     *
+     * @return amount of money left in the account
      */
     public double withdraw(double amount);
 
     /**
      * @param amount adds money to the account
-     * @return       amount of money left in the account
+     *
+     * @return amount of money left in the account
      */
     public double deposit(double amount);
 
@@ -37,7 +41,8 @@ public interface Account {
      *
      * @param account target account
      * @param amount  amount to transfer
-     * @return        remaining balance
+     *
+     * @return remaining balance
      */
     public double transfer(Account account, double amount);
 

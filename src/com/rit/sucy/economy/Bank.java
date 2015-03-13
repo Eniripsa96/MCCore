@@ -3,13 +3,15 @@ package com.rit.sucy.economy;
 /**
  * A bank containing members and optionally having interest rates
  */
-public interface Bank extends Account {
+public interface Bank extends Account
+{
 
     /**
      * Gets an account of a member of the bank
      *
      * @param name member name
-     * @return     member account
+     *
+     * @return member account
      */
     public Account getAccount(String name);
 
@@ -17,7 +19,8 @@ public interface Bank extends Account {
      * Checks if the player is a member of the bank
      *
      * @param name player name
-     * @return     true if a member, false otherwise
+     *
+     * @return true if a member, false otherwise
      */
     public boolean hasAccount(String name);
 
@@ -26,7 +29,8 @@ public interface Bank extends Account {
      *
      * @param name  member name
      * @param funds initial funds
-     * @return      the new account
+     *
+     * @return the new account
      */
     public Account createAccount(String name, double funds);
 
@@ -35,7 +39,8 @@ public interface Bank extends Account {
      *
      * @param name   account to delete
      * @param absorb whether or not to add the money to the bank
-     * @return       the removed account
+     *
+     * @return the removed account
      */
     public Account removeAccount(String name, boolean absorb);
 
@@ -44,7 +49,8 @@ public interface Bank extends Account {
      *
      * @param name account name
      * @param bank bank to transfer to
-     * @return     the transferred account
+     *
+     * @return the transferred account
      */
     public Account transferAccount(String name, Bank bank);
 

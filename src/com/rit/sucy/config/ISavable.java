@@ -5,7 +5,8 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * A savable object for automatic config saving
  */
-public interface ISavable {
+public interface ISavable
+{
 
     /**
      * Saves the object to the config using the base path

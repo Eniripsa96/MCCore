@@ -9,14 +9,15 @@ import org.bukkit.inventory.ItemStack;
 /**
  * Event for when a player's item gains durability
  */
-public class ItemGainDurabilityEvent extends Event implements Cancellable {
+public class ItemGainDurabilityEvent extends Event implements Cancellable
+{
 
     private static final HandlerList handlers = new HandlerList();
 
-    private final Player player;
+    private final Player    player;
     private final ItemStack item;
-    private boolean cancelled;
-    private int amount;
+    private       boolean   cancelled;
+    private       int       amount;
 
     /**
      * Constructor
@@ -24,7 +25,8 @@ public class ItemGainDurabilityEvent extends Event implements Cancellable {
      * @param player player with the item
      * @param item   item that lost durability
      */
-    public ItemGainDurabilityEvent(Player player, ItemStack item, int amount) {
+    public ItemGainDurabilityEvent(Player player, ItemStack item, int amount)
+    {
         this.player = player;
         this.item = item;
         this.amount = amount;
@@ -34,21 +36,24 @@ public class ItemGainDurabilityEvent extends Event implements Cancellable {
     /**
      * @return plyer that equipped the item
      */
-    public Player getPlayer() {
+    public Player getPlayer()
+    {
         return player;
     }
 
     /**
      * @return item that was equipped
      */
-    public ItemStack getItem() {
+    public ItemStack getItem()
+    {
         return item;
     }
 
     /**
      * @return amount of durability gained
      */
-    public int getAmount() {
+    public int getAmount()
+    {
         return amount;
     }
 
@@ -57,7 +62,8 @@ public class ItemGainDurabilityEvent extends Event implements Cancellable {
      *
      * @param amount amount of durability to lose
      */
-    public void setAmount(int amount) {
+    public void setAmount(int amount)
+    {
         this.amount = amount;
     }
 
@@ -67,7 +73,8 @@ public class ItemGainDurabilityEvent extends Event implements Cancellable {
      * @param cancelled whether or not to cancel the event
      */
     @Override
-    public void setCancelled(boolean cancelled) {
+    public void setCancelled(boolean cancelled)
+    {
         this.cancelled = cancelled;
     }
 
@@ -77,7 +84,8 @@ public class ItemGainDurabilityEvent extends Event implements Cancellable {
      * @return true if cancelled, false otherwise
      */
     @Override
-    public boolean isCancelled() {
+    public boolean isCancelled()
+    {
         return cancelled;
     }
 
@@ -85,14 +93,16 @@ public class ItemGainDurabilityEvent extends Event implements Cancellable {
      * @return handlers for this event
      */
     @Override
-    public HandlerList getHandlers() {
+    public HandlerList getHandlers()
+    {
         return handlers;
     }
 
     /**
      * @return handlers for this event
      */
-    public static HandlerList getHandlerList() {
+    public static HandlerList getHandlerList()
+    {
         return handlers;
     }
 }

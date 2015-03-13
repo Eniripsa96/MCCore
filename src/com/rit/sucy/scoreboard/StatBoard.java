@@ -7,17 +7,19 @@ import java.util.ArrayList;
 /**
  * Stat board for displaying various statistics
  */
-public class StatBoard extends Board {
+public class StatBoard extends Board
+{
 
-    private final ArrayList<StatHolder> holders = new ArrayList<StatHolder>();
-    private final ArrayList<OfflinePlayer> stats = new ArrayList<OfflinePlayer>();
+    private final ArrayList<StatHolder>    holders = new ArrayList<StatHolder>();
+    private final ArrayList<OfflinePlayer> stats   = new ArrayList<OfflinePlayer>();
 
     /**
      * Constructor
      *
-     * @param title         scoreboard title
+     * @param title scoreboard title
      */
-    public StatBoard(String title, String plugin) {
+    public StatBoard(String title, String plugin)
+    {
         super(title, plugin);
     }
 
@@ -26,9 +28,11 @@ public class StatBoard extends Board {
      *
      * @param holder holder of the stats
      */
-    public void addStats(StatHolder holder) {
+    public void addStats(StatHolder holder)
+    {
         holders.add(holder);
-        for (OfflinePlayer stat : holder.getStats()) {
+        for (OfflinePlayer stat : holder.getStats())
+        {
             stats.add(stat);
         }
         update();
@@ -39,8 +43,10 @@ public class StatBoard extends Board {
      *
      * @param holder stat holder
      */
-    public void clearStats(StatHolder holder) {
-        for (OfflinePlayer stat : stats) {
+    public void clearStats(StatHolder holder)
+    {
+        for (OfflinePlayer stat : stats)
+        {
             scoreboard.resetScores(stat);
         }
     }
@@ -48,10 +54,13 @@ public class StatBoard extends Board {
     /**
      * Updates the stats for this scoreboard
      */
-    public void update() {
-        for (StatHolder holder : holders) {
+    public void update()
+    {
+        for (StatHolder holder : holders)
+        {
             int index = 0;
-            for (Integer value : holder.getValues()) {
+            for (Integer value : holder.getValues())
+            {
                 obj.getScore(stats.get(index++)).setScore(value);
             }
         }

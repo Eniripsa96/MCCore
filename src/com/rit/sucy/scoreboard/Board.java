@@ -9,7 +9,8 @@ import org.bukkit.scoreboard.Scoreboard;
 /**
  * A manager for a scoreboard
  */
-public abstract class Board {
+public abstract class Board
+{
 
     /**
      * Scoreboard controlled by this board
@@ -31,7 +32,8 @@ public abstract class Board {
      *
      * @param title title for the scoreboard
      */
-    public Board(String title, String plugin) {
+    public Board(String title, String plugin)
+    {
         this(title, "dummy", plugin);
     }
 
@@ -41,7 +43,8 @@ public abstract class Board {
      * @param title title for the scoreboard
      * @param type  type of the scoreboard
      */
-    public Board(String title, String type, String plugin) {
+    public Board(String title, String type, String plugin)
+    {
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         obj = scoreboard.registerNewObjective(title, type);
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -53,14 +56,16 @@ public abstract class Board {
      *
      * @return scoreboard name
      */
-    public String getName() {
+    public String getName()
+    {
         return obj.getName();
     }
 
     /**
      * @return scoreboard that this boad manages
      */
-    public Scoreboard getScoreboard() {
+    public Scoreboard getScoreboard()
+    {
         return scoreboard;
     }
 
@@ -69,18 +74,20 @@ public abstract class Board {
      *
      * @param player player to show
      */
-    public void showPlayer(Player player) {
+    public void showPlayer(Player player)
+    {
         player.setScoreboard(scoreboard);
     }
 
     /**
      * Sets the health objective for the scoreboard
-     *   - Recommended not to use this method -
+     * - Recommended not to use this method -
      * - Use PlayerBoard or BoardManager instead -
      *
      * @param label scoreboard label
      */
-    public void setHealthLabel(String label) {
+    public void setHealthLabel(String label)
+    {
         Objective obj = scoreboard.getObjective(DisplaySlot.BELOW_NAME) != null ?
                 scoreboard.getObjective(DisplaySlot.BELOW_NAME)
                 : scoreboard.registerNewObjective("hpBelowName", "health");

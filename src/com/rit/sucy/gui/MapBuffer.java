@@ -9,15 +9,15 @@ import java.lang.reflect.Method;
 /**
  * A specific MapImage used to represent a full map canvas
  * and draw to it as efficiently as possible.
- *
+ * <p/>
  * Just as a comparison between render methods:
- *   - Built in MapCanvas.drawImage: ~40ms for 128x128 image
- *   - Slow MapBuffer method: ~ 0.08ms for 128x128 image
- *   - Fast MapBuffer method: ~ 0.001ms for 128x128 image
- *
+ * - Built in MapCanvas.drawImage: ~40ms for 128x128 image
+ * - Slow MapBuffer method: ~ 0.08ms for 128x128 image
+ * - Fast MapBuffer method: ~ 0.001ms for 128x128 image
+ * <p/>
  * In other words:
- *   - Slow MapBuffer method is ~500x faster than MapCanvas.drawImage
- *   - Fast MapBuffer method is ~40,000x faster than MapCanvas.drawImage
+ * - Slow MapBuffer method is ~500x faster than MapCanvas.drawImage
+ * - Fast MapBuffer method is ~40,000x faster than MapCanvas.drawImage
  */
 public class MapBuffer extends MapImage
 {
@@ -28,7 +28,6 @@ public class MapBuffer extends MapImage
     /**
      * Initializes a new MapBuffer with a size of 128x128 that
      * acts as a buffer for the given MapView
-     *
      */
     public MapBuffer(MapView view)
     {
@@ -39,7 +38,8 @@ public class MapBuffer extends MapImage
         flagDirty = Reflection.getMethod(worldMap, "flagDirty", int.class, int.class);
 
         // Older servers use a slightly different method
-        if (flagDirty == null) {
+        if (flagDirty == null)
+        {
             flagDirty2 = Reflection.getMethod(worldMap, "flagDirty", int.class, int.class, int.class);
         }
 

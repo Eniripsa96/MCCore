@@ -23,7 +23,8 @@ public class CommandLog implements CommandSender
     @Override
     public void sendMessage(String[] strings)
     {
-        for (String str : strings) {
+        for (String str : strings)
+        {
             callback.execute(str);
         }
     }

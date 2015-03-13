@@ -18,7 +18,8 @@ import java.util.Map;
 /**
  * Manages organizing commands into sub-commands
  */
-public abstract class CommandHandler implements CommandExecutor {
+public abstract class CommandHandler implements CommandExecutor
+{
 
     protected static final String BREAK = ChatColor.STRIKETHROUGH + "" + ChatColor.DARK_GRAY + "-----------------------------------------------------";
 
@@ -49,14 +50,16 @@ public abstract class CommandHandler implements CommandExecutor {
      * @param title   usage title
      * @param command command label
      */
-    public CommandHandler(Plugin plugin, String title, String command) {
+    public CommandHandler(Plugin plugin, String title, String command)
+    {
         this.plugin = plugin;
         this.title = title;
         this.label = command;
         registerCommands();
 
-        PluginCommand cmd = ((JavaPlugin)plugin).getCommand(command);
-        if (cmd != null) {
+        PluginCommand cmd = ((JavaPlugin) plugin).getCommand(command);
+        if (cmd != null)
+        {
             cmd.setExecutor(this);
         }
     }
@@ -67,21 +70,24 @@ public abstract class CommandHandler implements CommandExecutor {
      * @param plugin  plugin reference
      * @param command command label and usage title
      */
-    public CommandHandler(Plugin plugin, String command) {
+    public CommandHandler(Plugin plugin, String command)
+    {
         this(plugin, command, command);
     }
 
     /**
      * @return plugin reference
      */
-    public Plugin getPlugin() {
+    public Plugin getPlugin()
+    {
         return plugin;
     }
 
     /**
      * @return command label
      */
-    public String getLabel() {
+    public String getLabel()
+    {
         return label.toLowerCase();
     }
 
@@ -91,7 +97,8 @@ public abstract class CommandHandler implements CommandExecutor {
      * @param command  command prefix
      * @param executor handler for the command
      */
-    protected void registerCommand(String command, ICommand executor) {
+    protected void registerCommand(String command, ICommand executor)
+    {
         commands.put(command, executor);
     }
 
@@ -102,31 +109,37 @@ public abstract class CommandHandler implements CommandExecutor {
      * @param cmd    command executed
      * @param label  command label
      * @param args   command arguments
-     * @return       true
+     *
+     * @return true
      */
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+    {
 
         // No arguments simply shows the command usage
         if (args.length == 0) displayUsage(sender);
 
             // If a sub-command is found, execute it
-        else if (commands.containsKey(args[0].toLowerCase())) {
+        else if (commands.containsKey(args[0].toLowerCase()))
+        {
             ICommand command = commands.get(args[0].toLowerCase());
             if (sender.hasPermission(command.getPermissionNode()))
                 command.execute(this, plugin, sender, CommandManager.trimArgs(args));
             else
                 sender.sendMessage(ChatColor.DARK_RED + "You do not have permission to do that");
         }
-        else {
+        else
+        {
 
             // Try to get a page number from the args
-            try {
+            try
+            {
                 int page = Integer.parseInt(args[0]);
                 displayUsage(sender, page);
             }
 
             // If it wasn't a number, just display the first page
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 displayUsage(sender);
             }
         }
@@ -139,11 +152,14 @@ public abstract class CommandHandler implements CommandExecutor {
      * Trims the first element off of args
      *
      * @param args initial args
-     * @return     trimmed args
+     *
+     * @return trimmed args
+     *
      * @deprecated use CommandManager.trimArgs(String[]) instead
      */
     @Deprecated
-    protected String[] trimArgs(String[] args) {
+    protected String[] trimArgs(String[] args)
+    {
         return CommandManager.trimArgs(args);
     }
 
@@ -153,7 +169,8 @@ public abstract class CommandHandler implements CommandExecutor {
      *
      * @param sender sender of the command
      */
-    public void displayUsage(CommandSender sender) {
+    public void displayUsage(CommandSender sender)
+    {
         displayUsage(sender, 1);
     }
 
@@ -164,7 +181,8 @@ public abstract class CommandHandler implements CommandExecutor {
      * @param sender sender of the command
      * @param page   page number
      */
-    public void displayUsage (CommandSender sender, int page) {
+    public void displayUsage(CommandSender sender, int page)
+    {
         if (page < 1) page = 1;
 
         // Get the key set alphabetized
@@ -177,7 +195,8 @@ public abstract class CommandHandler implements CommandExecutor {
             if (canUseCommand(sender, commands.get(key)))
                 validKeys++;
 
-        if (validKeys == 0) {
+        if (validKeys == 0)
+        {
             sender.sendMessage(ChatColor.GRAY + "   No commands available");
             return;
         }
@@ -192,7 +211,8 @@ public abstract class CommandHandler implements CommandExecutor {
         // Get the maximum length
         int maxSize = 0;
         int index = 0;
-        for (String key : keys) {
+        for (String key : keys)
+        {
             if (!canUseCommand(sender, commands.get(key)))
                 continue;
             index++;
@@ -204,14 +224,15 @@ public abstract class CommandHandler implements CommandExecutor {
 
         // Display usage, squaring everything up nicely
         index = 0;
-        for (String key : keys) {
+        for (String key : keys)
+        {
             if (!canUseCommand(sender, commands.get(key)))
                 continue;
             index++;
             if (index <= (page - 1) * 7 || index > page * 7) continue;
             sender.sendMessage(ChatColor.GOLD + "/" + label.toLowerCase() + " " + TextSizer.expand(key + " "
-                    + ChatColor.LIGHT_PURPLE + commands.get(key).getArgsString() + ChatColor.GRAY, maxSize, false)
-                    + ChatColor.GRAY + "- " + commands.get(key).getDescription());
+                                                                                                   + ChatColor.LIGHT_PURPLE + commands.get(key).getArgsString() + ChatColor.GRAY, maxSize, false)
+                               + ChatColor.GRAY + "- " + commands.get(key).getDescription());
         }
 
         sender.sendMessage(BREAK);
@@ -223,9 +244,11 @@ public abstract class CommandHandler implements CommandExecutor {
      *
      * @param sender  sender of the command
      * @param command command to check
-     * @return        true if able to use it, false otherwise
+     *
+     * @return true if able to use it, false otherwise
      */
-    protected boolean canUseCommand(CommandSender sender, ICommand command) {
+    protected boolean canUseCommand(CommandSender sender, ICommand command)
+    {
         if (command.getSenderType() == SenderType.CONSOLE_ONLY && sender instanceof Player) return false;
         if (command.getSenderType() == SenderType.PLAYER_ONLY && !(sender instanceof Player)) return false;
         return sender.hasPermission(command.getPermissionNode());
