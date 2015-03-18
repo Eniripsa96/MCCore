@@ -21,7 +21,6 @@ public class Particle
 
     private static void initialize()
     {
-
         initialized = true;
 
         // Try to get the packet instance for 1.6.4 and earlier

@@ -653,11 +653,10 @@ public class ConfigurableCommand extends Command
      */
     private void load(String key, String description, String args, String permission)
     {
-
         // Get the configuration for this command
         CommentedConfig pluginConfig = CommandManager.getConfig(plugin);
         DataSection main = pluginConfig.getConfig();
-        if (!main.has(key)) main.createSection(key);
+        if (!main.isSection(key)) main.createSection(key);
         DataSection config = main.getSection(key);
 
         // Get the command details

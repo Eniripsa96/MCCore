@@ -12,7 +12,9 @@ import java.util.Arrays;
 
 /**
  * Represents an image in the format used by Minecraft maps
- * to speed up the drawing process
+ * to speed up the drawing process. MapImages loaded from
+ * files/URLs can take a little while to load though, so
+ * set them up on enable to avoid any stalls during the game.
  */
 public class MapImage
 {
@@ -263,13 +265,13 @@ public class MapImage
      */
     private static double getDistance(Color c1, Color c2)
     {
-        double rmean = (c1.getRed() + c2.getRed()) / 2.0D;
+        double rmean = (c1.getRed() + c2.getRed()) * 0.5;
         double r = c1.getRed() - c2.getRed();
         double g = c1.getGreen() - c2.getGreen();
         int b = c1.getBlue() - c2.getBlue();
-        double weightR = 2.0D + rmean / 256.0D;
-        double weightG = 4.0D;
-        double weightB = 2.0D + (255.0D - rmean) / 256.0D;
+        double weightR = 2.0 + rmean * 0.00390625;
+        double weightG = 4.0;
+        double weightB = 2.0 + (255.0 - rmean) * 0.00390625;
         return weightR * r * r + weightG * g * g + weightB * b * b;
     }
 
@@ -311,12 +313,12 @@ public class MapImage
         if (color.getAlpha() < 128) return 0;
 
         int index = 0;
-        double best = -1.0D;
+        double best = Double.MAX_VALUE;
 
         for (int i = 4; i < colors.length; i++)
         {
             double distance = getDistance(color, colors[i]);
-            if ((distance < best) || (best == -1.0D))
+            if (distance < best)
             {
                 best = distance;
                 index = i;
@@ -324,7 +326,7 @@ public class MapImage
 
         }
 
-        return (byte) (index < 128 ? index : -129 + (index - 127));
+        return (byte) (index < 128 ? index : index - 256);
     }
 
     /**

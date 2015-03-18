@@ -12,6 +12,7 @@ import com.rit.sucy.config.parse.DataSection;
 import com.rit.sucy.economy.Economy;
 import com.rit.sucy.economy.EconomyPlugin;
 import com.rit.sucy.event.EquipListener;
+import com.rit.sucy.gui.MapListener;
 import com.rit.sucy.items.DurabilityListener;
 import com.rit.sucy.player.PlayerUUIDs;
 import com.rit.sucy.scoreboard.BoardListener;
@@ -109,6 +110,7 @@ public class MCCore extends JavaPlugin
             new DurabilityListener(this);
         }
         new CommandListener(this);
+        new MapListener(this);
 
         for (Plugin plugin : getServer().getPluginManager().getPlugins())
         {
@@ -126,7 +128,6 @@ public class MCCore extends JavaPlugin
     @Override
     public void onDisable()
     {
-
         HandlerList.unregisterAll(this);
         if (idManager != null) idManager.save();
         for (Config config : configs.values())

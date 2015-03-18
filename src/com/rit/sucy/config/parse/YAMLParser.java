@@ -1,5 +1,6 @@
 package com.rit.sucy.config.parse;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -131,6 +132,12 @@ public class YAMLParser
         int spaces;
         while (i < lines.length && ((spaces = countSpaces(lines[i])) >= indent || lines[i].charAt(spaces) == '#'))
         {
+            // When the entire line is just spaces, continue
+            if (lines[i].length() == spaces) {
+                i++;
+                continue;
+            }
+
             // Comments
             if (lines[i].charAt(spaces) == '#')
             {

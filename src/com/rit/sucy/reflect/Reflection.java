@@ -48,7 +48,7 @@ public class Reflection
     {
         if (NMS == null)
         {
-            NMS = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().substring(23);
+            NMS = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().substring(23) + '.';
         }
         return getClass(NMS + name);
     }
@@ -64,7 +64,7 @@ public class Reflection
     {
         if (CRAFT == null)
         {
-            CRAFT = "org.bukkit.craftbukkit." + Bukkit.getServer().getClass().getPackage().getName().substring(23);
+            CRAFT = "org.bukkit.craftbukkit." + Bukkit.getServer().getClass().getPackage().getName().substring(23) + '.';
         }
         return getClass(CRAFT + name);
     }
