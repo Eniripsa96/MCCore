@@ -146,7 +146,10 @@ public class YAMLParser
                 continue;
             }
 
-            while (i < lines.length && (spaces != indent)) i++;
+            while (i < lines.length && (spaces != indent))
+            {
+                i++;
+            }
             if (i == lines.length) return data;
 
             String key = lines[i].substring(indent, lines[i].indexOf(':'));
@@ -154,9 +157,9 @@ public class YAMLParser
             comments.clear();
 
             // New empty section
-            if (lines[i].indexOf(": {}") == lines[i].length() - 4)
+            if (lines[i].indexOf(": {}") == lines[i].length() - 4 && lines[i].length() >= 4)
             {
-                data.set(key, new DataSection());
+                data.createSection(key);
             }
 
             // String list

@@ -656,8 +656,7 @@ public class ConfigurableCommand extends Command
         // Get the configuration for this command
         CommentedConfig pluginConfig = CommandManager.getConfig(plugin);
         DataSection main = pluginConfig.getConfig();
-        if (!main.isSection(key)) main.createSection(key);
-        DataSection config = main.getSection(key);
+        DataSection config = main.defaultSection(key);
 
         // Get the command details
         this.name = config.getString(NAME_KEY, key).toLowerCase();

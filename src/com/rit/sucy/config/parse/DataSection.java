@@ -185,7 +185,7 @@ public class DataSection
     public DataSection defaultSection(String key)
     {
         if (isSection(key)) return getSection(key);
-        else return createSection(key);
+        return createSection(key);
     }
 
     /**
