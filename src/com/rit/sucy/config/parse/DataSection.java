@@ -480,8 +480,12 @@ public class DataSection
 
         if (!data.containsKey(key)) return fallback;
         Object obj = data.get(key);
-        if (obj instanceof Number) return (byte) Double.parseDouble(obj.toString());
-        else return fallback;
+        try {
+            return Byte.parseByte(obj.toString());
+        }
+        catch (Exception ex) {
+            return fallback;
+        }
     }
 
     /**
@@ -503,8 +507,12 @@ public class DataSection
 
         if (!data.containsKey(key)) return fallback;
         Object obj = data.get(key);
-        if (obj instanceof Number) return (short) Double.parseDouble(obj.toString());
-        else return fallback;
+        try {
+            return Short.parseShort(obj.toString());
+        }
+        catch (Exception ex) {
+            return fallback;
+        }
     }
 
     /**
@@ -526,8 +534,12 @@ public class DataSection
 
         if (!data.containsKey(key)) return fallback;
         Object obj = data.get(key);
-        if (obj instanceof Number) return (int) Double.parseDouble(obj.toString());
-        else return fallback;
+        try {
+            return Integer.parseInt(obj.toString());
+        }
+        catch (Exception ex) {
+            return fallback;
+        }
     }
 
     /**
@@ -549,8 +561,12 @@ public class DataSection
 
         if (!data.containsKey(key)) return -1;
         Object obj = data.get(key);
-        if (obj instanceof Number) return (float) Double.parseDouble(obj.toString());
-        else return fallback;
+        try {
+            return Float.parseFloat(obj.toString());
+        }
+        catch (Exception ex) {
+            return fallback;
+        }
     }
 
     /**
@@ -572,8 +588,12 @@ public class DataSection
 
         if (!data.containsKey(key)) return fallback;
         Object obj = data.get(key);
-        if (obj instanceof Number) return Double.parseDouble(obj.toString());
-        else return fallback;
+        try {
+            return Double.parseDouble(obj.toString());
+        }
+        catch (Exception ex) {
+            return fallback;
+        }
     }
 
     /**

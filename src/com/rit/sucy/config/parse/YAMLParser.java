@@ -51,7 +51,7 @@ public class YAMLParser
         catch (Exception ex)
         {
             // Do nothing
-            ex.printStackTrace();
+            Bukkit.getLogger().info("Failed to parse resource (" + path + ") - " + ex.getMessage());
         }
         return new DataSection();
     }
@@ -163,7 +163,7 @@ public class YAMLParser
             }
 
             // String list
-            else if (i < lines.length - 1 && lines[i + 1].length() > indent && lines[i + 1].charAt(indent) == '-' && countSpaces(lines[i]) == indent)
+            else if (i < lines.length - 1 && lines[i + 1].length() > indent && lines[i + 1].charAt(indent) == '-' && countSpaces(lines[i + 1]) == indent)
             {
                 ArrayList<String> stringList = new ArrayList<String>();
                 while (++i < lines.length && lines[i].length() > indent && lines[i].charAt(indent) == '-')
