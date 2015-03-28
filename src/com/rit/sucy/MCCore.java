@@ -53,7 +53,6 @@ public class MCCore extends JavaPlugin
     @Override
     public void onEnable()
     {
-
         CommandLog.callback = new LogFunction()
         {
             @Override

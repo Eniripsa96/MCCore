@@ -42,7 +42,7 @@ public abstract class MapMenu
      *
      * @param buffer buffer to draw to
      */
-    public abstract void render(MapBuffer buffer);
+    public abstract void render(MapBuffer buffer, Player player);
 
     /**
      * Called when the up key is pressed. This should

@@ -22,6 +22,7 @@ public class MapData extends MapRenderer
     private MapMenu   root;
     private MapView   view;
     private ItemStack map;
+    private boolean   firstPass = true;
 
     /**
      * Initializes a new renderer and data set for a map view using
@@ -61,8 +62,17 @@ public class MapData extends MapRenderer
             return;
         }
 
+        // Enable instant drawing rather than over time
+        if (firstPass)
+        {
+            firstPass = false;
+            player.sendMap(mapView);
+            return;
+        }
+        firstPass = true;
+
         // Draw the menu
-        getMenu(player).render(buffer);
+        getMenu(player).render(buffer, player);
 
         // Draw to the canvas
         buffer.drawTo(mapCanvas);

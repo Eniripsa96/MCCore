@@ -1,5 +1,6 @@
 package com.rit.sucy.player;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -257,7 +258,7 @@ public class TargetHelper
         }
         Vector slope = loc2.clone().subtract(loc1).toVector();
         int steps = (int) (slope.length() * 4) + 1;
-        slope.multiply(1 / steps);
+        slope.multiply(1.0 / steps);
         Location temp = loc1.clone();
         for (int i = 0; i < steps; i++)
         {
@@ -290,7 +291,7 @@ public class TargetHelper
         // Common data
         Vector slope = loc2.clone().subtract(loc1).toVector();
         int steps = (int) (slope.length() * 4) + 1;
-        slope.multiply(1 / steps);
+        slope.multiply(1.0 / steps);
 
         // Going through walls starts at the end and traverses backwards
         if (throughWall)
@@ -301,6 +302,9 @@ public class TargetHelper
                 temp.subtract(slope);
                 steps--;
             }
+            temp.setX(temp.getBlockX() + 0.5);
+            temp.setZ(temp.getBlockZ() + 0.5);
+            temp.setY(temp.getBlockY() + 1);
             return temp;
         }
 
@@ -308,15 +312,16 @@ public class TargetHelper
         else
         {
             Location temp = loc1.clone();
-            for (int i = 0; i < steps; i++)
+            while (!temp.getBlock().getType().isSolid() && steps > 0)
             {
                 temp.add(slope);
-                if (temp.getBlock().getType().isSolid())
-                {
-                    temp.subtract(slope.multiply(Math.min(4, i + 1)));
-                }
+                steps--;
             }
-            return loc2;
+            temp.subtract(slope);
+            temp.setX(temp.getBlockX() + 0.5);
+            temp.setZ(temp.getBlockZ() + 0.5);
+            temp.setY(temp.getBlockY() + 1);
+            return temp;
         }
     }
 }

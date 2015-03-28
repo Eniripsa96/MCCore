@@ -21,6 +21,16 @@ public class MapMenuManager
     private static HashMap<Short, MapData>  idMap = new HashMap<Short, MapData>();
     private static Config config;
 
+    /**q
+     * Creates a map item for the given map menu
+     *
+     * @param menuKey key of the menu the map should show
+     */
+    public static MapData getData(String menuKey)
+    {
+        return data.get(menuKey);
+    }
+
     /**
      * Creates a new menu view using the given menu as the root.
      * The root menu cannot backtrack to any other menus, only
@@ -53,6 +63,8 @@ public class MapMenuManager
             view = Bukkit.createMap(Bukkit.getWorlds().get(0));
         }
         if (view == null) return;
+        config.getConfig().set(key, view.getId());
+        config.saveConfig();
 
         // Add the data
         MapData mapData = new MapData(root, view);

@@ -46,7 +46,7 @@ public class CommandManager
             NEXT_PAGE       = "Format.next-button",
             NEXT_PAGE_HOVER = "Format.next-button-hover",
             PREV_PAGE       = "Format.prev-button",
-            PREV_PAGE_HOVER = "Foramt.prev-button-hover",
+            PREV_PAGE_HOVER = "Format.prev-button-hover",
             COMMAND         = "Colors.command",
             REQUIRED        = "Colors.required-args",
             OPTIONAL        = "Colors.optional-args",
@@ -539,7 +539,6 @@ public class CommandManager
      */
     public static void loadOptions(DataSection config)
     {
-
         // Sizes
         playerSize = config.getInt(PLAYER_SIZE, playerSize);
         consoleSize = config.getInt(CONSOLE_SIZE, consoleSize);

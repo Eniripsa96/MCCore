@@ -197,6 +197,13 @@ public class DataSection
      */
     public Object remove(String key)
     {
+        if (key.contains("."))
+        {
+            String[] pieces = key.split("\\.", 2);
+            DataSection section = getSection(pieces[0]);
+            if (section != null) return section.remove(pieces[1]);
+            return null;
+        }
         keys.remove(key);
         comments.remove(key);
         return data.remove(key);
@@ -243,7 +250,7 @@ public class DataSection
      */
     public boolean isList(String key)
     {
-        return data.containsKey(key) && data.get(key) instanceof List;
+        return getList(key, null) != null;
     }
 
     /**
@@ -255,7 +262,7 @@ public class DataSection
      */
     public boolean isNumber(String key)
     {
-        return data.containsKey(key) && data.get(key) instanceof Number;
+        return getDouble(key, Double.MAX_VALUE) != Double.MAX_VALUE;
     }
 
     /**
@@ -409,7 +416,7 @@ public class DataSection
         {
             String[] pieces = key.split("\\.", 2);
             DataSection section = getSection(pieces[0]);
-            return section == null ? fallback : section.getChar(pieces[1]);
+            return section == null ? fallback : section.getChar(pieces[1], fallback);
         }
 
         String str = getString(key);
@@ -431,7 +438,7 @@ public class DataSection
         {
             String[] pieces = key.split("\\.", 2);
             DataSection section = getSection(pieces[0]);
-            return section == null ? fallback : section.getString(pieces[1]);
+            return section == null ? fallback : section.getString(pieces[1], fallback);
         }
 
         if (!data.containsKey(key)) return fallback;
@@ -452,7 +459,7 @@ public class DataSection
         {
             String[] pieces = key.split("\\.", 2);
             DataSection section = getSection(pieces[0]);
-            return section == null ? fallback : section.getBoolean(pieces[1]);
+            return section == null ? fallback : section.getBoolean(pieces[1], fallback);
         }
 
         if (!data.containsKey(key)) return fallback;
@@ -475,7 +482,7 @@ public class DataSection
         {
             String[] pieces = key.split("\\.", 2);
             DataSection section = getSection(pieces[0]);
-            return section == null ? fallback : section.getByte(pieces[1]);
+            return section == null ? fallback : section.getByte(pieces[1], fallback);
         }
 
         if (!data.containsKey(key)) return fallback;
@@ -502,7 +509,7 @@ public class DataSection
         {
             String[] pieces = key.split("\\.", 2);
             DataSection section = getSection(pieces[0]);
-            return section == null ? fallback : section.getShort(pieces[1]);
+            return section == null ? fallback : section.getShort(pieces[1], fallback);
         }
 
         if (!data.containsKey(key)) return fallback;
@@ -529,7 +536,7 @@ public class DataSection
         {
             String[] pieces = key.split("\\.", 2);
             DataSection section = getSection(pieces[0]);
-            return section == null ? fallback : section.getInt(pieces[1]);
+            return section == null ? fallback : section.getInt(pieces[1], fallback);
         }
 
         if (!data.containsKey(key)) return fallback;
@@ -556,7 +563,7 @@ public class DataSection
         {
             String[] pieces = key.split("\\.", 2);
             DataSection section = getSection(pieces[0]);
-            return section == null ? fallback : section.getFloat(pieces[1]);
+            return section == null ? fallback : section.getFloat(pieces[1], fallback);
         }
 
         if (!data.containsKey(key)) return -1;
@@ -583,7 +590,7 @@ public class DataSection
         {
             String[] pieces = key.split("\\.", 2);
             DataSection section = getSection(pieces[0]);
-            return section == null ? fallback : section.getDouble(pieces[1]);
+            return section == null ? fallback : section.getDouble(pieces[1], fallback);
         }
 
         if (!data.containsKey(key)) return fallback;
@@ -610,10 +617,12 @@ public class DataSection
         {
             String[] pieces = key.split("\\.", 2);
             DataSection section = getSection(pieces[0]);
-            return section == null ? fallback : section.getList(pieces[1]);
+            return section == null ? fallback : section.getList(pieces[1], fallback);
         }
 
-        if (!data.containsKey(key)) return fallback;
+        if (!data.containsKey(key)) {
+            return fallback;
+        }
         Object obj = data.get(key);
         if (obj instanceof List)
         {
@@ -634,6 +643,12 @@ public class DataSection
      */
     public Object get(String key)
     {
+        if (key.contains("."))
+        {
+            String[] pieces = key.split("\\.", 2);
+            DataSection section = getSection(pieces[0]);
+            return section == null ? null : section.get(pieces[1]);
+        }
         return data.get(key);
     }
 

@@ -87,7 +87,9 @@ public class CommentedLanguageConfig extends CommentedConfig
 
         List<String> lines;
         if (!getConfig().has(key)) return null;
-        else if (getConfig().isList(key)) lines = getConfig().getList(key);
+        else if (getConfig().isList(key)) {
+            lines = getConfig().getList(key);
+        }
         else
         {
             lines = new ArrayList<String>();

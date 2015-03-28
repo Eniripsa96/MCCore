@@ -1,5 +1,6 @@
 package com.rit.sucy.gui;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import sun.plugin2.main.server.Plugin;
 
 import java.io.File;
@@ -60,7 +61,7 @@ public class MapImageManager
      * @param path   path to the destination
      * @return true if copied successfully, false otherwise
      */
-    public static boolean copyImageResource(Plugin plugin, String name, String path)
+    public static boolean copyImageResource(JavaPlugin plugin, String name, String path)
     {
         try
         {
