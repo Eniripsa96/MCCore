@@ -1,6 +1,8 @@
 package com.rit.sucy.gui;
 
 import com.rit.sucy.MCCore;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -44,13 +46,16 @@ public class MapListener implements Listener
         if (data == null) return;
 
         // If not moving and only turning, ignore it
-        Vector moving = event.getTo().subtract(event.getFrom()).toVector();
+        Vector moving = event.getTo().clone().subtract(event.getFrom()).toVector();
         moving.setY(0);
         if (moving.lengthSquared() < 1e-8) return;
 
         // Prevent movement so they don't fall off cliffs or something
-        event.getPlayer().teleport(event.getFrom());
-        event.getPlayer().setVelocity(ZERO);
+        Location loc = event.getTo();
+        loc.setX(event.getFrom().getX());
+        loc.setZ(event.getFrom().getZ());
+        event.getPlayer().teleport(loc);
+        event.setCancelled(true);
 
         moving.normalize();
 
