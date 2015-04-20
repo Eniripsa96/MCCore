@@ -104,7 +104,6 @@ public class SQLDatabase
      */
     public boolean openConnection()
     {
-
         // Connect to the server
         try
         {
@@ -127,11 +126,9 @@ public class SQLDatabase
      */
     public void closeConnection()
     {
-
         // Must have a connection to close it
         if (connection != null)
         {
-
             // Close the database connection
             try
             {
@@ -251,7 +248,6 @@ public class SQLDatabase
      */
     public SQLTable createTable(Plugin plugin, String name)
     {
-
         // Make the name plugin-specific to prevent collisions
         String full = plugin.getName() + "_" + name;
 

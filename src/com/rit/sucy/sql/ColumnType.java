@@ -5,7 +5,6 @@ package com.rit.sucy.sql;
  */
 public enum ColumnType
 {
-
     /**
      * <p>A string that can be up to 16 characters long</p>
      */
@@ -32,19 +31,9 @@ public enum ColumnType
     STRING_255("VARCHAR(255)"),
 
     /**
-     * <p>A string that can be up to 1000 characters long</p>
+     * <p>A string that can be up to 65535 characters long</p>
      */
-    STRING_1000("VARCHAR(1000)"),
-
-    /**
-     * <p>A string that can be up to 4000 characters long</p>
-     */
-    STRING_4000("VARCHAR(4000)"),
-
-    /**
-     * <p>A string that can be up to 8000 characters long</p>
-     */
-    STRING_8000("VARCHAR(8000)"),
+    TEXT("TEXT"),
 
     /**
      * A standard integer
@@ -123,22 +112,20 @@ public enum ColumnType
                     return STRING_128;
                 case 255:
                     return STRING_255;
-                case 1000:
-                    return STRING_1000;
-                case 4000:
-                    return STRING_4000;
-                case 8000:
-                    return STRING_8000;
+                case 65535:
+                    return TEXT;
                 default:
-                    if (size > 4000) return STRING_8000;
-                    if (size > 1000) return STRING_4000;
-                    if (size > 255) return STRING_1000;
+                    if (size > 255) return TEXT;
                     if (size > 128) return STRING_255;
                     if (size > 64) return STRING_128;
                     if (size > 32) return STRING_64;
                     if (size > 16) return STRING_32;
                     else return STRING_16;
             }
+        }
+        else if (type.equals("TEXT"))
+        {
+            return TEXT;
         }
         else if (type.equalsIgnoreCase("INT"))
         {

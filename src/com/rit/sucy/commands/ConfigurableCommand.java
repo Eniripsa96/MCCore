@@ -4,6 +4,7 @@ import com.rit.sucy.config.CommentedConfig;
 import com.rit.sucy.config.CustomFilter;
 import com.rit.sucy.config.parse.DataSection;
 import com.rit.sucy.text.TextFormatter;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -258,7 +259,7 @@ public class ConfigurableCommand extends Command
         return enabled
                && (senderType != SenderType.PLAYER_ONLY || sender instanceof Player)
                && (senderType != SenderType.CONSOLE_ONLY || !(sender instanceof Player))
-               && (permission == null || sender.hasPermission(permission));
+               && (permission == null || sender.hasPermission(permission) || !(sender instanceof Player));
     }
 
     /**
@@ -497,7 +498,6 @@ public class ConfigurableCommand extends Command
      */
     public boolean execute(CommandSender sender, String[] args)
     {
-
         // Cannot use the command
         if (!canUseCommand(sender))
         {
@@ -515,7 +515,7 @@ public class ConfigurableCommand extends Command
         {
             ConfigurableCommand subCommand = subCommands.get(args[0].toLowerCase());
             args = CommandManager.trimArgs(args);
-            subCommand.execute(sender, args);
+            return subCommand.execute(sender, args);
         }
 
         // If no sub commands found, display help

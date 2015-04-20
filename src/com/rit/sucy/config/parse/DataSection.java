@@ -37,9 +37,7 @@ public class DataSection
      */
     public List<String> keys()
     {
-        ArrayList<String> list = new ArrayList<String>(keys.size());
-        list.addAll(keys);
-        return list;
+        return new ArrayList<String>(keys);
     }
 
     /**
@@ -739,7 +737,7 @@ public class DataSection
             FileOutputStream out = new FileOutputStream(file);
             BufferedWriter write = new BufferedWriter(new OutputStreamWriter(out, Encoder.UTF_8));
 
-            dump(write, 0);
+            dump(write);
 
             write.close();
         }
@@ -750,14 +748,31 @@ public class DataSection
     }
 
     /**
-     * Dumps the data contents onto the end of the given stream
+     * Dumps the data contents into the stream
      *
      * @param write  stream to dump to
-     * @param indent current indent
      *
      * @throws IOException
      */
-    public void dump(BufferedWriter write, int indent) throws IOException
+    public void dump(BufferedWriter write) throws IOException
+    {
+        write.write(toString());
+    }
+
+    /**
+     * Returns the YAML string for the config data
+     *
+     * @return YAML data string
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        dump(builder, 0);
+        return builder.toString();
+    }
+    
+    private void dump(StringBuilder builder, int indent) 
     {
         // Create spacing to use
         String spacing = "";
@@ -776,28 +791,28 @@ public class DataSection
                 {
                     if (line.length() == 0)
                     {
-                        write.newLine();
+                        builder.append('\n');
                         continue;
                     }
-                    write.write(spacing);
-                    write.write('#');
-                    write.write(line);
-                    write.newLine();
+                    builder.append(spacing);
+                    builder.append('#');
+                    builder.append(line);
+                    builder.append('\n');
                 }
             }
 
             // Write the key
-            write.write(spacing);
-            write.write(key);
-            write.write(": ");
+            builder.append(spacing);
+            builder.append(key);
+            builder.append(": ");
 
             Object value = data.get(key);
 
             // Empty section
             if (value == null)
             {
-                write.write(" {}");
-                write.newLine();
+                builder.append(" {}");
+                builder.append('\n');
             }
 
             // Section with content
@@ -806,13 +821,13 @@ public class DataSection
                 DataSection child = (DataSection) value;
                 if (child.keys.size() == 0)
                 {
-                    write.write(" {}");
-                    write.newLine();
+                    builder.append(" {}");
+                    builder.append('\n');
                 }
                 else
                 {
-                    write.newLine();
-                    ((DataSection) value).dump(write, indent + 2);
+                    builder.append('\n');
+                    ((DataSection) value).dump(builder, indent + 2);
                 }
             }
 
@@ -822,18 +837,18 @@ public class DataSection
                 List list = (List) value;
                 if (list.size() == 0)
                 {
-                    write.write(" []");
-                    write.newLine();
+                    builder.append(" []");
+                    builder.append('\n');
                 }
                 else
                 {
-                    write.newLine();
+                    builder.append('\n');
                     for (Object item : list)
                     {
-                        write.write(spacing);
-                        write.write("- ");
-                        writeValue(write, item);
-                        write.newLine();
+                        builder.append(spacing);
+                        builder.append("- ");
+                        writeValue(builder, item);
+                        builder.append('\n');
                     }
                 }
             }
@@ -841,29 +856,29 @@ public class DataSection
             // Single value
             else
             {
-                writeValue(write, value);
-                write.newLine();
+                writeValue(builder, value);
+                builder.append('\n');
             }
         }
     }
 
-    private void writeValue(BufferedWriter write, Object value) throws IOException
+    private void writeValue(StringBuilder builder, Object value)
     {
         if (value instanceof Number)
         {
-            write.write(value.toString());
+            builder.append(value.toString());
         }
         else if (value.toString().contains("'"))
         {
-            write.write('"');
-            write.write(value.toString());
-            write.write('"');
+            builder.append('"');
+            builder.append(value.toString());
+            builder.append('"');
         }
         else
         {
-            write.write('\'');
-            write.write(value.toString());
-            write.write('\'');
+            builder.append('\'');
+            builder.append(value.toString());
+            builder.append('\'');
         }
     }
 }
