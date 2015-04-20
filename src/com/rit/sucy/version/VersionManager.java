@@ -321,14 +321,14 @@ public class VersionManager
         if (isVersionAtMost(V1_5_2))
         {
             entity.setMaxHealth((int) amount);
-            entity.setHealth((int) Math.min(Math.max(1, prevHealth + amount - prevMax), amount));
+            entity.setHealth(Math.min(Math.max(1, (int)prevHealth + (int)amount - (int)prevMax), (int)amount));
         }
 
         // 1.6.2 and beyond use double values
         else
         {
             entity.setMaxHealth(amount);
-            entity.setHealth(Math.min(Math.max(1, prevHealth + amount - prevMax), amount));
+            entity.setHealth(Math.min(Math.max(1, prevHealth + amount - prevMax), (int)amount));
         }
     }
 

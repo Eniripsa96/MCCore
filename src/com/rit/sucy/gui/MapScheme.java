@@ -155,7 +155,7 @@ public class MapScheme
         try
         {
             image = image + ".png";
-            MapImageManager.copyImageResource(plugin, image, folder.getAbsolutePath() + File.separator + image);
+            MapImageManager.copyImageResource(plugin, image, folder.getAbsolutePath());
             images.put(key, new MapImage(new File(folder, image)));
         }
         catch (Exception ex)
