@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * <p>Manages compatibilities between different versions and provides
@@ -15,6 +16,8 @@ import java.util.UUID;
  */
 public class VersionManager
 {
+    private static final String  ID_REGEX   = ".{8}-.{4}-.{4}-.{4}-.{12}";
+    private static final Pattern ID_PATTERN = Pattern.compile(ID_REGEX);
 
     public static int V1_5_2 = 10502;
     public static int V1_6_2 = 10602;
@@ -396,9 +399,16 @@ public class VersionManager
     {
         if (isVersionAtLeast(V1_7_5))
         {
-            UUID id = PlayerUUIDs.getUUID(name);
-            if (id == null) return null;
-            else return Bukkit.getPlayer(id);
+            if (ID_PATTERN.matcher(name).matches())
+            {
+                return Bukkit.getPlayer(UUID.fromString(name));
+            }
+            else
+            {
+                UUID id = PlayerUUIDs.getUUID(name);
+                if (id == null) return null;
+                else return Bukkit.getPlayer(id);
+            }
         }
         else return Bukkit.getPlayer(name);
     }

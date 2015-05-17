@@ -9,6 +9,7 @@ Settings:
 
     durability-message-enabled: false
     durability-message: '&6{current}&7/&6{max} &2Durability left on your &r{item}&r'
+    command-cooldown-message: '&4Please wait &6{time} seconds &4before using the command again.'
 
 Commands:
 

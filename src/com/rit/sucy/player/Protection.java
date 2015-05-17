@@ -56,7 +56,7 @@ public class Protection
         }
         EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(attacker, target, EntityDamageEvent.DamageCause.CUSTOM, 1.0);
         Bukkit.getPluginManager().callEvent(event);
-        return !event.isCancelled() && event.getDamage() > 0;
+        return !event.isCancelled();
     }
 
     /**

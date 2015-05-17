@@ -46,6 +46,7 @@ public class MCCore extends JavaPlugin
     private boolean durabilityEnabled;
     private boolean durabilityMessageEnabled;
     private String  durabilityMessage;
+    private String commandMessage;
 
     /**
      * Sets up commands and listeners
@@ -85,6 +86,7 @@ public class MCCore extends JavaPlugin
 
         durabilityMessageEnabled = settings.getBoolean("Settings.durability-message-enabled", true);
         durabilityMessage = settings.getString("Settings.durability-message", "&6{current}&7/&6{max} &2Durability left on your &r{item}&r");
+        commandMessage = settings.getString("Settings.command-cooldown-message", "&4Please wait &6{time} seconds &4before using the command again.");
 
         CommandManager.loadOptions(settings.getSection("Commands"));
 
@@ -209,6 +211,16 @@ public class MCCore extends JavaPlugin
     public String getDurabilityMessage()
     {
         return durabilityMessage;
+    }
+
+    /**
+     * Retrieves the message to be shown when a command is on cooldown
+     *
+     * @return command cooldown message
+     */
+    public String getCommandMessage()
+    {
+        return commandMessage;
     }
 
     /**

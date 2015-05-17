@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
  */
 public class VersionPlayer
 {
-
     private static final String  ID_REGEX   = ".{8}-.{4}-.{4}-.{4}-.{12}";
     private static final Pattern ID_PATTERN = Pattern.compile(ID_REGEX);
 

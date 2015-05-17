@@ -202,6 +202,7 @@ public class YAMLParser
                 String str = lines[i].substring(lines[i].indexOf(':') + 2);
                 Object value;
                 if (str.charAt(0) == '\'') value = str.substring(1, str.length() - 1);
+                else if (str.charAt(0) == '"') value = str.substring(1, str.length() - 1);
                 else if (INT.matcher(str).matches()) value = Integer.parseInt(str);
                 else if (DOUBLE.matcher(str).matches()) value = Double.parseDouble(str);
                 else value = str;

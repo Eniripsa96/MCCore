@@ -1,5 +1,7 @@
 package com.rit.sucy.commands;
 
+import com.avaje.ebean.text.StringFormatter;
+import com.rit.sucy.MCCore;
 import com.rit.sucy.config.CommentedConfig;
 import com.rit.sucy.config.CustomFilter;
 import com.rit.sucy.config.parse.DataSection;
@@ -54,6 +56,7 @@ public class ConfigurableCommand extends Command
     private static final String NAME_KEY        = "name";
     private static final String ARGS_KEY        = "args";
     private static final String MESSAGES_KEY    = "messages";
+    private static final String COOLDOWN_KEY    = "cooldown";
 
     private HashMap<String, ConfigurableCommand> subCommands = new HashMap<String, ConfigurableCommand>();
     private HashMap<String, String>              messages    = new HashMap<String, String>();
@@ -69,6 +72,8 @@ public class ConfigurableCommand extends Command
     private String              key;
     private boolean             registered;
     private boolean             enabled;
+    private int                 cooldown;
+    private long                timer;
 
     /**************************************************************************
      Constructors
@@ -504,8 +509,20 @@ public class ConfigurableCommand extends Command
             return false;
         }
 
+        // Check for a cooldown
+        if (cooldown > 0 && System.currentTimeMillis() - timer < cooldown * 1000)
+        {
+            String message = TextFormatter.colorString(MCCore.getPlugin(MCCore.class).getCommandMessage());
+            int time = cooldown - (int)(System.currentTimeMillis() - timer + 999) / 1000;
+            message = message.replace("{time}", "" + time);
+            sender.sendMessage(message);
+
+            return false;
+        }
+        timer = System.currentTimeMillis();
+
         // Execute the attached function if applicable
-        else if (function != null)
+        if (function != null)
         {
             function.execute(this, plugin, sender, args);
         }
@@ -664,6 +681,7 @@ public class ConfigurableCommand extends Command
         this.permission = config.getString(PERMISSION_KEY, permission);
         this.args = config.getString(ARGS_KEY, args);
         this.enabled = config.getBoolean(ENABLED_KEY, enabled);
+        this.cooldown = config.getInt(COOLDOWN_KEY, cooldown);
 
         // Configurable messages
         if (config.has(MESSAGES_KEY))
@@ -702,6 +720,7 @@ public class ConfigurableCommand extends Command
         config.set(ARGS_KEY, args);
         config.set(SENDER_KEY, senderType.name());
         config.set(ENABLED_KEY, enabled);
+        config.set(COOLDOWN_KEY, cooldown);
         pluginConfig.save();
     }
 
