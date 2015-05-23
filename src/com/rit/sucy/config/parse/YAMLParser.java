@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class YAMLParser
 {
     private static final Pattern INT    = Pattern.compile("-?[0-9]+");
-    private static final Pattern DOUBLE = Pattern.compile("-?[0-9]+/.[0-9]+");
+    private static final Pattern DOUBLE = Pattern.compile("-?[0-9]+\\.[0-9]+");
 
     private static int               i        = 0;
     private static ArrayList<String> comments = new ArrayList<String>();
