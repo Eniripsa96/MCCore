@@ -1,5 +1,7 @@
 package com.rit.sucy.sql.direct;
 
+import org.bukkit.Bukkit;
+
 import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -12,8 +14,8 @@ import java.util.Map;
  */
 public class SQLEntry
 {
-
     private static final DateFormat FORMAT = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+    private static final char       SQUOTE = '`';
 
     private SQLDatabase database;
     private SQLTable    table;
@@ -87,7 +89,8 @@ public class SQLEntry
             set.next();
             String value = set.getString(key);
             set.close();
-            return value;
+            if (value != null) return value.replace(SQUOTE, '\'');
+            else return null;
         }
         catch (Exception ex)
         {
@@ -205,11 +208,12 @@ public class SQLEntry
     {
         try
         {
+            if (value != null) value = value.replace('\'', SQUOTE);
             database.getStatement().execute("UPDATE " + table.getName() + " SET " + key + "='" + value + "' WHERE Name='" + name + "'");
         }
         catch (Exception ex)
         {
-            database.getLogger().severe("Failed to set a value for \"" + name + "\" - " + ex.getMessage());
+            database.getLogger().severe("Failed to set the value \"" + key +  "\" for \"" + name + "\" - " + ex.getMessage());
         }
     }
 
@@ -227,7 +231,7 @@ public class SQLEntry
         }
         catch (Exception ex)
         {
-            database.getLogger().severe("Failed to set a value for \"" + name + "\" - " + ex.getMessage());
+            database.getLogger().severe("Failed to set the value \"" + key +  "\" for \"" + name + "\" - " + ex.getMessage());
         }
     }
 
@@ -245,7 +249,7 @@ public class SQLEntry
         }
         catch (Exception ex)
         {
-            database.getLogger().severe("Failed to set a value for \"" + name + "\" - " + ex.getMessage());
+            database.getLogger().severe("Failed to set the value \"" + key +  "\" for \"" + name + "\" - " + ex.getMessage());
         }
     }
 
@@ -263,7 +267,7 @@ public class SQLEntry
         }
         catch (Exception ex)
         {
-            database.getLogger().severe("Failed to set a value for \"" + name + "\" - " + ex.getMessage());
+            database.getLogger().severe("Failed to set the value \"" + key +  "\" for \"" + name + "\" - " + ex.getMessage());
         }
     }
 
@@ -281,7 +285,7 @@ public class SQLEntry
         }
         catch (Exception ex)
         {
-            database.getLogger().severe("Failed to set a value for \"" + name + "\" - " + ex.getMessage());
+            database.getLogger().severe("Failed to set the value \"" + key +  "\" for \"" + name + "\" - " + ex.getMessage());
         }
     }
 
@@ -313,7 +317,7 @@ public class SQLEntry
         }
         catch (Exception ex)
         {
-            database.getLogger().severe("Failed to set a value for \"" + name + "\" - " + ex.getMessage());
+            database.getLogger().severe("Failed to set the map of values for \"" + name + "\" - " + ex.getMessage());
         }
     }
 }
