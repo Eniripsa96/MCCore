@@ -7,6 +7,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -27,6 +29,9 @@ public class VersionManager
     public static int V1_7_8 = 10708;
     public static int V1_7_9 = 10709;
     public static int V1_8_0 = 10800;
+    public static int V1_8_3 = 10803;
+    public static int V1_8_8 = 10808;
+    public static int V1_9_0 = 10900;
 
     /**
      * The build number for the first 1.5.2 version
@@ -460,5 +465,33 @@ public class VersionManager
             else return Bukkit.getOfflinePlayer(id);
         }
         else return Bukkit.getOfflinePlayer(name);
+    }
+
+    /**
+     * Gets the list of online players, handling differences with the new
+     * 1.9 changes.
+     *
+     * @return array of online players
+     */
+    public static Player[] getOnlinePlayers() {
+        if (isVersionAtLeast(V1_8_8)) {
+            ArrayList<Player> list = new ArrayList<Player>();
+            Collection<? extends Player> online = Bukkit.getOnlinePlayers();
+            for (Object player : online) {
+                if (player instanceof Player) {
+                    list.add((Player)player);
+                }
+            }
+            return list.toArray(new Player[list.size()]);
+        }
+        else {
+            try
+            {
+                return (Player[])Bukkit.class.getMethod("getOnlinePlayers").invoke(null);
+            }
+            catch (Exception ex) {
+                return new Player[0];
+            }
+        }
     }
 }

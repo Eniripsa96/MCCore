@@ -42,7 +42,7 @@ public class PlayerBoards
      */
     public Player getPlayer()
     {
-        return Bukkit.getPlayer(player);
+        return VersionManager.getPlayer(player);
     }
 
     /**
@@ -65,8 +65,8 @@ public class PlayerBoards
         BoardManager.updateBoard(board);
         if (currentBoard == null)
         {
-            board.showPlayer(VersionManager.getPlayer(player));
             currentBoard = fName;
+            board.showPlayer(VersionManager.getPlayer(player));
         }
     }
 
@@ -118,7 +118,7 @@ public class PlayerBoards
             else
             {
                 currentBoard = null;
-                Bukkit.getPlayer(player).setScoreboard(EMPTY);
+                VersionManager.getPlayer(player).setScoreboard(EMPTY);
             }
         }
     }
@@ -136,7 +136,7 @@ public class PlayerBoards
         name = format(name);
         if (boards.containsKey(name))
         {
-            Bukkit.getPlayer(player).setScoreboard(boards.get(name).getScoreboard());
+            VersionManager.getPlayer(player).setScoreboard(boards.get(name).getScoreboard());
             currentBoard = name;
             return true;
         }
@@ -259,7 +259,7 @@ public class PlayerBoards
         for (Board board : boards.values())
         {
             board.setHealthLabel(label);
-            Player player = Bukkit.getPlayer(this.player);
+            Player player = VersionManager.getPlayer(this.player);
             player.setHealth(player.getHealth());
         }
     }

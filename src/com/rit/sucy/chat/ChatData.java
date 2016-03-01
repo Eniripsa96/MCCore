@@ -2,6 +2,7 @@ package com.rit.sucy.chat;
 
 import com.rit.sucy.MCCore;
 import com.rit.sucy.config.ISavable;
+import com.rit.sucy.version.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -142,7 +143,7 @@ public class ChatData implements ISavable
 
         unlockedPrefixes.add(prefix);
 
-        Player player = Bukkit.getPlayer(playerName);
+        Player player = VersionManager.getPlayer(playerName);
         player.sendMessage("You unlocked the prefix: " + prefix.text);
         if (apply) setPrefix(prefix.textWithoutColor);
         else player.sendMessage("    - Equip it by typing: /setprefix " + prefix.textWithoutColor);
@@ -167,7 +168,7 @@ public class ChatData implements ISavable
                 && prefix.pluginName.equalsIgnoreCase(pluginName))
             {
                 unlockedPrefixes.remove(prefix);
-                Bukkit.getPlayer(playerName).sendMessage("You lost the prefix " + prefix.text);
+                VersionManager.getPlayer(playerName).sendMessage("You lost the prefix " + prefix.text);
                 if (playerPrefix == prefix)
                 {
                     playerPrefix = null;
@@ -196,7 +197,7 @@ public class ChatData implements ISavable
                     updateDisplayName();
                 }
                 unlockedPrefixes.remove(i);
-                Bukkit.getPlayer(playerName).sendMessage("You lost the prefix " + unlockedPrefixes.get(i).text);
+                VersionManager.getPlayer(playerName).sendMessage("You lost the prefix " + unlockedPrefixes.get(i).text);
                 i--;
             }
         }
@@ -313,7 +314,7 @@ public class ChatData implements ISavable
         if (name.length() > 0) name += " ";
 
         // Set the display name to the prefixes plus the regular display name
-        Player player = Bukkit.getPlayer(playerName);
+        Player player = VersionManager.getPlayer(playerName);
         if (player != null)
         {
             if (displayName.equalsIgnoreCase(playerName))

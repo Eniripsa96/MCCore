@@ -84,7 +84,7 @@ public class VersionPlayer
      */
     public VersionPlayer(OfflinePlayer player)
     {
-        if (VersionManager.isVersionAtLeast(VersionManager.MC_1_7_5_MIN))
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_7_5))
         {
             this.id = player.getUniqueId();
         }

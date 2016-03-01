@@ -1,6 +1,7 @@
 package com.rit.sucy.event;
 
 import com.rit.sucy.MCCore;
+import com.rit.sucy.version.VersionManager;
 import com.rit.sucy.version.VersionPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,7 +41,7 @@ public class EquipListener implements Listener
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 
         // Load player equipment for equip events
-        for (Player player : plugin.getServer().getOnlinePlayers())
+        for (Player player : VersionManager.getOnlinePlayers())
         {
             equipment.put(new VersionPlayer(player).getIdString(), player.getEquipment().getArmorContents());
         }

@@ -239,7 +239,7 @@ public class Particle
                 Object packet = packetClass.getConstructor(particleEnum, Boolean.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Integer.TYPE, int[].class)
                         .newInstance(enumValue, true, (float) loc.getX(), (float) loc.getY(), (float) loc.getZ(), dx, dy, dz, speed, count, new int[0]);
 
-                for (Player player : Bukkit.getServer().getOnlinePlayers())
+                for (Player player : VersionManager.getOnlinePlayers())
                 {
                     if (player.getWorld() == loc.getWorld() && player.getLocation().distanceSquared(loc) < radius * radius)
                     {
@@ -265,7 +265,7 @@ public class Particle
             Reflection.setValue(packet, "g", dz);
             Reflection.setValue(packet, "h", speed);
             Reflection.setValue(packet, "i", count);
-            for (Player player : Bukkit.getServer().getOnlinePlayers())
+            for (Player player : VersionManager.getOnlinePlayers())
             {
                 if (player.getWorld() == loc.getWorld() && player.getLocation().distanceSquared(loc) < radius * radius)
                 {

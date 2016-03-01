@@ -2,6 +2,7 @@ package com.rit.sucy.chat;
 
 import com.rit.sucy.MCCore;
 import com.rit.sucy.config.Config;
+import com.rit.sucy.version.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -82,7 +83,7 @@ public class Chat
      */
     public static void sendMessage(String permission, String message)
     {
-        for (Player player : Bukkit.getOnlinePlayers())
+        for (Player player : VersionManager.getOnlinePlayers())
         {
             if (player.hasPermission(permission)) player.sendMessage(message);
         }
@@ -116,7 +117,7 @@ public class Chat
         if (width < 0) point.setX(point.getX() + width);
         if (height < 0) point.setY(point.getY() + height);
         if (depth < 0) point.setZ(point.getZ() + depth);
-        for (Player player : Bukkit.getOnlinePlayers())
+        for (Player player : VersionManager.getOnlinePlayers())
         {
             Location loc = player.getLocation();
             if (loc.getX() >= point.getX() && loc.getY() >= point.getY() && loc.getZ() >= point.getZ()
@@ -135,7 +136,7 @@ public class Chat
      */
     public static void sendMessage(Location center, int radius, boolean sphere, String message)
     {
-        for (Player player : Bukkit.getOnlinePlayers())
+        for (Player player : VersionManager.getOnlinePlayers())
         {
             Location loc = player.getLocation();
             if (!sphere) loc.setY(center.getY());

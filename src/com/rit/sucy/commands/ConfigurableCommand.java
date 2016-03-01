@@ -1,12 +1,10 @@
 package com.rit.sucy.commands;
 
-import com.avaje.ebean.text.StringFormatter;
 import com.rit.sucy.MCCore;
 import com.rit.sucy.config.CommentedConfig;
 import com.rit.sucy.config.CustomFilter;
 import com.rit.sucy.config.parse.DataSection;
 import com.rit.sucy.text.TextFormatter;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
