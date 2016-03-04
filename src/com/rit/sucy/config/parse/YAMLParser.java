@@ -110,12 +110,26 @@ public class YAMLParser
      */
     public static DataSection parseText(String text)
     {
+        return parseText(text, '\'');
+    }
+
+    /**
+     * Parses the text read in from a file. If a null string
+     * is passed in, this will return an empty data section.
+     *
+     * @param text  text to parse
+     * @param quote character strings are wrapped in
+     *
+     * @return parsed data
+     */
+    public static DataSection parseText(String text, char quote)
+    {
         if (text == null) return new DataSection();
         comments.clear();
         text = text.replaceAll("\r\n", "\n").replaceAll("\n *\n", "\n").replaceAll(" +\n", "\n");
         String[] lines = text.split("\n");
         i = 0;
-        return parse(lines, 0);
+        return parse(lines, 0, quote);
     }
 
     /**
@@ -123,10 +137,11 @@ public class YAMLParser
      *
      * @param lines  lines to parse
      * @param indent current indent
+     * @param quote character strings are wrapped in
      *
      * @return parsed data
      */
-    private static DataSection parse(String[] lines, int indent)
+    private static DataSection parse(String[] lines, int indent, char quote)
     {
         DataSection data = new DataSection();
         int spaces;
@@ -169,10 +184,12 @@ public class YAMLParser
                 while (++i < lines.length && lines[i].length() > indent && lines[i].charAt(indent) == '-')
                 {
                     String str = lines[i].substring(indent + 2);
-                    if (str.length() > 0 && str.charAt(0) == '\'')
-                        while (str.length() > 0 && str.charAt(0) == '\'') str = str.substring(1, str.length() - 1);
-                    if (str.length() > 0 && str.charAt(0) == '"')
+                    if (str.length() > 0 && str.charAt(0) == quote)
+                        while (str.length() > 0 && str.charAt(0) == quote) str = str.substring(1, str.length() - 1);
+                    else if (str.length() > 0 && str.charAt(0) == '"')
                         while (str.length() > 0 && str.charAt(0) == '"') str = str.substring(1, str.length() - 1);
+                    else if (str.length() > 0 && str.charAt(0) == '\'')
+                        while (str.length() > 0 && str.charAt(0) == '\'') str = str.substring(1, str.length() - 1);
 
                     stringList.add(str);
                 }
@@ -185,7 +202,7 @@ public class YAMLParser
             {
                 i++;
                 int newIndent = countSpaces(lines[i]);
-                DataSection node = parse(lines, newIndent);
+                DataSection node = parse(lines, newIndent, quote);
                 data.set(key, node);
                 continue;
             }
@@ -201,7 +218,8 @@ public class YAMLParser
             {
                 String str = lines[i].substring(lines[i].indexOf(':') + 2);
                 Object value;
-                if (str.charAt(0) == '\'') value = str.substring(1, str.length() - 1);
+                if (str.charAt(0) == quote) value = str.substring(1, str.length() - 1);
+                else if (str.charAt(0) == '\'') value = str.substring(1, str.length() - 1);
                 else if (str.charAt(0) == '"') value = str.substring(1, str.length() - 1);
                 else if (INT.matcher(str).matches()) value = Integer.parseInt(str);
                 else if (DOUBLE.matcher(str).matches()) value = Double.parseDouble(str);

@@ -768,11 +768,24 @@ public class DataSection
     public String toString()
     {
         StringBuilder builder = new StringBuilder();
-        dump(builder, 0);
+        dump(builder, 0, '\'');
+        return builder.toString();
+    }
+
+    /**
+     * Returns the YAML string for the config data
+     *
+     * @param quote the character to wrap strings in
+     * @return YAML data string
+     */
+    public String toString(char quote)
+    {
+        StringBuilder builder = new StringBuilder();
+        dump(builder, 0, quote);
         return builder.toString();
     }
     
-    private void dump(StringBuilder builder, int indent) 
+    private void dump(StringBuilder builder, int indent, char quote)
     {
         // Create spacing to use
         String spacing = "";
@@ -811,8 +824,7 @@ public class DataSection
             // Empty section
             if (value == null)
             {
-                builder.append(" {}");
-                builder.append('\n');
+                builder.append(" {}\n");
             }
 
             // Section with content
@@ -821,13 +833,12 @@ public class DataSection
                 DataSection child = (DataSection) value;
                 if (child.keys.size() == 0)
                 {
-                    builder.append(" {}");
-                    builder.append('\n');
+                    builder.append(" {}\n");
                 }
                 else
                 {
                     builder.append('\n');
-                    ((DataSection) value).dump(builder, indent + 2);
+                    ((DataSection) value).dump(builder, indent + 2, quote);
                 }
             }
 
@@ -847,7 +858,7 @@ public class DataSection
                     {
                         builder.append(spacing);
                         builder.append("- ");
-                        writeValue(builder, item);
+                        writeValue(builder, item, quote);
                         builder.append('\n');
                     }
                 }
@@ -856,19 +867,19 @@ public class DataSection
             // Single value
             else
             {
-                writeValue(builder, value);
+                writeValue(builder, value, quote);
                 builder.append('\n');
             }
         }
     }
 
-    private void writeValue(StringBuilder builder, Object value)
+    private void writeValue(StringBuilder builder, Object value, char quote)
     {
         if (value instanceof Number)
         {
             builder.append(value.toString());
         }
-        else if (value.toString().contains("'"))
+        else if (value.toString().contains("" + quote))
         {
             builder.append('"');
             builder.append(value.toString());
@@ -876,9 +887,9 @@ public class DataSection
         }
         else
         {
-            builder.append('\'');
+            builder.append(quote);
             builder.append(value.toString());
-            builder.append('\'');
+            builder.append(quote);
         }
     }
 }
