@@ -144,6 +144,18 @@ public class MapScheme
 
     /**
      * Defines an image used by the scheme if the
+     * scheme is not already finalized. The image name will
+     * be used as the access key.
+     *
+     * @param image name of the embedded image resource to use
+     */
+    public void defineImg(String image)
+    {
+        defineImg(image, image);
+    }
+
+    /**
+     * Defines an image used by the scheme if the
      * scheme is not already finalized.
      *
      * @param key   key to use for the image

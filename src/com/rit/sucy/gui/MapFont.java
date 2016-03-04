@@ -1,6 +1,7 @@
 package com.rit.sucy.gui;
 
 import org.bukkit.Bukkit;
+import org.bukkit.util.Vector;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -47,6 +48,28 @@ public class MapFont
     public int getSpace()
     {
         return space;
+    }
+
+    /**
+     * Measures the dimensions of a string
+     *
+     * @param str   string to measure
+     *
+     * @return the dimensions of the string { width, height, yOffset }
+     */
+    public int[] measureString(String str)
+    {
+        int minY = 999;
+        int maxY = 0;
+        int width = 0;
+        for (int i = 0; i < str.length(); i++)
+        {
+            MapChar c = getChar(str.charAt(i));
+            minY = Math.min(minY, c.getBase());
+            maxY = Math.max(maxY, c.getBase() + c.getHeight());
+            width += c.getWidth() + getSpace();
+        }
+        return new int[] { width, maxY - minY, minY };
     }
 
     /**

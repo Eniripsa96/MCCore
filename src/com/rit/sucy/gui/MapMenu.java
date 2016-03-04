@@ -2,13 +2,81 @@ package com.rit.sucy.gui;
 
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+
 /**
  * Represents one menu of navigation for a map. Menus can
  * navigate between each other or be independent.
  */
 public abstract class MapMenu
 {
+    private static final HashMap<String, HashMap<String, Object>> MISC = new HashMap<String, HashMap<String, Object>>();
+
+    private static final HashMap<String, Integer>  SELECTIONS = new HashMap<String, Integer>();
+    private static final HashMap<String, MapScene> SCENES     = new HashMap<String, MapScene>();
+
     private MapMenu parent;
+
+    /**
+     * Gets the current selection of the player
+     *
+     * @param player player to get the selection of
+     * @return the current selection of the player
+     */
+    public static Integer getSelection(Player player)
+    {
+        if (!SELECTIONS.containsKey(player.getName()))
+            SELECTIONS.put(player.getName(), 0);
+        return SELECTIONS.get(player.getName());
+    }
+
+    /**
+     * Sets the current selection for the player
+     *
+     * @param player    player to set the selection for
+     * @param selection selection to use
+     */
+    public static void setSelection(Player player, int selection) {
+        SELECTIONS.put(player.getName(), selection);
+    }
+
+    /**
+     * Retrieves the scene manager for the player
+     *
+     * @param player player to get the scene manager for
+     * @return the scene manager for the player
+     */
+    public static MapScene getScene(Player player) {
+        if (!SCENES.containsKey(player.getName()))
+            SCENES.put(player.getName(), new MapScene());
+        return SCENES.get(player.getName());
+    }
+
+    /**
+     * Retrieves stored data for the player by key
+     *
+     * @param player player to get the data for
+     * @param key    key the data was stored under
+     * @return the retrieved data
+     */
+    public static Object getData(Player player, String key)
+    {
+        if (!MISC.containsKey(player.getName())) MISC.put(player.getName(), new HashMap<String, Object>());
+        return MISC.get(player.getName()).get(key);
+    }
+
+    /**
+     * Sets data for the player that persists between menus
+     *
+     * @param player player to set the data for
+     * @param key    key to store the data under
+     * @param data   data to store
+     */
+    public static void setData(Player player, String key, Object data)
+    {
+        if (!MISC.containsKey(player.getName())) MISC.put(player.getName(), new HashMap<String, Object>());
+        MISC.get(player.getName()).put(key, data);
+    }
 
     /**
      * Retrieves the parent menu for this menu. If a map
@@ -43,6 +111,15 @@ public abstract class MapMenu
      * @param buffer buffer to draw to
      */
     public abstract void render(MapBuffer buffer, Player player);
+
+    /**
+     * Provides any setup for a player that may need to be
+     * done when navigating to the menu such as setting up
+     * the scene or applying selection data.
+     *
+     * @param player player to initialize
+     */
+    public void setup(Player player) { }
 
     /**
      * Called when the up key is pressed. This should

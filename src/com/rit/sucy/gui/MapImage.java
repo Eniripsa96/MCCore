@@ -26,6 +26,7 @@ public class MapImage
     private byte[] data;
     private int    width;
     private int    height;
+    protected int  offset;
 
     /**
      * Initializes a default map image matching
@@ -48,6 +49,17 @@ public class MapImage
         data = new byte[width * height];
         this.width = width;
         this.height = height;
+    }
+
+    /**
+     * Creates an empty image with a format that
+     * works better with the map canvas.
+     *
+     * @param size size of the image { width, height }
+     */
+    public MapImage(int[] size)
+    {
+        this(size[0], size[1]);
     }
 
     /**
@@ -138,8 +150,10 @@ public class MapImage
      */
     public void drawImg(MapImage img, int x, int y)
     {
-        int maxX = x + img.width;
-        int maxY = y + img.height;
+        int maxX = Math.min(this.width, Math.max(0, x + img.width));
+        int maxY = Math.min(this.height, Math.max(0, y + img.height));
+        x = Math.max(0, x);
+        y = Math.max(0, y);
 
         int i, j, k;
         for (i = x, k = 0; i < maxX; i++, k++)
@@ -147,7 +161,7 @@ public class MapImage
             for (j = y; j < maxY; j++)
             {
                 int source = k + (j - y) * img.width;
-                if (i < this.width && i >= 0 && j < this.height && j >= 0 && img.data[source] != 0)
+                if (img.data[source] != 0)
                 {
                     data[i + j * width] = img.data[source];
                 }

@@ -59,7 +59,6 @@ public class MCCore extends JavaPlugin
             @Override
             public void execute(String msg)
             {
-                getLogger().info("Logger => " + msg);
                 VersionManager.initialize(msg);
             }
         };

@@ -51,11 +51,15 @@ public class MapListener implements Listener
         if (moving.lengthSquared() < 1e-8) return;
 
         // Prevent movement so they don't fall off cliffs or something
-        Location loc = event.getTo();
-        loc.setX(event.getFrom().getX());
-        loc.setZ(event.getFrom().getZ());
+        Location loc = new Location(
+                event.getFrom().getWorld(),
+                event.getFrom().getX(),
+                event.getTo().getY(),
+                event.getFrom().getZ(),
+                event.getTo().getYaw(),
+                event.getTo().getPitch()
+        );
         event.getPlayer().teleport(loc);
-        event.setCancelled(true);
 
         moving.normalize();
 

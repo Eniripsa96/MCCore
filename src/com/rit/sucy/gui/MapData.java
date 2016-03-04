@@ -97,7 +97,11 @@ public class MapData extends MapRenderer
      */
     public MapMenu getMenu(Player player)
     {
-        if (!current.containsKey(player.getName())) return root;
+        if (!current.containsKey(player.getName())) {
+            current.put(player.getName(), root);
+            setup(root, player);
+            return root;
+        }
         return current.get(player.getName());
     }
 
@@ -114,6 +118,7 @@ public class MapData extends MapRenderer
         MapMenu c = current.get(player.getName());
         if (c == root) return;
         current.put(player.getName(), c.getParent());
+        setup(c.getParent(), player);
     }
 
     /**
@@ -127,7 +132,21 @@ public class MapData extends MapRenderer
         if (getMenu(player) == menu.getParent())
         {
             current.put(player.getName(), menu);
+            setup(menu, player);
         }
+    }
+
+    /**
+     * Sets up the player for the given menu
+     *
+     * @param menu   menu to set up for
+     * @param player player to set up
+     */
+    private void setup(MapMenu menu, Player player)
+    {
+        MapMenu.setSelection(player, 0);
+        MapMenu.getScene(player).clear();
+        menu.setup(player);
     }
 
     /**

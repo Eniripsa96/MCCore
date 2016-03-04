@@ -1,6 +1,7 @@
 package com.rit.sucy.gui;
 
 import com.rit.sucy.reflect.Reflection;
+import org.bukkit.Bukkit;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapView;
 
@@ -25,6 +26,9 @@ public class MapBuffer extends MapImage
     private Method flagDirty;
     private Method flagDirty2;
 
+    protected final int[] bounds;
+    protected boolean dirty = true;
+
     /**
      * Initializes a new MapBuffer with a size of 128x128 that
      * acts as a buffer for the given MapView
@@ -32,6 +36,8 @@ public class MapBuffer extends MapImage
     public MapBuffer(MapView view)
     {
         super(128, 128);
+
+        bounds = new int[] { 0, 0, 127, 127 };
 
         // Grab the needed values for fast rendering via reflection
         worldMap = Reflection.getValue(view, "worldMap");
@@ -82,6 +88,8 @@ public class MapBuffer extends MapImage
      */
     public void drawTo(MapCanvas canvas)
     {
+        if (!this.dirty) return;
+
         // Try a much faster way of setting the data
         boolean fast = false;
         if (flagDirty != null)
@@ -89,8 +97,8 @@ public class MapBuffer extends MapImage
             try
             {
                 // Flag the min/max bounds
-                flagDirty.invoke(worldMap, 0, 0);
-                flagDirty.invoke(worldMap, 127, 127);
+                flagDirty.invoke(worldMap, bounds[0], bounds[1]);
+                flagDirty.invoke(worldMap, bounds[2], bounds[3]);
 
                 // Apply the buffer data
                 Reflection.setValue(canvas, "buffer", getData());
@@ -109,8 +117,8 @@ public class MapBuffer extends MapImage
             try
             {
                 // Flag the min/max bounds
-                flagDirty2.invoke(worldMap, 0, 0, 127);
-                flagDirty2.invoke(worldMap, 1, 0, 127);
+                flagDirty2.invoke(worldMap, 0, bounds[0], bounds[2]);
+                flagDirty2.invoke(worldMap, 1, bounds[1], bounds[3]);
 
                 // Apply the buffer data
                 Reflection.setValue(canvas, "buffer", getData());
@@ -130,12 +138,12 @@ public class MapBuffer extends MapImage
             // Not terrible since images are pre-processed
             // (about 500 times faster), but still not great.
             byte[] data = getData();
-            for (int i = 0; i < data.length; i++)
+            for (int i = bounds[0]; i < bounds[2]; i++)
             {
-                int x = i & 127;
-                int y = i >> 7;
-
-                canvas.setPixel(x, y, data[i]);
+                for (int j = bounds[1]; j < bounds[3]; j++)
+                {
+                    canvas.setPixel(i, j, data[i]);
+                }
             }
         }
     }
