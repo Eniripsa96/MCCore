@@ -417,7 +417,7 @@ public class CommandManager
                              + titleString
                              + " "
                              + ((page % maxPage + 1))
-                             + "\"},hoverEvent\":{\"action\":\"show_text\",\"value\":\""
+                             + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\""
                              + nextPageHover
                              + "\"}}]}";
 
