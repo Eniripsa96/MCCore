@@ -26,6 +26,7 @@
  */
 package com.rit.sucy.mobs;
 
+import com.rit.sucy.reflect.Reflection;
 import com.rit.sucy.text.TextFormatter;
 import org.bukkit.entity.*;
 
@@ -51,7 +52,7 @@ public class MobManager
         if (table.contains(name.toLowerCase()))
             return table.get(name.toLowerCase());
 
-        if (entity instanceof Skeleton)
+        if (entity.getType() == EntityType.SKELETON)
         {
             if (((Skeleton) entity).getSkeletonType() == Skeleton.SkeletonType.WITHER)
                 name = "wither_" + name;
@@ -78,13 +79,10 @@ public class MobManager
     public static String getDetailedName(LivingEntity entity)
     {
         String basic = getName(entity);
+        String type = entity.getType().name();
 
-        // Wolves and ocelots are described with whether or not they are tamed
-        if (entity instanceof Tameable)
-            basic = ((Tameable) entity).isTamed() ? "Tamed " + basic : "Wild " + basic;
-
-            // Slimes are described with their size
-        else if (entity instanceof Slime)
+        // Slimes are described with their size
+        if (type.equals("SLIME"))
         {
             switch (((Slime) entity).getSize())
             {
@@ -100,26 +98,44 @@ public class MobManager
             }
         }
 
+        // Horses have the different variants such as donkey or skeleton horse
+        else if (type.equals("HORSE"))
+        {
+            String variant = ((Horse)entity).getVariant().name();
+            basic = TextFormatter.format(variant) + " " + basic;
+        }
+
         // Sheep are described with their color
-        else if (entity instanceof Sheep)
+        else if (type.equals("SHEEP"))
         {
             String color = ((Sheep) entity).getColor().name().toLowerCase();
             basic = TextFormatter.format(color) + " " + basic;
         }
 
         // Villagers are described with their profession
-        else if (entity instanceof Villager)
+        else if (type.equals("VILLAGER"))
         {
             String profession = ((Villager) entity).getProfession().name();
             basic = TextFormatter.format(profession) + " " + basic;
         }
 
         // Zombies are described with whether or not they are a villager zombie and if they are a baby
-        else if (entity instanceof Zombie)
+        else if (type.equals("ZOMBIE"))
         {
             String extra = ((Zombie) entity).isBaby() ? "Baby " : "";
             extra += ((Zombie) entity).isVillager() ? "Villager " : "";
             basic = extra + basic;
+        }
+
+        // Guardians distinguish between elder and regular guardians
+        else if (type.equals("GUARDIAN"))
+        {
+            try
+            {
+                if ((Boolean)Reflection.getMethod(entity, "isElder").invoke(entity))
+                    basic = "Elder " + basic;
+            }
+            catch (Exception ex) { /* */ }
         }
 
         // Animals are described with whether or not they are a baby
@@ -127,6 +143,10 @@ public class MobManager
         {
             basic = ((Ageable) entity).isAdult() ? basic : "Baby " + basic;
         }
+
+        // Tameable animals include that in their name
+        if (entity instanceof Tameable)
+            basic = ((Tameable) entity).isTamed() ? "Tamed " + basic : "Wild " + basic;
 
         return basic;
     }

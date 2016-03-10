@@ -176,17 +176,22 @@ public class MapImage
      */
     public void drawImg(MapImage img, int x, int y)
     {
-        int maxX = Math.min(this.width, Math.max(0, x + img.width));
-        int maxY = Math.min(this.height, Math.max(0, y + img.height));
-        x = Math.max(0, x);
-        y = Math.max(0, y);
+        if (x >= width || y >= height) return;
 
-        int i, j, k;
-        for (i = x, k = 0; i < maxX; i++, k++)
+        int maxX = Math.min(this.width, x + img.width);
+        int maxY = Math.min(this.height, y + img.height);
+
+        if (maxX <= 0 || maxY <= 0) return;
+
+        int posX = Math.max(0, x);
+        int posY = Math.max(0, y);
+
+        int i, j;
+        for (i = posX; i < maxX; i++)
         {
-            for (j = y; j < maxY; j++)
+            for (j = posY; j < maxY; j++)
             {
-                int source = k + (j - y) * img.width;
+                int source = i - x + (j - y) * img.width;
                 if (img.data[source] != 0)
                 {
                     data[i + j * width] = img.data[source];

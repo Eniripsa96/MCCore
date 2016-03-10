@@ -160,6 +160,8 @@ public class ItemManager
                     put((short) 1, "Spruce Sapling");
                     put((short) 2, "Birch Sapling");
                     put((short) 3, "Jungle Sapling");
+                    put((short) 4, "Acacia Sapling");
+                    put((short) 5, "Dark Oak Sapling");
                 }});
             put("LOG", new HashMap<Short, String>()
             {{
@@ -181,6 +183,11 @@ public class ItemManager
                     put((short) 1, "Chiseled Sandstone");
                     put((short) 2, "Smooth Sandstone");
                 }});
+            put("RED_SANDSTONE", new HashMap<Short, String>() {{
+                    put((short) 0, "Red Sandstone");
+                put((short) 1, "Chiseled Red Sandstone");
+                put((short) 2, "Smooth Red Sandstone");
+            }});
             put("LONG_GRASS", new HashMap<Short, String>()
             {{
                     put((short) 0, "Dead Shrub");
@@ -497,7 +504,7 @@ public class ItemManager
             put("DIRT", new HashMap<Short, String>()
             {{
                     put((short) 0, "Dirt");
-                    put((short) 1, "Dirt");
+                    put((short) 1, "Coarse Dirt");
                     put((short) 2, "Podzol");
                 }});
             put("COBBLE_WALL", new HashMap<Short, String>()
@@ -535,6 +542,17 @@ public class ItemManager
                     put((short) 3, "Large Fern");
                     put((short) 4, "Rose Bush");
                     put((short) 5, "Peony");
+                }});
+            put("SAND", new HashMap<Short, String>()
+            {{
+                    put((short) 0, "Sand");
+                    put((short) 1, "Red Sand");
+                }});
+            put("PRISMARINE", new HashMap<Short, String>()
+            {{
+                    put((short) 0, "Prismarine");
+                    put((short) 1, "Prismarine Bricks");
+                    put((short) 2, "Dark Prismarine");
                 }});
         }};
 
@@ -649,5 +667,8 @@ public class ItemManager
             put("GOLD_BARDING", "Gold Horse Armor");
             put("DIAMOND_BARDING", "Diamond Horse Armor");
             put("QUARTZ_ORE", "Nether Quartz Ore");
+            put("HAY_BLOCK", "Hay Bale");
+            put("STANDING_BANNER", "Free-Standing Banner");
+            put("WALL_BANNER", "Wall-Mounted Banner");
         }};
 }

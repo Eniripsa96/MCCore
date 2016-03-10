@@ -311,14 +311,14 @@ public class Particle
         play(particle, loc, radius, 0, 0, 0, speed, 0);
     }
 
-    private static final HashMap<String, String> CONVERSION = new HashMap<String, String>()
+    public static final HashMap<String, String> CONVERSION = new HashMap<String, String>()
     {{
             put("angryVillager", "VILLAGER_ANGRY");
             put("bubble", "WATER_BUBBLE");
             put("cloud", "CLOUD");
             put("crit", "CRIT");
             put("depthSuspend", "SUSPENDED_DEPTH");
-            put("dripLava", "DRIP lAVA");
+            put("dripLava", "DRIP_LAVA");
             put("dripWater", "DRIP_WATER");
             put("enchantmenttable", "ENCHANTMENT_TABLE");
             put("explode", "EXPLOSION_NORMAL");
