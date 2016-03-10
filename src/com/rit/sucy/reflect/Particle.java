@@ -156,7 +156,10 @@ public class Particle
      */
     public static void playBlockCrack(int mat, short data, Location loc, int radius, float speed)
     {
-        play("blockcrack_" + mat + "_" + data, loc, radius, speed);
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_8_0))
+            play("blockcrack_", loc, radius, 0, 0, 0, speed, 1, new int[] { mat, data });
+        else
+            play("blockcrack_" + mat + "_" + data, loc, radius, speed);
     }
 
     /**
@@ -216,8 +219,10 @@ public class Particle
      */
     public static void playIconCrack(int mat, short data, Location loc, int radius, float speed)
     {
-
-        play("iconcrack_" + mat + "_" + data, loc, radius, speed);
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_8_0))
+            playBlockCrack(mat, data, loc, radius, speed);
+        else
+            play("iconcrack_" + mat + "_" + data, loc, radius, speed);
     }
 
     /**
@@ -235,6 +240,26 @@ public class Particle
      * @param count    number of particles
      */
     public static void play(String particle, Location loc, int radius, float dx, float dy, float dz, float speed, int count)
+    {
+        play(particle, loc, radius, dx, dy, dz, speed, count, new int[0]);
+    }
+
+    /**
+     * Sends a particle packet using the given string. This should only be used
+     * when you know what you are doing. Otherwise, use the other helper methods
+     * that provide valid particle strings and settings.
+     *
+     * @param particle packet string of the particle
+     * @param loc      location to play the particle at
+     * @param radius   radius in which to show the effect
+     * @param dx       particle x range
+     * @param dy       particle y range
+     * @param dz       particle z range
+     * @param speed    particle speed
+     * @param count    number of particles
+     * @param extra    extra data for 1.8+
+     */
+    public static void play(String particle, Location loc, int radius, float dx, float dy, float dz, float speed, int count, int[] extra)
     {
         if (!initialized)
         {
@@ -263,7 +288,7 @@ public class Particle
             try
             {
                 Object packet = packetClass.getConstructor(particleEnum, Boolean.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Integer.TYPE, int[].class)
-                        .newInstance(enumValue, true, (float) loc.getX(), (float) loc.getY(), (float) loc.getZ(), dx, dy, dz, speed, count, new int[0]);
+                        .newInstance(enumValue, true, (float) loc.getX(), (float) loc.getY(), (float) loc.getZ(), dx, dy, dz, speed, count, extra);
 
                 for (Player player : VersionManager.getOnlinePlayers())
                 {
@@ -315,6 +340,7 @@ public class Particle
     {{
             put("angryVillager", "VILLAGER_ANGRY");
             put("bubble", "WATER_BUBBLE");
+            put("blockcrack_", "BLOCK_CRACK");
             put("cloud", "CLOUD");
             put("crit", "CRIT");
             put("depthSuspend", "SUSPENDED_DEPTH");
