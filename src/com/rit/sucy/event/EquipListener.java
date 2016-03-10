@@ -139,7 +139,7 @@ public class EquipListener implements Listener
                         plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, previous[i]));
                     else if (equips[i] != null && (previous == null || previous[i] == null))
                         plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, equips[i]));
-                    else if (previous != null && !equips[i].toString().equalsIgnoreCase(previous[i].toString()))
+                    else if (previous != null && previous[i] != null && !equips[i].toString().equalsIgnoreCase(previous[i].toString()))
                     {
                         plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, previous[i]));
                         plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, equips[i]));
