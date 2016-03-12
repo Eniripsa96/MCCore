@@ -285,22 +285,25 @@ public class Particle
                     enumValue = value;
                 }
             }
-            try
+            if (enumValue != null)
             {
-                Object packet = packetClass.getConstructor(particleEnum, Boolean.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Integer.TYPE, int[].class)
-                        .newInstance(enumValue, true, (float) loc.getX(), (float) loc.getY(), (float) loc.getZ(), dx, dy, dz, speed, count, extra);
-
-                for (Player player : VersionManager.getOnlinePlayers())
+                try
                 {
-                    if (player.getWorld() == loc.getWorld() && player.getLocation().distanceSquared(loc) < radius * radius)
+                    Object packet = packetClass.getConstructor(particleEnum, Boolean.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Integer.TYPE, int[].class)
+                            .newInstance(enumValue, true, (float) loc.getX(), (float) loc.getY(), (float) loc.getZ(), dx, dy, dz, speed, count, extra);
+
+                    for (Player player : VersionManager.getOnlinePlayers())
                     {
-                        Reflection.sendPacket(player, packet);
+                        if (player.getWorld() == loc.getWorld() && player.getLocation().distanceSquared(loc) < radius * radius)
+                        {
+                            Reflection.sendPacket(player, packet);
+                        }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                // Do nothing
+                catch (Exception ex)
+                {
+                    // Do nothing
+                }
             }
         }
         else

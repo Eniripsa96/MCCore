@@ -217,7 +217,7 @@ public class DurabilityListener implements Listener
             {
                 ItemLoseDurabilityEvent event = new ItemLoseDurabilityEvent(player, item, -difference);
                 plugin.getServer().getPluginManager().callEvent(event);
-                difference = -event.getAmount();
+                difference = event.isCancelled() ? 0 : -event.getAmount();
             }
 
             // Gaining durability
@@ -225,27 +225,23 @@ public class DurabilityListener implements Listener
             {
                 ItemGainDurabilityEvent event = new ItemGainDurabilityEvent(player, item, difference);
                 plugin.getServer().getPluginManager().callEvent(event);
-                difference = event.getAmount();
+                difference = event.isCancelled() ? 0 : event.getAmount();
             }
 
-            if (difference != 0)
+            // Send the message if applicable
+            ItemMeta meta = item.hasItemMeta() ? item.getItemMeta() : null;
+            String name = meta != null && meta.hasDisplayName() ? item.getItemMeta().getDisplayName() : ItemManager.getVanillaName(item);
+            if (player.isOnline() && player.isValid() && plugin.isDurabilityMessageEnabled())
             {
-
-                // Send the message if applicable
-                ItemMeta meta = item.hasItemMeta() ? item.getItemMeta() : null;
-                String name = meta != null && meta.hasDisplayName() ? item.getItemMeta().getDisplayName() : ItemManager.getVanillaName(item);
-                if (player.isOnline() && player.isValid() && plugin.isDurabilityMessageEnabled())
-                {
-                    player.sendMessage(TextFormatter.colorString(plugin.getDurabilityMessage()
-                                                                         .replace("{current}", (actualDurability + difference) + "")
-                                                                         .replace("{max}", Durability.getMaxDurability(item) + "")
-                                                                         .replace("{item}", name))
-                    );
-                }
-
-                // Apply the changes
-                Durability.setDurability(item, actualDurability + difference);
+                player.sendMessage(TextFormatter.colorString(plugin.getDurabilityMessage()
+                                                                     .replace("{current}", (actualDurability + difference) + "")
+                                                                     .replace("{max}", Durability.getMaxDurability(item) + "")
+                                                                     .replace("{item}", name))
+                );
             }
+
+            // Apply the changes
+            Durability.setDurability(item, actualDurability + difference);
         }
     }
 }

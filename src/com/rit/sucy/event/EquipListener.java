@@ -135,11 +135,12 @@ public class EquipListener implements Listener
                 ItemStack[] previous = equipment.get(id);
                 for (int i = 0; i < equips.length; i++)
                 {
-                    if (equips[i] == null && (previous != null && previous[i] != null))
-                        plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, previous[i]));
-                    else if (equips[i] != null && (previous == null || previous[i] == null))
+                    boolean hasPrev = previous != null && previous[i] != null;
+                    if (equips[i] != null && !hasPrev)
                         plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, equips[i]));
-                    else if (previous != null && !equips[i].toString().equalsIgnoreCase(previous[i].toString()))
+                    else if (hasPrev && equips[i] == null)
+                        plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, previous[i]));
+                    else if (hasPrev && !equips[i].toString().equalsIgnoreCase(previous[i].toString()))
                     {
                         plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, previous[i]));
                         plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, equips[i]));
