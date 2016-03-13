@@ -220,9 +220,72 @@ public class Particle
     public static void playIconCrack(int mat, short data, Location loc, int radius, float speed)
     {
         if (VersionManager.isVersionAtLeast(VersionManager.V1_8_0))
-            playBlockCrack(mat, data, loc, radius, speed);
+            play("iconcrack_", loc, radius, 0, 0, 0, speed, 1, new int[] { mat, data });
         else
             play("iconcrack_" + mat + "_" + data, loc, radius, speed);
+    }
+
+    /**
+     * Sends a block dust particle for the material to all players within
+     * a radius of the location
+     *
+     * @param mat    material to show the icon crack of
+     * @param data   data of the material to show the icon crack of
+     * @param loc    location to play at
+     * @param radius radius of the effect
+     */
+    public static void playBlockDust(Material mat, short data, Location loc, int radius)
+    {
+        if (mat == null) return;
+        playBlockDust(mat.getId(), data, loc, radius, 1.0f);
+    }
+
+    /**
+     * Sends a block dust particle for the material to all players within
+     * a radius of the location
+     *
+     * @param mat    material to show the icon crack of
+     * @param data   data of the material to show the icon crack of
+     * @param loc    location to play at
+     * @param radius radius of the effect
+     * @param speed  the speed of the particle
+     */
+    public static void playBlockDust(Material mat, short data, Location loc, int radius, float speed)
+    {
+        if (mat == null) return;
+        playBlockDust(mat.getId(), data, loc, radius, speed);
+    }
+
+    /**
+     * Sends a block dust particle for the material to all players within
+     * a radius of the location
+     *
+     * @param mat    ID of the material to show the icon crack of
+     * @param data   data of the material to show the icon crack of
+     * @param loc    location to play at
+     * @param radius radius of the effect
+     */
+    public static void playBlockDust(int mat, short data, Location loc, int radius)
+    {
+        playBlockDust(mat, data, loc, radius, 1.0f);
+    }
+
+    /**
+     * Sends a block dust particle for the material to all players within
+     * a radius of the location
+     *
+     * @param mat    ID of the material to show the icon crack of
+     * @param data   data of the material to show the icon crack of
+     * @param loc    location to play at
+     * @param radius radius of the effect
+     * @param speed  speed of the particle
+     */
+    public static void playBlockDust(int mat, short data, Location loc, int radius, float speed)
+    {
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_8_0))
+            play("blockdust_", loc, radius, 0, 0, 0, speed, 1, new int[] { mat, data });
+        else
+            play("blockdust_" + mat + "_" + data, loc, radius, speed);
     }
 
     /**
@@ -344,6 +407,7 @@ public class Particle
             put("angryVillager", "VILLAGER_ANGRY");
             put("bubble", "WATER_BUBBLE");
             put("blockcrack_", "BLOCK_CRACK");
+            put("blockdust_", "BLOCK_DUST");
             put("cloud", "CLOUD");
             put("crit", "CRIT");
             put("depthSuspend", "SUSPENDED_DEPTH");
@@ -357,6 +421,7 @@ public class Particle
             put("happyVillager", "VILLAGER_HAPPY");
             put("heart", "HEART");
             put("hugeexplosion", "EXPLOSION_HUGE");
+            put("iconcrack_", "ITEM_CRACK");
             put("instantSpell", "SPELL_INSTANT");
             put("largeexplode", "EXPLOSION_LARGE");
             put("largesmoke", "SMOKE_LARGE");
