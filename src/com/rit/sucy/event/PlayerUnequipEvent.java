@@ -41,17 +41,20 @@ public class PlayerUnequipEvent extends Event
 
     private final Player    player;
     private final ItemStack item;
+    private final int       slot;
 
     /**
      * Constructor
      *
      * @param player player un-equipping the item
      * @param item   item that was un-equipped
+     * @param slot   the slot the item was unequipped from
      */
-    public PlayerUnequipEvent(Player player, ItemStack item)
+    public PlayerUnequipEvent(Player player, ItemStack item, int slot)
     {
         this.player = player;
         this.item = item;
+        this.slot = slot;
     }
 
     /**
@@ -68,6 +71,14 @@ public class PlayerUnequipEvent extends Event
     public ItemStack getItem()
     {
         return item;
+    }
+
+    /**
+     * @return armor slot that was equipped
+     */
+    public int getSlot()
+    {
+        return slot;
     }
 
     /**

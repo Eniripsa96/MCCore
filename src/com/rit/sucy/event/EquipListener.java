@@ -137,13 +137,13 @@ public class EquipListener implements Listener
                 {
                     boolean hasPrev = previous != null && previous[i] != null;
                     if (equips[i] != null && !hasPrev)
-                        plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, equips[i]));
+                        plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, equips[i], i));
                     else if (hasPrev && equips[i] == null)
-                        plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, previous[i]));
+                        plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, previous[i], i));
                     else if (hasPrev && !equips[i].toString().equalsIgnoreCase(previous[i].toString()))
                     {
-                        plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, previous[i]));
-                        plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, equips[i]));
+                        plugin.getServer().getPluginManager().callEvent(new PlayerUnequipEvent(player, previous[i], i));
+                        plugin.getServer().getPluginManager().callEvent(new PlayerEquipEvent(player, equips[i], i));
                     }
                 }
                 equipment.put(id, equips);

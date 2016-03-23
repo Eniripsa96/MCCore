@@ -212,7 +212,7 @@ public class DurabilityListener implements Listener
             // Do nothing when there's no difference
             if (difference == 0) return;
 
-                // Losing durability
+            // Losing durability
             else if (difference < 0)
             {
                 ItemLoseDurabilityEvent event = new ItemLoseDurabilityEvent(player, item, -difference);

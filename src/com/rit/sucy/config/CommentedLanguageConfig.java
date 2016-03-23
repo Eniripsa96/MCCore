@@ -55,9 +55,9 @@ import java.util.regex.Pattern;
 public class CommentedLanguageConfig extends CommentedConfig
 {
 
-    private static final String  EXPAND_FONT_REGEX = "\\{expandFront\\((.+),([0-9]+),([0-9]+)\\)\\}";
+    private static final String  EXPAND_FONT_REGEX = "\\{expandFront\\(([^,]+),([0-9]+),([0-9]+)\\)\\}";
     private static final Pattern EXPAND_FRONT      = Pattern.compile(EXPAND_FONT_REGEX);
-    private static final String  EXPAND_BACK_REGEX = "\\{expandBack\\((.+),([0-9]+),([0-9]+)\\)\\}";
+    private static final String  EXPAND_BACK_REGEX = "\\{expandBack\\(([^,]+),([0-9]+),([0-9]+)\\)\\}";
     private static final Pattern EXPAND_BACK       = Pattern.compile(EXPAND_BACK_REGEX);
 
     /**
@@ -144,7 +144,7 @@ public class CommentedLanguageConfig extends CommentedConfig
             if (filterType == FilterType.SPECIAL || filterType == FilterType.ALL)
             {
                 filterSizer(sb, true, player);
-                filterSizer(sb, true, player);
+                filterSizer(sb, false, player);
                 filterBreak(sb);
             }
 

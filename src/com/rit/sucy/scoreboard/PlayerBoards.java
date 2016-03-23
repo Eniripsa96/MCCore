@@ -144,7 +144,9 @@ public class PlayerBoards
             else
             {
                 currentBoard = null;
-                VersionManager.getPlayer(player).setScoreboard(EMPTY);
+                Player player = VersionManager.getPlayer(this.player);
+                if (player != null)
+                    player.setScoreboard(EMPTY);
             }
         }
     }
@@ -162,7 +164,9 @@ public class PlayerBoards
         name = format(name);
         if (boards.containsKey(name))
         {
-            VersionManager.getPlayer(player).setScoreboard(boards.get(name).getScoreboard());
+            Player player = VersionManager.getPlayer(this.player);
+            if (player != null)
+                player.setScoreboard(boards.get(name).getScoreboard());
             currentBoard = name;
             return true;
         }
@@ -286,7 +290,8 @@ public class PlayerBoards
         {
             board.setHealthLabel(label);
             Player player = VersionManager.getPlayer(this.player);
-            player.setHealth(player.getHealth());
+            if (player != null)
+                player.setHealth(player.getHealth());
         }
     }
 }
