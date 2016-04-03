@@ -67,6 +67,14 @@ public class DataSection
     }
 
     /**
+     * @return number of key/value pairs
+     */
+    public int size()
+    {
+        return keys.size();
+    }
+
+    /**
      * Retrieves the set of entries in this data section
      *
      * @return entry set of the data section
@@ -97,6 +105,28 @@ public class DataSection
         if (!comments.containsKey(key)) comments.put(key, new ArrayList<String>());
         comments.get(key).add(comment);
         if (!keys.contains(key)) keys.add(key);
+    }
+
+    /**
+     * Checks whether or not the data has a comment for it
+     *
+     * @param key data key
+     * @return true if has comments
+     */
+    public boolean hasComment(String key)
+    {
+        return comments.containsKey(key);
+    }
+
+    /**
+     * Gets the comments for a data value
+     *
+     * @param key data key
+     * @return list of comments
+     */
+    public List<String> getComments(String key)
+    {
+        return comments.get(key);
     }
 
     /**
@@ -151,13 +181,13 @@ public class DataSection
     public void set(String key, Object value)
     {
         if (value == null) remove(key);
-        else if (value instanceof Map)
+        else if (value instanceof Map<?, ?>)
         {
             DataSection section = createSection(key);
-            Map map = (Map) value;
-            for (Object k : map.keySet())
+            Map<?, ?> map = (Map<?, ?>) value;
+            for (Map.Entry<?, ?> k : map.entrySet())
             {
-                section.set(k.toString(), map.get(k));
+                section.set(k.getKey().toString(), k.getValue().toString());
             }
         }
         else
@@ -512,7 +542,7 @@ public class DataSection
         if (!data.containsKey(key)) return fallback;
         Object obj = data.get(key);
         try {
-            return Byte.parseByte(obj.toString());
+            return (byte)NumberParser.parseInt(obj.toString());
         }
         catch (Exception ex) {
             return fallback;
@@ -539,7 +569,7 @@ public class DataSection
         if (!data.containsKey(key)) return fallback;
         Object obj = data.get(key);
         try {
-            return Short.parseShort(obj.toString());
+            return (short)NumberParser.parseInt(obj.toString());
         }
         catch (Exception ex) {
             return fallback;
@@ -566,7 +596,7 @@ public class DataSection
         if (!data.containsKey(key)) return fallback;
         Object obj = data.get(key);
         try {
-            return Integer.parseInt(obj.toString());
+            return NumberParser.parseInt(obj.toString());
         }
         catch (Exception ex) {
             return fallback;
@@ -593,7 +623,7 @@ public class DataSection
         if (!data.containsKey(key)) return -1;
         Object obj = data.get(key);
         try {
-            return Float.parseFloat(obj.toString());
+            return (float)NumberParser.parseDouble(obj.toString());
         }
         catch (Exception ex) {
             return fallback;
@@ -620,7 +650,7 @@ public class DataSection
         if (!data.containsKey(key)) return fallback;
         Object obj = data.get(key);
         try {
-            return Double.parseDouble(obj.toString());
+            return NumberParser.parseDouble(obj.toString());
         }
         catch (Exception ex) {
             return fallback;
@@ -748,7 +778,7 @@ public class DataSection
      */
     public void dump(String path)
     {
-        dump(new File(path));
+        YAMLParser.save(this, path);
     }
 
     /**
@@ -758,19 +788,7 @@ public class DataSection
      */
     public void dump(File file)
     {
-        try
-        {
-            FileOutputStream out = new FileOutputStream(file);
-            BufferedWriter write = new BufferedWriter(new OutputStreamWriter(out, Encoder.UTF_8));
-
-            dump(write);
-
-            write.close();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
+        YAMLParser.save(this, file);
     }
 
     /**
@@ -782,7 +800,7 @@ public class DataSection
      */
     public void dump(BufferedWriter write) throws IOException
     {
-        write.write(toString());
+        YAMLParser.save(this, write);
     }
 
     /**
@@ -793,9 +811,7 @@ public class DataSection
     @Override
     public String toString()
     {
-        StringBuilder builder = new StringBuilder();
-        dump(builder, 0, '\'');
-        return builder.toString();
+        return toString('\'');
     }
 
     /**
@@ -807,115 +823,7 @@ public class DataSection
     public String toString(char quote)
     {
         StringBuilder builder = new StringBuilder();
-        dump(builder, 0, quote);
+        YAMLParser.dump(this, builder, 0, quote);
         return builder.toString();
-    }
-    
-    private void dump(StringBuilder builder, int indent, char quote)
-    {
-        // Create spacing to use
-        String spacing = "";
-        for (int i = 0; i < indent; i++)
-        {
-            spacing += ' ';
-        }
-
-        for (String key : keys)
-        {
-            // Comments first
-            if (comments.containsKey(key))
-            {
-                List<String> lines = comments.get(key);
-                for (String line : lines)
-                {
-                    if (line.length() == 0)
-                    {
-                        builder.append('\n');
-                        continue;
-                    }
-                    builder.append(spacing);
-                    builder.append('#');
-                    builder.append(line);
-                    builder.append('\n');
-                }
-            }
-
-            // Write the key
-            builder.append(spacing);
-            builder.append(key);
-            builder.append(": ");
-
-            Object value = data.get(key);
-
-            // Empty section
-            if (value == null)
-            {
-                builder.append(" {}\n");
-            }
-
-            // Section with content
-            else if (value instanceof DataSection)
-            {
-                DataSection child = (DataSection) value;
-                if (child.keys.size() == 0)
-                {
-                    builder.append(" {}\n");
-                }
-                else
-                {
-                    builder.append('\n');
-                    ((DataSection) value).dump(builder, indent + 2, quote);
-                }
-            }
-
-            // List value
-            else if (value instanceof List)
-            {
-                List list = (List) value;
-                if (list.size() == 0)
-                {
-                    builder.append(" []");
-                    builder.append('\n');
-                }
-                else
-                {
-                    builder.append('\n');
-                    for (Object item : list)
-                    {
-                        builder.append(spacing);
-                        builder.append("- ");
-                        writeValue(builder, item, quote);
-                        builder.append('\n');
-                    }
-                }
-            }
-
-            // Single value
-            else
-            {
-                writeValue(builder, value, quote);
-                builder.append('\n');
-            }
-        }
-    }
-
-    private void writeValue(StringBuilder builder, Object value, char quote)
-    {
-        if (value instanceof Number)
-        {
-            builder.append(value.toString());
-        }
-        else if (value.toString().contains("" + quote))
-        {
-            builder.append('"');
-            builder.append(value.toString());
-            builder.append('"');
-        }
-        else
-        {
-            builder.append(quote);
-            builder.append(value.toString());
-            builder.append(quote);
-        }
     }
 }

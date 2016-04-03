@@ -26,13 +26,13 @@
  */
 package com.rit.sucy.config.parse;
 
+import com.sun.xml.internal.fastinfoset.Encoder;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -41,9 +41,6 @@ import java.util.regex.Pattern;
  */
 public class YAMLParser
 {
-    private static final Pattern INT    = Pattern.compile("-?[0-9]+");
-    private static final Pattern DOUBLE = Pattern.compile("-?[0-9]+\\.[0-9]+");
-
     private static int               i        = 0;
     private static ArrayList<String> comments = new ArrayList<String>();
 
@@ -247,8 +244,6 @@ public class YAMLParser
                 if (str.charAt(0) == quote) value = str.substring(1, str.length() - 1);
                 else if (str.charAt(0) == '\'') value = str.substring(1, str.length() - 1);
                 else if (str.charAt(0) == '"') value = str.substring(1, str.length() - 1);
-                else if (INT.matcher(str).matches()) value = Integer.parseInt(str);
-                else if (DOUBLE.matcher(str).matches()) value = Double.parseDouble(str);
                 else value = str;
                 data.set(key, value);
             }
@@ -270,5 +265,167 @@ public class YAMLParser
         int c = 0;
         while (line.length() > c && line.charAt(c) == ' ') c++;
         return c;
+    }
+
+    /**
+     * Saves config data to a file
+     *
+     * @param path path to the file
+     */
+    public static void save(DataSection data, String path)
+    {
+        save(data, new File(path));
+    }
+
+    /**
+     * Dumps the data contents to a file to the given file
+     *
+     * @param file file to dump to
+     */
+    public static void save(DataSection data, File file)
+    {
+        try
+        {
+            FileOutputStream out = new FileOutputStream(file);
+            BufferedWriter write = new BufferedWriter(new OutputStreamWriter(out, Encoder.UTF_8));
+
+            save(data, write);
+
+            write.close();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Dumps the data contents into the stream
+     *
+     * @param write  stream to dump to
+     *
+     * @throws IOException
+     */
+    public static void save(DataSection data, BufferedWriter write) throws IOException
+    {
+        StringBuilder sb = new StringBuilder();
+        dump(data, sb, 0, '\'');
+        write.write(sb.toString());
+    }
+
+    /**
+     * Dumps config data to a string in YAML format
+     *
+     * @param data    data to dump
+     * @param builder string builder to use
+     * @param indent  starting indent
+     * @param quote   character to use for containing strings
+     */
+    public static void dump(DataSection data, StringBuilder builder, int indent, char quote)
+    {
+        // Create spacing to use
+        String spacing = "";
+        for (int i = 0; i < indent; i++)
+        {
+            spacing += ' ';
+        }
+
+        for (String key : data.keys())
+        {
+            // Comments first
+            if (data.hasComment(key))
+            {
+                List<String> lines = data.getComments(key);
+                for (String line : lines)
+                {
+                    if (line.length() == 0)
+                    {
+                        builder.append('\n');
+                        continue;
+                    }
+                    builder.append(spacing);
+                    builder.append('#');
+                    builder.append(line);
+                    builder.append('\n');
+                }
+            }
+
+            // Write the key
+            builder.append(spacing);
+            builder.append(key);
+            builder.append(": ");
+
+            Object value = data.get(key);
+
+            // Empty section
+            if (value == null)
+            {
+                builder.append(" {}\n");
+            }
+
+            // Section with content
+            else if (value instanceof DataSection)
+            {
+                DataSection child = (DataSection) value;
+                if (child.size() == 0)
+                {
+                    builder.append(" {}\n");
+                }
+                else
+                {
+                    builder.append('\n');
+                    dump(child, builder, indent + 2, quote);
+                }
+            }
+
+            // List value
+            else if (value instanceof List)
+            {
+                List list = (List) value;
+                if (list.size() == 0)
+                {
+                    builder.append(" []");
+                    builder.append('\n');
+                }
+                else
+                {
+                    builder.append('\n');
+                    for (Object item : list)
+                    {
+                        builder.append(spacing);
+                        builder.append("- ");
+                        writeValue(builder, item, quote);
+                        builder.append('\n');
+                    }
+                }
+            }
+
+            // Single value
+            else
+            {
+                writeValue(builder, value, quote);
+                builder.append('\n');
+            }
+        }
+    }
+
+    private static void writeValue(StringBuilder builder, Object value, char quote)
+    {
+        if (value instanceof Number)
+        {
+            builder.append(value.toString());
+        }
+        else if (value.toString().contains("" + quote))
+        {
+            builder.append('"');
+            builder.append(value.toString());
+            builder.append('"');
+        }
+        else
+        {
+            builder.append(quote);
+            builder.append(value.toString());
+            builder.append(quote);
+        }
     }
 }

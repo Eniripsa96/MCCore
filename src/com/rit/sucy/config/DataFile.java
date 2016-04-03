@@ -1,6 +1,6 @@
 /**
  * MCCore
- * com.rit.sucy.config.CommentedConfig
+ * com.rit.sucy.config.DataFile
  *
  * The MIT License (MIT)
  *
@@ -27,17 +27,18 @@
 package com.rit.sucy.config;
 
 import com.rit.sucy.config.parse.DataSection;
-import com.rit.sucy.config.parse.YAMLParser;
+import com.rit.sucy.config.parse.JSONParser;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.logging.Level;
 
 /**
- * Handles configs with comment and UTF-8 support. Can be used
- * to handle config.yml to preserve/manage comments as well.
+ * Handles saving/loading data in a more condensed JSON format
+ * with UTF-8 support in order to save disk space compared to
+ * regular YAML configurations.
  */
-public class CommentedConfig
+public class DataFile
 {
 
     private final String     fileName;
@@ -45,7 +46,6 @@ public class CommentedConfig
 
     private File        configFile;
     private DataSection data;
-    private DataSection defaults;
 
     /**
      * Constructor
@@ -53,10 +53,10 @@ public class CommentedConfig
      * @param plugin plugin reference
      * @param name   file name
      */
-    public CommentedConfig(JavaPlugin plugin, String name)
+    public DataFile(JavaPlugin plugin, String name)
     {
         this.plugin = plugin;
-        this.fileName = name + ".yml";
+        this.fileName = name + ".json";
 
         // Setup the path
         this.configFile = new File(plugin.getDataFolder().getAbsolutePath() + "/" + fileName);
@@ -64,7 +64,7 @@ public class CommentedConfig
         {
             String path = configFile.getAbsolutePath();
             if (new File(path.substring(0, path.lastIndexOf(File.separator))).mkdirs())
-                plugin.getLogger().info("Created a new folder for config files");
+                plugin.getLogger().info("Created a new folder for data files");
         }
         catch (Exception e)
         { /* */ }
@@ -83,7 +83,7 @@ public class CommentedConfig
      */
     public String getFileName()
     {
-        return fileName.replace(".yml", "");
+        return fileName.replace(".json", "");
     }
 
     /**
@@ -106,13 +106,13 @@ public class CommentedConfig
      */
     public void reload()
     {
-        data = YAMLParser.parseFile(configFile);
+        data = JSONParser.parseFile(configFile);
     }
 
     /**
      * @return config file
      */
-    public DataSection getConfig()
+    public DataSection getData()
     {
         if (data == null)
         {
@@ -126,7 +126,7 @@ public class CommentedConfig
      *
      * @return the file of the configuration
      */
-    public File getConfigFile()
+    public File getFile()
     {
         return configFile;
     }
@@ -136,7 +136,7 @@ public class CommentedConfig
      */
     public void save()
     {
-        if (data != null)
+        if (data != null && configFile != null)
         {
             try
             {
@@ -144,54 +144,8 @@ public class CommentedConfig
             }
             catch (Exception ex)
             {
-                plugin.getLogger().log(Level.SEVERE, "Could not save config to " + configFile, ex);
+                plugin.getLogger().log(Level.SEVERE, "Could not save data to " + configFile, ex);
             }
         }
-    }
-
-    /**
-     * Saves the default config if no file exists yet
-     */
-    public void saveDefaultConfig()
-    {
-        if (!configFile.exists())
-        {
-            if (defaults == null) defaults = YAMLParser.parseResource(plugin, fileName);
-            defaults.dump(configFile);
-        }
-    }
-
-    /**
-     * <p>Checks the configuration for default values, copying
-     * default values over if they are not set. Once finished,
-     * the config is saved so the user can see the changes.</p>
-     * <p>This acts differently than saveDefaultConfig() as
-     * the config can already exist for this method. This is
-     * more for making sure users do not erase needed values
-     * from settings configs.</p>
-     */
-    public void checkDefaults()
-    {
-        if (defaults == null) defaults = YAMLParser.parseResource(plugin, fileName);
-        if (data == null)
-        {
-            this.reload();
-        }
-        data.applyDefaults(defaults);
-    }
-
-    /**
-     * <p>Trims excess (non-default) values from the configuration</p>
-     * <p>Any values that weren't in the default configuration are removed</p>
-     * <p>This is primarily used for settings configs </p>
-     */
-    public void trim()
-    {
-        if (defaults == null) defaults = YAMLParser.parseResource(plugin, fileName);
-        if (data == null)
-        {
-            this.reload();
-        }
-        data.trim(defaults);
     }
 }
