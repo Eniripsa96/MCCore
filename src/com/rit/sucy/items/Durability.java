@@ -243,7 +243,6 @@ public class Durability
      */
     public static int getDurability(ItemStack item)
     {
-
         // Invalid item
         if (item == null || item.getType().getMaxDurability() == 0) return 0;
 

@@ -102,7 +102,8 @@ public abstract class Board
      */
     public void showPlayer(Player player)
     {
-        player.setScoreboard(scoreboard);
+        if (player != null)
+            player.setScoreboard(scoreboard);
     }
 
     /**

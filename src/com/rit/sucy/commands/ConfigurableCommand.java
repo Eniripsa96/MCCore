@@ -72,7 +72,6 @@ import java.util.Map;
  */
 public class ConfigurableCommand extends Command
 {
-
     private static final String SENDER_KEY      = "sender";
     private static final String ENABLED_KEY     = "enabled";
     private static final String DESCRIPTION_KEY = "description";

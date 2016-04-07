@@ -35,6 +35,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -499,6 +500,7 @@ public class VersionManager
      *
      * @return array of online players
      */
+    @SuppressWarnings("unchecked")
     public static Player[] getOnlinePlayers() {
         if (isVersionAtLeast(V1_8_8)) {
             ArrayList<Player> list = new ArrayList<Player>();
@@ -513,11 +515,19 @@ public class VersionManager
         else {
             try
             {
-                return (Player[])Bukkit.class.getMethod("getOnlinePlayers").invoke(null);
+                Object players = Bukkit.class.getMethod("getOnlinePlayers").invoke(null);
+                if (players instanceof Player[])
+                    return (Player[])players;
+                else if (players instanceof List<?>)
+                {
+                    List<Player> list = (List<Player>)players;
+                    return list.toArray(new Player[list.size()]);
+                }
             }
             catch (Exception ex) {
-                return new Player[0];
+                ex.printStackTrace();
             }
+            return new Player[0];
         }
     }
 }
