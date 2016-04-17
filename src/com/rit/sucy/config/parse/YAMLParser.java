@@ -168,7 +168,7 @@ public class YAMLParser
     {
         DataSection data = new DataSection();
         int spaces;
-        while (i < lines.length && ((spaces = countSpaces(lines[i])) >= indent || lines[i].charAt(spaces) == '#'))
+        while (i < lines.length && ((spaces = countSpaces(lines[i])) >= indent || lines[i].length() == 0 || lines[i].charAt(spaces) == '#'))
         {
             // When the entire line is just spaces, continue
             if (lines[i].length() == spaces) {

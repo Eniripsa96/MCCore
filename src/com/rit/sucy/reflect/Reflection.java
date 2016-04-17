@@ -45,6 +45,34 @@ public class Reflection
     private static Class<?> packetClass = getNMSClass("Packet");
 
     /**
+     * Fetches the package for NMS classes
+     *
+     * @return fully qualified package for NMS classes
+     */
+    public static String getNMSPackage()
+    {
+        if (NMS == null)
+        {
+            NMS = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().substring(23) + '.';
+        }
+        return NMS;
+    }
+
+    /**
+     * Fetches the root package for CraftBukkit classes
+     *
+     * @return fully qualified root package for CraftBukkit classes
+     */
+    public static String getCraftPackage()
+    {
+        if (CRAFT == null)
+        {
+            CRAFT = "org.bukkit.craftbukkit." + Bukkit.getServer().getClass().getPackage().getName().substring(23) + '.';
+        }
+        return CRAFT;
+    }
+
+    /**
      * Retrieves a class by name
      *
      * @param name name of the class including packages
@@ -72,11 +100,7 @@ public class Reflection
      */
     public static Class<?> getNMSClass(String name)
     {
-        if (NMS == null)
-        {
-            NMS = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().substring(23) + '.';
-        }
-        return getClass(NMS + name);
+        return getClass(getNMSPackage() + name);
     }
 
     /**
@@ -88,11 +112,7 @@ public class Reflection
      */
     public static Class<?> getCraftClass(String name)
     {
-        if (CRAFT == null)
-        {
-            CRAFT = "org.bukkit.craftbukkit." + Bukkit.getServer().getClass().getPackage().getName().substring(23) + '.';
-        }
-        return getClass(CRAFT + name);
+        return getClass(getCraftPackage() + name);
     }
 
     /**
