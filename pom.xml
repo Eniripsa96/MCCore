@@ -7,23 +7,15 @@
     <groupId>com.rit.sucy</groupId>
     <artifactId>MCCore</artifactId>
     <version>1.5.2</version>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <repositories>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
     <dependencies>
@@ -40,6 +32,16 @@
             <artifactId>bukkit</artifactId>
             <version>1.10-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.SettingDust</groupId>
+            <artifactId>MCCore</artifactId>
+            <version>fd15dd6365</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.fastinfoset</groupId>
+            <artifactId>FastInfoset</artifactId>
+            <version>1.2.13</version>
         </dependency>
     </dependencies>
 </project>

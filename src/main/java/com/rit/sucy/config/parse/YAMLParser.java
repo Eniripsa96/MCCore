@@ -33,7 +33,6 @@ import org.bukkit.plugin.Plugin;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Custom parser for YAML that preserves comments with
