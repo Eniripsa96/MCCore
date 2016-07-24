@@ -34,11 +34,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.SettingDust</groupId>
-            <artifactId>MCCore</artifactId>
-            <version>fd15dd6365</version>
-        </dependency>
-        <dependency>
             <groupId>com.sun.xml.fastinfoset</groupId>
             <artifactId>FastInfoset</artifactId>
             <version>1.2.13</version>
