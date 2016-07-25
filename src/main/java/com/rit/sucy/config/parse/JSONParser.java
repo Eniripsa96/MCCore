@@ -26,15 +26,12 @@
  */
 package com.rit.sucy.config.parse;
 
-import com.sun.xml.internal.fastinfoset.Encoder;
+import com.sun.xml.fastinfoset.Encoder;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Custom parser for JSON that doesn't trim whitespace or newlines

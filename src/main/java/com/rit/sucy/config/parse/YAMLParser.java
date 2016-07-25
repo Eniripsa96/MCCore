@@ -26,7 +26,7 @@
  */
 package com.rit.sucy.config.parse;
 
-import com.sun.xml.internal.fastinfoset.Encoder;
+import com.sun.xml.fastinfoset.Encoder;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -49,7 +49,6 @@ public class YAMLParser {
      *
      * @param plugin plugin containing the embedded resource
      * @param path   path to the resource (not including the beginning slash)
-     *
      * @return loaded data
      */
     public static DataSection parseResource(Plugin plugin, String path) {
@@ -78,7 +77,6 @@ public class YAMLParser {
      * will return an empty DataSection object.
      *
      * @param path path to the file load from
-     *
      * @return loaded data
      */
     public static DataSection parseFile(String path) {
@@ -91,7 +89,6 @@ public class YAMLParser {
      * will return an empty DataSection object.
      *
      * @param file the file load from
-     *
      * @return loaded data
      */
     public static DataSection parseFile(File file) {
@@ -115,7 +112,6 @@ public class YAMLParser {
      * is passed in, this will return an empty data section.
      *
      * @param text text to parse
-     *
      * @return parsed data
      */
     public static DataSection parseText(String text) {
@@ -128,7 +124,6 @@ public class YAMLParser {
      *
      * @param text  text to parse
      * @param quote character strings are wrapped in
-     *
      * @return parsed data
      */
     public static DataSection parseText(String text, char quote) {
@@ -145,8 +140,7 @@ public class YAMLParser {
      *
      * @param lines  lines to parse
      * @param indent current indent
-     * @param quote character strings are wrapped in
-     *
+     * @param quote  character strings are wrapped in
      * @return parsed data
      */
     private static DataSection parse(String[] lines, int indent, char quote) {
@@ -232,7 +226,6 @@ public class YAMLParser {
      * Counts the number of leading spaces in the string
      *
      * @param line line to count the leading spaces for
-     *
      * @return the number of leading spaces
      */
     private static int countSpaces(String line) {
@@ -271,8 +264,7 @@ public class YAMLParser {
     /**
      * Dumps the data contents into the stream
      *
-     * @param write  stream to dump to
-     *
+     * @param write stream to dump to
      * @throws IOException
      */
     public static void save(DataSection data, BufferedWriter write) throws IOException {
