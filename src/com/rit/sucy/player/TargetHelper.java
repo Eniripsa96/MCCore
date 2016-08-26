@@ -160,7 +160,6 @@ public class TargetHelper
         dir.setY(0);
         double cos = Math.cos(arc * Math.PI / 180);
         double cosSq = cos * cos;
-        double dirSq = dir.lengthSquared();
 
         // Get the targets in the cone
         for (Entity entity : list)
@@ -180,7 +179,7 @@ public class TargetHelper
                     Vector relative = entity.getLocation().subtract(source.getLocation()).toVector();
                     relative.setY(0);
                     double dot = relative.dot(dir);
-                    double value = dot * dot / (dirSq * relative.lengthSquared());
+                    double value = dot * dot / relative.lengthSquared();
                     if (arc < 180 && dot > 0 && value >= cosSq) targets.add((LivingEntity) entity);
                     else if (arc >= 180 && (dot > 0 || dot <= cosSq)) targets.add((LivingEntity) entity);
                 }

@@ -201,7 +201,11 @@ public class YAMLParser
             }
 
             // String list
-            else if (i < lines.length - 1 && lines[i + 1].length() > indent && lines[i + 1].charAt(indent) == '-' && countSpaces(lines[i + 1]) == indent)
+            else if (i < lines.length - 1
+                     && lines[i + 1].length() > indent + 1
+                     && lines[i + 1].charAt(indent) == '-'
+                     && lines[i + 2].charAt(indent) == ' '
+                     && countSpaces(lines[i + 1]) == indent)
             {
                 ArrayList<String> stringList = new ArrayList<String>();
                 while (++i < lines.length && lines[i].length() > indent && lines[i].charAt(indent) == '-')
