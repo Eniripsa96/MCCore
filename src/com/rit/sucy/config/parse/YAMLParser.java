@@ -204,11 +204,14 @@ public class YAMLParser
             else if (i < lines.length - 1
                      && lines[i + 1].length() > indent + 1
                      && lines[i + 1].charAt(indent) == '-'
-                     && lines[i + 2].charAt(indent) == ' '
+                     && lines[i + 2].charAt(indent + 1) == ' '
                      && countSpaces(lines[i + 1]) == indent)
             {
                 ArrayList<String> stringList = new ArrayList<String>();
-                while (++i < lines.length && lines[i].length() > indent && lines[i].charAt(indent) == '-')
+                while (++i < lines.length
+                       && lines[i].length() > indent
+                       && lines[i].charAt(indent) == '-'
+                       && lines[i].charAt(indent + 1) == ' ')
                 {
                     String str = lines[i].substring(indent + 2);
                     if (str.length() > 0 && str.charAt(0) == quote)
