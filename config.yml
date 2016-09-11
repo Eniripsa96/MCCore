@@ -4,6 +4,7 @@ Features:
     scoreboards-enabled: true
     equip-events-enabled: true
     durability-enabled: true
+    maps-enabled: true
 
 Settings:
 

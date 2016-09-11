@@ -26,29 +26,43 @@
  */
 package com.rit.sucy.scoreboard;
 
-import com.rit.sucy.version.VersionManager;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Main accessor for player scoreboards
  */
 public class BoardManager
 {
+    private static final HashMap<String, PlayerBoards> players = new HashMap<String, PlayerBoards>();
 
-    public static final  String                        TEAM_KEY    = "mcct";
-    private static final HashMap<String, PlayerBoards> players     = new HashMap<String, PlayerBoards>();
-    private static final HashMap<String, Team>         teams       = new HashMap<String, Team>();
-    private static final HashMap<String, Integer>      scores      = new HashMap<String, Integer>();
-    private static final HashMap<String, String>       playerTeams = new HashMap<String, String>();
+    private static Scoreboard scoreboard;
 
-    private static String text;
+    private static boolean scoreboardUsed = false;
+
+    static void init(Player player)
+    {
+        if (scoreboardUsed && player != null)
+            player.setScoreboard(scoreboard);
+    }
+
+    /**
+     * Initializes the scoreboard utility
+     */
+    public static void init()
+    {
+        if (scoreboard == null)
+        {
+            scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+            Board.init(scoreboard);
+        }
+    }
 
     /**
      * Retrieves scoreboard data for a player
@@ -71,24 +85,12 @@ public class BoardManager
      */
     public static void registerTeam(Team team)
     {
-        if (getTeam(team.getName()) == null)
+        org.bukkit.scoreboard.Team sbTeam = scoreboard.getTeam(team.getName());
+        if (sbTeam == null)
         {
-            teams.put(team.getName().toLowerCase(), team);
-        }
-        String key = TEAM_KEY + team.getId();
-        if (PlayerBoards.EMPTY.getTeam(key) == null)
-        {
-            PlayerBoards.EMPTY.registerNewTeam(key);
-        }
-        for (PlayerBoards player : players.values())
-        {
-            for (Board board : player.getBoards().values())
-            {
-                if (board.getScoreboard().getTeam(key) == null)
-                {
-                    board.getScoreboard().registerNewTeam(key);
-                }
-            }
+            sbTeam = scoreboard.registerNewTeam(team.getName());
+            sbTeam.setAllowFriendlyFire(true);
+            sbTeam.setCanSeeFriendlyInvisibles(false);
         }
         updateTeam(team);
     }
@@ -100,19 +102,9 @@ public class BoardManager
      */
     public static void updateTeam(Team team)
     {
-        String key = TEAM_KEY + team.getId();
-        org.bukkit.scoreboard.Team te = PlayerBoards.EMPTY.getTeam(key);
-        te.setPrefix(team.getPrefix() == null ? "" : team.getPrefix());
-        te.setSuffix(team.getSuffix() == null ? "" : team.getSuffix());
-        for (PlayerBoards player : players.values())
-        {
-            for (Board board : player.getBoards().values())
-            {
-                org.bukkit.scoreboard.Team t = board.getScoreboard().getTeam(key);
-                t.setPrefix(team.getPrefix() == null ? "" : team.getPrefix());
-                t.setSuffix(team.getSuffix() == null ? "" : team.getSuffix());
-            }
-        }
+        org.bukkit.scoreboard.Team sbTeam = scoreboard.getTeam(team.getName());
+        sbTeam.setPrefix(team.getPrefix());
+        sbTeam.setSuffix(team.getSuffix());
     }
 
     /**
@@ -125,19 +117,8 @@ public class BoardManager
      */
     public static void setTeam(String player, String team)
     {
-        if (team == null || player == null) return;
-        if (getTeam(team) == null) registerTeam(new Team(team, team, null));
-        String key = TEAM_KEY + getTeam(team).getId();
-        OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-        playerTeams.put(player.toLowerCase(), key);
-        PlayerBoards.EMPTY.getTeam(key).addPlayer(p);
-        for (PlayerBoards pb : players.values())
-        {
-            for (Board board : pb.getBoards().values())
-            {
-                board.getScoreboard().getTeam(key).addPlayer(p);
-            }
-        }
+        enableScoreboard();
+        scoreboard.getTeam(team).addEntry(player);
     }
 
     /**
@@ -147,21 +128,8 @@ public class BoardManager
      */
     public static void clearTeam(String player)
     {
-        if (player == null) return;
-        OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-        org.bukkit.scoreboard.Team te = PlayerBoards.EMPTY.getPlayerTeam(p);
-        if (te != null)
-        {
-            te.removePlayer(p);
-            for (PlayerBoards pb : players.values())
-            {
-                for (Board board : pb.getBoards().values())
-                {
-                    org.bukkit.scoreboard.Team t = board.getScoreboard().getPlayerTeam(p);
-                    if (t != null) t.removePlayer(p);
-                }
-            }
-        }
+        org.bukkit.scoreboard.Team sbTeam = scoreboard.getEntryTeam(player);
+        if (sbTeam != null) sbTeam.removeEntry(player);
     }
 
     /**
@@ -171,20 +139,26 @@ public class BoardManager
      */
     public static void setTextBelowNames(String t)
     {
-        text = t;
-        Objective obj = PlayerBoards.EMPTY.getObjective(DisplaySlot.BELOW_NAME);
-        if (obj == null)
+        enableScoreboard();
+        Objective objective = scoreboard.getObjective(DisplaySlot.BELOW_NAME);
+        if (objective == null)
         {
-            obj = PlayerBoards.EMPTY.registerNewObjective("below", "dummy");
-            obj.setDisplaySlot(DisplaySlot.BELOW_NAME);
+            objective = scoreboard.registerNewObjective("dummy", "dummy");
+            objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
         }
-        obj.setDisplayName(t);
-        for (PlayerBoards pb : players.values())
+        objective.setDisplayName(t);
+    }
+
+    /**
+     * Enables the scoreboard, overriding all players' scoreboards
+     */
+    private static void enableScoreboard()
+    {
+        if (!scoreboardUsed)
         {
-            for (Board board : pb.getBoards().values())
-            {
-                updateBoard(board);
-            }
+            for (Player player : Bukkit.getOnlinePlayers())
+                player.setScoreboard(scoreboard);
+            scoreboardUsed = true;
         }
     }
 
@@ -196,19 +170,12 @@ public class BoardManager
      */
     public static void setBelowNameScore(String player, int score)
     {
-        scores.put(player.toLowerCase(), score);
-        OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-        if (text != null)
-        {
-            PlayerBoards.EMPTY.getObjective(DisplaySlot.BELOW_NAME).getScore(p).setScore(score);
-        }
-        for (PlayerBoards pb : players.values())
-        {
-            for (Board board : pb.getBoards().values())
-            {
-                updateBoard(board);
-            }
-        }
+        if (!scoreboardUsed)
+            throw new IllegalStateException("Cannot set below name score before text");
+
+        scoreboard.getObjective(DisplaySlot.BELOW_NAME)
+            .getScore(player)
+            .setScore(score);
     }
 
     /**
@@ -218,19 +185,7 @@ public class BoardManager
      */
     public static void clearScore(String player)
     {
-        scores.remove(player.toLowerCase());
-        OfflinePlayer p = Bukkit.getOfflinePlayer(player);
-        if (text != null)
-        {
-            PlayerBoards.EMPTY.resetScores(p);
-        }
-        for (PlayerBoards pb : players.values())
-        {
-            for (Board board : pb.getBoards().values())
-            {
-                board.getScoreboard().resetScores(p);
-            }
-        }
+        scoreboard.resetScores(player);
     }
 
     /**
@@ -238,77 +193,8 @@ public class BoardManager
      *
      * @param board board to update
      */
-    public static void updateBoard(Board board)
-    {
-
-        // Apply registered teams
-        for (Team team : teams.values())
-        {
-            String key = BoardManager.TEAM_KEY + team.getId();
-            if (board.getScoreboard().getTeam(key) == null)
-            {
-                org.bukkit.scoreboard.Team t = board.getScoreboard().registerNewTeam(key);
-                t.setPrefix(team.getPrefix() == null ? "" : team.getPrefix());
-                t.setSuffix(team.getSuffix() == null ? "" : team.getSuffix());
-                t.setCanSeeFriendlyInvisibles(false);
-                t.setAllowFriendlyFire(true);
-            }
-        }
-
-        // Assign players to teams
-        for (Map.Entry<String, String> teams : playerTeams.entrySet())
-        {
-            OfflinePlayer p = VersionManager.getOfflinePlayer(teams.getKey());
-            if (board.getScoreboard().getPlayerTeam(p) != null)
-            {
-                board.getScoreboard().getPlayerTeam(p).removePlayer(p);
-            }
-            board.getScoreboard().getTeam(teams.getValue()).addPlayer(p);
-        }
-
-        // Apply text below the player names
-        if (text == null)
-        {
-            if (board.getScoreboard().getObjective(DisplaySlot.BELOW_NAME) != null)
-            {
-                board.getScoreboard().clearSlot(DisplaySlot.BELOW_NAME);
-            }
-        }
-        else
-        {
-            Objective obj = board.getScoreboard().getObjective(DisplaySlot.BELOW_NAME);
-            if (obj == null)
-            {
-                obj = board.getScoreboard().registerNewObjective("below", "dummy");
-                obj.setDisplaySlot(DisplaySlot.BELOW_NAME);
-            }
-            obj.setDisplayName(text);
-            for (Map.Entry<String, Integer> score : scores.entrySet())
-            {
-                obj.getScore(Bukkit.getOfflinePlayer(score.getKey())).setScore(score.getValue());
-            }
-        }
-    }
-
-    /**
-     * Retrieves a team by name
-     *
-     * @param name team name
-     *
-     * @return team reference
-     */
-    public static Team getTeam(String name)
-    {
-        return teams.get(name.toLowerCase());
-    }
-
-    /**
-     * @return team data
-     */
-    public static HashMap<String, Team> getTeams()
-    {
-        return teams;
-    }
+    @Deprecated
+    public static void updateBoard(Board board) { }
 
     /**
      * @return collection of player data
@@ -322,11 +208,12 @@ public class BoardManager
      * Sets a label for a health bar under each player's name
      *
      * @param label label to set
+     * @deprecated use setTextBelowNames instead
      */
+    @Deprecated
     public static void setGlobalHealthBar(String label)
     {
-        for (PlayerBoards board : players.values())
-            board.setHealthLabel(label);
+        setTextBelowNames(label);
     }
 
     /**
@@ -348,9 +235,7 @@ public class BoardManager
     public static void clearPluginBoards(String plugin)
     {
         for (PlayerBoards player : players.values())
-        {
             player.removeBoards(plugin);
-        }
     }
 
     /**
@@ -361,8 +246,6 @@ public class BoardManager
     public static void clearPlayer(String name)
     {
         if (players.containsKey(name.toLowerCase()))
-        {
             players.remove(name.toLowerCase());
-        }
     }
 }

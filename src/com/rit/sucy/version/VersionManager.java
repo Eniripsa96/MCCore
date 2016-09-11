@@ -175,7 +175,7 @@ public class VersionManager
             {
                 version += Integer.parseInt(pieces[2]);
             }
-            Bukkit.getLogger().info("Version: " + version);
+            Bukkit.getLogger().info("Server version: " + version);
         }
 
         // Some error occurred, assume an up to date server with all features
@@ -193,7 +193,7 @@ public class VersionManager
                 {
                     version = V1_7_2;
                 }
-                Bukkit.getLogger().info("Version: " + version);
+                Bukkit.getLogger().info("Server version: " + version);
             }
         }
     }

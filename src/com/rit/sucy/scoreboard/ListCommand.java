@@ -52,7 +52,7 @@ public class ListCommand implements ICommand
     {
         String message = ChatColor.DARK_GREEN + "Active Scoreboards: ";
         PlayerBoards boards = BoardManager.getPlayerBoards(sender.getName());
-        for (Board board : boards.boards.values())
+        for (Board board : boards.getBoards())
         {
             message += ChatColor.GOLD + ChatColor.stripColor(board.getName()) + ChatColor.GRAY + ", ";
         }

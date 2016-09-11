@@ -38,7 +38,6 @@ import java.util.regex.Pattern;
  */
 public class TextFormatter
 {
-
     /**
      * Regex string for finding color patterns
      */
@@ -103,8 +102,8 @@ public class TextFormatter
         String[] pieces = split(string);
         String result = "";
         for (String piece : pieces)
-            result += " " + piece.substring(0, 1).toUpperCase() + piece.substring(1).toLowerCase();
-        return result.substring(1);
+            result += piece.substring(0, 1).toUpperCase() + piece.substring(1).toLowerCase();
+        return result;
     }
 
     /**

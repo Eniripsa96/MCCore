@@ -32,6 +32,7 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * <p>Utility class for performing reflection operations. Only use
@@ -39,10 +40,36 @@ import java.lang.reflect.Method;
  */
 public class Reflection
 {
-
     private static String CRAFT;
     private static String NMS;
-    private static Class<?> packetClass = getNMSClass("Packet");
+    private static Class<?> packetClass;
+
+    private static Method getHandle;
+    private static Method sendPacket;
+
+    private static Field connection;
+
+    public static void init()
+    {
+        if (CRAFT == null)
+        {
+            try
+            {
+                NMS = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().substring(23) + '.';
+                CRAFT = "org.bukkit.craftbukkit." + Bukkit.getServer().getClass().getPackage().getName().substring(23) + '.';
+
+                packetClass = Class.forName(NMS + "Packet");
+                getHandle = Class.forName(CRAFT + "entity.CraftPlayer").getDeclaredMethod("getHandle");
+                connection = Class.forName(NMS + "EntityPlayer").getDeclaredField("playerConnection");
+                sendPacket = Class.forName(NMS + "PlayerConnection").getDeclaredMethod("sendPacket", packetClass);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+                throw new IllegalStateException("Failed to initialize reflection utility", ex);
+            }
+        }
+    }
 
     /**
      * Fetches the package for NMS classes
@@ -51,10 +78,7 @@ public class Reflection
      */
     public static String getNMSPackage()
     {
-        if (NMS == null)
-        {
-            NMS = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().substring(23) + '.';
-        }
+        init();
         return NMS;
     }
 
@@ -65,10 +89,7 @@ public class Reflection
      */
     public static String getCraftPackage()
     {
-        if (CRAFT == null)
-        {
-            CRAFT = "org.bukkit.craftbukkit." + Bukkit.getServer().getClass().getPackage().getName().substring(23) + '.';
-        }
+        init();
         return CRAFT;
     }
 
@@ -129,12 +150,8 @@ public class Reflection
         try
         {
             for (Constructor<?> constructor : c.getDeclaredConstructors())
-            {
                 if (constructor.getGenericParameterTypes().length == args.length)
-                {
                     return constructor.newInstance(args);
-                }
-            }
         }
         catch (Exception ex)
         { /* */ }
@@ -212,9 +229,30 @@ public class Reflection
     {
         try
         {
-            Object handle = player.getClass().getMethod("getHandle").invoke(player);
-            Object connection = handle.getClass().getField("playerConnection").get(handle);
-            connection.getClass().getMethod("sendPacket", packetClass).invoke(connection, packet);
+            Object handle = getHandle.invoke(player);
+            Object con = connection.get(handle);
+            sendPacket.invoke(con, packet);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Tries to send a packet to the player
+     *
+     * @param player  player to send to
+     * @param packets list of packets to send
+     */
+    public static void sendPackets(Player player, List<Object> packets)
+    {
+        try
+        {
+            Object handle = getHandle.invoke(player);
+            Object con = connection.get(handle);
+            for (Object packet : packets)
+                sendPacket.invoke(con, packet);
         }
         catch (Exception ex)
         {

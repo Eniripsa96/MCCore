@@ -58,10 +58,7 @@ public class BoardListener implements Listener
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onJoin(PlayerJoinEvent event)
     {
-        if (!BoardManager.getPlayerBoards(event.getPlayer().getName()).hasActiveBoard())
-        {
-            event.getPlayer().setScoreboard(PlayerBoards.EMPTY);
-        }
+        BoardManager.init(event.getPlayer());
     }
 
     /**

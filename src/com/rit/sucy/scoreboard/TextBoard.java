@@ -37,7 +37,6 @@ import java.util.ArrayList;
  */
 public class TextBoard extends Board
 {
-
     private final ArrayList<String> messages = new ArrayList<String>();
     private final boolean separateMessages;
 
@@ -84,13 +83,11 @@ public class TextBoard extends Board
     {
         while (messages.size() > 15)
         {
-            scoreboard.resetScores(Bukkit.getOfflinePlayer(messages.get(0)));
+            set(messages.get(0), 0);
             messages.remove(0);
         }
         int index = 15;
         for (String message : messages)
-        {
-            obj.getScore(Bukkit.getOfflinePlayer(message)).setScore(index--);
-        }
+            set(message, index--);
     }
 }

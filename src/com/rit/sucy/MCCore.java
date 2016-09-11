@@ -41,10 +41,8 @@ import com.rit.sucy.event.EquipListener;
 import com.rit.sucy.gui.MapListener;
 import com.rit.sucy.items.DurabilityListener;
 import com.rit.sucy.player.PlayerUUIDs;
-import com.rit.sucy.scoreboard.BoardListener;
-import com.rit.sucy.scoreboard.CycleTask;
-import com.rit.sucy.scoreboard.ScoreboardCommander;
-import com.rit.sucy.scoreboard.UpdateTask;
+import com.rit.sucy.reflect.Reflection;
+import com.rit.sucy.scoreboard.*;
 import com.rit.sucy.version.VersionManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.HandlerList;
@@ -53,6 +51,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Hashtable;
 
+/**
+ * General utility library for Bukkit plugins
+ */
 public class MCCore extends JavaPlugin
 {
 
@@ -89,6 +90,9 @@ public class MCCore extends JavaPlugin
             }
         };
         getServer().dispatchCommand(new CommandLog(), "version");
+
+        Reflection.init();
+        BoardManager.init();
 
         // Initialize libraries
         if (VersionManager.isUUID())
@@ -128,15 +132,11 @@ public class MCCore extends JavaPlugin
             uTask = new UpdateTask(this);
         }
         if (equipEventsEnabled)
-        {
             new EquipListener(this);
-        }
         if (durabilityEnabled)
-        {
             new DurabilityListener(this);
-        }
         new CommandListener(this);
-        new MapListener(this);
+
 
         for (Plugin plugin : getServer().getPluginManager().getPlugins())
         {

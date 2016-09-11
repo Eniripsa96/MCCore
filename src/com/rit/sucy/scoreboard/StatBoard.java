@@ -26,18 +26,16 @@
  */
 package com.rit.sucy.scoreboard;
 
-import org.bukkit.OfflinePlayer;
-
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Stat board for displaying various statistics
  */
 public class StatBoard extends Board
 {
-
-    private final ArrayList<StatHolder>    holders = new ArrayList<StatHolder>();
-    private final ArrayList<OfflinePlayer> stats   = new ArrayList<OfflinePlayer>();
+    private final List<StatHolder> holders = new ArrayList<StatHolder>();
+    private final List<String>     stats   = new ArrayList<String>();
 
     /**
      * Constructor
@@ -57,7 +55,7 @@ public class StatBoard extends Board
     public void addStats(StatHolder holder)
     {
         holders.add(holder);
-        for (OfflinePlayer stat : holder.getStats())
+        for (String stat : holder.getNames())
         {
             stats.add(stat);
         }
@@ -71,10 +69,8 @@ public class StatBoard extends Board
      */
     public void clearStats(StatHolder holder)
     {
-        for (OfflinePlayer stat : stats)
-        {
-            scoreboard.resetScores(stat);
-        }
+        for (String stat : stats)
+            set(stat, 0);
     }
 
     /**
@@ -86,9 +82,8 @@ public class StatBoard extends Board
         {
             int index = 0;
             for (Integer value : holder.getValues())
-            {
-                obj.getScore(stats.get(index++)).setScore(value);
-            }
+                set(stats.get(index++), value);
         }
+        showPlayer();
     }
 }

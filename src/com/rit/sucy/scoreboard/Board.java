@@ -26,55 +26,112 @@
  */
 package com.rit.sucy.scoreboard;
 
-import org.bukkit.Bukkit;
+import com.rit.sucy.reflect.Reflection;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * A manager for a scoreboard
  */
 public abstract class Board
 {
+    private static Constructor objConstructor;
+    private static Constructor packetConstructor;
+    private static Constructor displayConstructor;
+
+    private static Method getPackets;
+    private static Method getScore;
+    private static Method setScore;
+
+    private static Object scoreboardServer;
+    private static Object sidebarCriteria;
 
     /**
-     * Scoreboard controlled by this board
-     */
-    protected final Scoreboard scoreboard;
-
-    /**
-     * Sidebar objective to manage
-     */
-    protected final Objective obj;
-
-    /**
-     * Name of plugin
-     */
-    protected final String plugin;
-
-    /**
-     * Constructs a new scoreboard manager
+     * Initializes reflection usage for boards
      *
-     * @param title title for the scoreboard
+     * @param scoreboard BoardManager's scoreboard
      */
-    public Board(String title, String plugin)
+    public static void init(Scoreboard scoreboard)
     {
-        this(title, "dummy", plugin);
+        if (objConstructor != null)
+            return;
+
+        try
+        {
+            String pkg = Reflection.getNMSPackage();
+
+            Class<?> criteria = Class.forName(pkg + "IScoreboardCriteria");
+            Class<?> objective = Class.forName(pkg + "ScoreboardObjective");
+
+            getScore = Class.forName(pkg + "Scoreboard")
+                .getDeclaredMethod("getPlayerScoreForObjective", String.class, objective);
+            setScore = Class.forName(pkg + "ScoreboardScore")
+                .getDeclaredMethod("setScore", int.class);
+            getPackets = Class.forName(pkg + "ScoreboardServer")
+                .getDeclaredMethod("getScoreboardScorePacketsForObjective", objective);
+            sidebarCriteria = criteria.getDeclaredField("b").get(null);
+            objConstructor = objective.getConstructor(Class.forName(pkg + "Scoreboard"), String.class, criteria);
+            scoreboardServer = scoreboard.getClass().getDeclaredMethod("getHandle").invoke(scoreboard);
+            displayConstructor = Class.forName(pkg + "PacketPlayOutScoreboardDisplayObjective")
+                .getConstructor(int.class, objective);
+            packetConstructor = Class.forName(pkg + "PacketPlayOutScoreboardObjective")
+                .getConstructor(objective, int.class);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
+
+    protected final String plugin;
+    private final String title;
+
+    private final Object objective;
+
+    private Player player;
 
     /**
      * Constructs a new scoreboard manager with a desired type
      *
      * @param title title for the scoreboard
      * @param type  type of the scoreboard
+     * @deprecated use Board(String, String) instead
      */
+    @Deprecated
     public Board(String title, String type, String plugin)
     {
-        scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        obj = scoreboard.registerNewObjective(title, type);
-        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+        this(title, plugin);
+    }
+
+    /**
+     * @param title  title of the scoreboard
+     * @param plugin plugin owning the scoreboard
+     */
+    public Board(String title, String plugin)
+    {
         this.plugin = plugin;
+        this.title = title;
+        try
+        {
+            objective = objConstructor.newInstance(scoreboardServer, title, sidebarCriteria);
+        }
+        catch (Exception ex) {
+            throw new IllegalStateException("Failed to set up Board properly", ex);
+        }
+    }
+
+    /**
+     * Sets the player for the board
+     *
+     * @param player owning player
+     */
+    public void setPlayer(Player player)
+    {
+        this.player = player;
     }
 
     /**
@@ -84,26 +141,47 @@ public abstract class Board
      */
     public String getName()
     {
-        return obj.getName();
+        return title;
     }
 
     /**
-     * @return scoreboard that this boad manages
-     */
-    public Scoreboard getScoreboard()
-    {
-        return scoreboard;
-    }
-
-    /**
-     * Shows a player the scoreboard
+     * Sets a score to the scoreboard
      *
-     * @param player player to show
+     * @param label label to use
+     * @param score score to show
      */
-    public void showPlayer(Player player)
+    protected void set(String label, int score)
     {
-        if (player != null)
-            player.setScoreboard(scoreboard);
+        try
+        {
+            setScore.invoke(getScore.invoke(scoreboardServer, label, objective), score);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalStateException("Failed to set a score", ex);
+        }
+    }
+
+    /**
+     * Shows the board to it's player
+     */
+    @SuppressWarnings("unchecked")
+    public boolean showPlayer()
+    {
+        if (player == null)
+            return false;
+
+        try
+        {
+            List<Object> packets = (List)getPackets.invoke(scoreboardServer, objective);
+            packets.add(1, displayConstructor.newInstance(1, objective));
+            Reflection.sendPackets(player, packets);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalStateException("Failed to create packets", ex);
+        }
     }
 
     /**
@@ -112,13 +190,51 @@ public abstract class Board
      * - Use PlayerBoard or BoardManager instead -
      *
      * @param label scoreboard label
+     * @deprecated use setTextBelowNames in BoardManager instead
      */
-    public void setHealthLabel(String label)
+    @Deprecated
+    public void setHealthLabel(String label) {
+        BoardManager.setTextBelowNames(label);
+    }
+
+    /**
+     * Clears the side board display
+     */
+    public void clearDisplay()
     {
-        Objective obj = scoreboard.getObjective(DisplaySlot.BELOW_NAME) != null ?
-                scoreboard.getObjective(DisplaySlot.BELOW_NAME)
-                : scoreboard.registerNewObjective("hpBelowName", "health");
-        if (obj.getDisplaySlot() != DisplaySlot.BELOW_NAME) obj.setDisplaySlot(DisplaySlot.BELOW_NAME);
-        obj.setDisplayName(label);
+        if (player == null)
+            return;
+
+        try
+        {
+            Reflection.sendPacket(player, packetConstructor.newInstance(objective, 1));
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalStateException("Failed to send clear packet", ex);
+        }
+    }
+
+    /**
+     * Hashes by name
+     *
+     * @return name hash
+     */
+    @Override
+    public int hashCode()
+    {
+        return title.hashCode();
+    }
+
+    /**
+     * Equates by name
+     *
+     * @param other other board to equate to
+     * @return true if titles are equal
+     */
+    @Override
+    public boolean equals(Object other)
+    {
+        return other instanceof Board && title.equals(((Board) other).title);
     }
 }

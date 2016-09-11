@@ -26,18 +26,14 @@
  */
 package com.rit.sucy.scoreboard;
 
-import org.bukkit.OfflinePlayer;
-
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simple interface for providing stats for a scoreboard
  */
 public interface StatHolder
 {
+    List<String> getNames();
 
-    public ArrayList<OfflinePlayer> getStats();
-
-    public ArrayList<Integer> getValues();
-
+    List<Integer> getValues();
 }

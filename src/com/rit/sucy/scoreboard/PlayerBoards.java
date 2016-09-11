@@ -32,20 +32,22 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.*;
 
 /**
  * Scoreboard data for a player
  */
 public class PlayerBoards
 {
-
     public static final Scoreboard EMPTY = Bukkit.getScoreboardManager().getNewScoreboard();
 
-    final Hashtable<String, Board> boards = new Hashtable<String, Board>();
+    private final List<Board> boards = new ArrayList<Board>();
+
     private final String player;
-    private       String currentBoard;
+
+    private Board  currentBoard;
+
+    private int current = 0;
 
     /**
      * Whether or not the player's scoreboard is cycling
@@ -86,14 +88,13 @@ public class PlayerBoards
      */
     public void addBoard(Board board)
     {
-        String fName = format(board.getName());
-        boards.put(fName, board);
-        BoardManager.updateBoard(board);
+        if (getPlayer() == null)
+            throw new IllegalStateException("Cannot add boards when no player is present");
+
+        board.setPlayer(getPlayer());
+        boards.add(board);
         if (currentBoard == null)
-        {
-            currentBoard = fName;
-            board.showPlayer(VersionManager.getPlayer(player));
-        }
+            showNextBoard();
     }
 
     /**
@@ -103,13 +104,15 @@ public class PlayerBoards
      */
     public void removeBoard(Board board)
     {
-
-        String fName = format(board.getName());
-        if (!boards.containsKey(fName))
+        if (!boards.contains(board))
             return;
 
-        boards.remove(fName);
-        validateBoard();
+        boards.remove(board);
+        if (currentBoard == board)
+        {
+            clear();
+            showNextBoard();
+        }
     }
 
     /**
@@ -119,36 +122,22 @@ public class PlayerBoards
      */
     public void removeBoards(String plugin)
     {
-        ArrayList<Board> list = new ArrayList<Board>(boards.values());
-        for (Board board : list)
-        {
-            if (board.plugin.equalsIgnoreCase(plugin))
-            {
-                boards.remove(format(board.getName()));
-            }
-        }
-        validateBoard();
+        for (int i = 0; i < boards.size(); i++)
+            if (boards.get(i).plugin.equalsIgnoreCase(plugin))
+                boards.remove(i);
+
+        clear();
     }
 
     /**
-     * Validates that the current board is active
+     * Clears current board data
      */
-    private void validateBoard()
+    private void clear()
     {
-        if (currentBoard == null)
-            return;
-        if (!boards.contains(currentBoard))
-        {
-            if (boards.size() > 0)
-                showNextBoard();
-            else
-            {
-                currentBoard = null;
-                Player player = VersionManager.getPlayer(this.player);
-                if (player != null)
-                    player.setScoreboard(EMPTY);
-            }
-        }
+        if (currentBoard != null)
+            currentBoard.clearDisplay();
+        current = -1;
+        currentBoard = null;
     }
 
     /**
@@ -160,16 +149,9 @@ public class PlayerBoards
      */
     public boolean showBoard(String name)
     {
-
-        name = format(name);
-        if (boards.containsKey(name))
-        {
-            Player player = VersionManager.getPlayer(this.player);
-            if (player != null)
-                player.setScoreboard(boards.get(name).getScoreboard());
-            currentBoard = name;
-            return true;
-        }
+        for (Board board : boards)
+            if (format(board.getName()).equals(name))
+                return board.showPlayer();
 
         return false;
     }
@@ -181,26 +163,10 @@ public class PlayerBoards
     {
         if (boards.size() == 0)
             return;
-
-        ArrayList<Board> boards = new ArrayList<Board>(this.boards.values());
-
-        if (boards.size() == 1 || currentBoard == null)
-        {
-            if (currentBoard == null)
-            {
-                showBoard(boards.get(0).getName());
-            }
-            return;
-        }
-
-        for (int i = 0; i < boards.size(); i++)
-        {
-            if (format(boards.get(i).getName()).equalsIgnoreCase(currentBoard))
-            {
-                showBoard(boards.get((i + 1) % boards.size()).getName());
-                return;
-            }
-        }
+        int next = (current + 1) % boards.size();
+        if (next != current)
+            boards.get(next).showPlayer();
+        current = next;
     }
 
     /**
@@ -224,7 +190,10 @@ public class PlayerBoards
      */
     public Board getBoard(String name)
     {
-        return boards.get(name.toLowerCase());
+        for (Board board : boards)
+            if (format(board.getName()).equals(name))
+                return board;
+        return null;
     }
 
     /**
@@ -234,7 +203,7 @@ public class PlayerBoards
      */
     public Board getActiveBoard()
     {
-        return boards.get(currentBoard);
+        return currentBoard;
     }
 
     /**
@@ -250,7 +219,7 @@ public class PlayerBoards
     /**
      * @return the boards attached to the player
      */
-    public Hashtable<String, Board> getBoards()
+    public List<Board> getBoards()
     {
         return boards;
     }
@@ -283,15 +252,11 @@ public class PlayerBoards
      * Sets the health label for this player
      *
      * @param label health label
+     * @deprecated use BoardManager.setTextBelowNames instead
      */
+    @Deprecated
     public void setHealthLabel(String label)
     {
-        for (Board board : boards.values())
-        {
-            board.setHealthLabel(label);
-            Player player = VersionManager.getPlayer(this.player);
-            if (player != null)
-                player.setHealth(player.getHealth());
-        }
+        BoardManager.setTextBelowNames(label);
     }
 }

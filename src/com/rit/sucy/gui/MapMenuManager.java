@@ -67,6 +67,9 @@ public class MapMenuManager
      */
     public static void registerMenu(String key, MapMenu root)
     {
+        if (data.size() == 0)
+            new MapListener(MCCore.getPlugin(MCCore.class));
+
         // Duplicate keys are not allowed
         if (data.containsKey(key))
         {
