@@ -39,8 +39,6 @@ import java.util.*;
  */
 public class PlayerBoards
 {
-    public static final Scoreboard EMPTY = Bukkit.getScoreboardManager().getNewScoreboard();
-
     private final List<Board> boards = new ArrayList<Board>();
 
     private final String player;
@@ -167,6 +165,7 @@ public class PlayerBoards
         if (next != current)
             boards.get(next).showPlayer();
         current = next;
+        currentBoard = boards.get(current);
     }
 
     /**

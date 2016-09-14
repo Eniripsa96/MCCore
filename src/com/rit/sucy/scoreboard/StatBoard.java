@@ -56,9 +56,7 @@ public class StatBoard extends Board
     {
         holders.add(holder);
         for (String stat : holder.getNames())
-        {
             stats.add(stat);
-        }
         update();
     }
 

@@ -56,9 +56,7 @@ public class UpdateTask extends BukkitRunnable
             if (!player.hasActiveBoard()) continue;
             Board board = player.getActiveBoard();
             if (board instanceof StatBoard)
-            {
                 ((StatBoard) board).update();
-            }
         }
     }
 }

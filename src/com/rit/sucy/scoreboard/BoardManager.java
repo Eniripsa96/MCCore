@@ -103,8 +103,10 @@ public class BoardManager
     public static void updateTeam(Team team)
     {
         org.bukkit.scoreboard.Team sbTeam = scoreboard.getTeam(team.getName());
-        sbTeam.setPrefix(team.getPrefix());
-        sbTeam.setSuffix(team.getSuffix());
+        if (team.getPrefix() != null)
+            sbTeam.setPrefix(team.getPrefix());
+        if (team.getSuffix() != null)
+            sbTeam.setSuffix(team.getSuffix());
     }
 
     /**
