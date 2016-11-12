@@ -58,6 +58,7 @@ public class ScoreboardCommander extends CommandHandler
         registerCommand("list", new ListCommand());
         registerCommand("show", new ShowCommand());
         registerCommand("stop", new StopCommand());
+        registerCommand("toggle", new ToggleCommand());
     }
 
     /**

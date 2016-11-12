@@ -26,8 +26,6 @@
  */
 package com.rit.sucy.sql.direct;
 
-import org.bukkit.Bukkit;
-
 import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,7 +38,7 @@ import java.util.Map;
  */
 public class SQLEntry
 {
-    private static final DateFormat FORMAT = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+    private static final DateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final char       SQUOTE = '`';
 
     private SQLDatabase database;

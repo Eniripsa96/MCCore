@@ -1,6 +1,6 @@
 name: MCCore
 main: com.rit.sucy.MCCore
-version: 1.57
+version: 1.58
 author: Eniripsa96
 description: A library of helpful functions to speed up and simplify plugin development for all developers.
 
@@ -23,13 +23,18 @@ permissions:
   core.board.stop:
     description: allows a user to stop their scoreboard from cycling
     default: true
+  core.board.toggle:
+    description: allows a user to toggle scoreboard visibility
+    default: true
   core.board:
     description: access to all scoreboard commands
     default: op
     children:
       core.board.cycle: true
+      core.board.list: true
       core.board.show: true
       core.board.stop: true
+      core.board.toggle: true
   core.chat.list:
     description: displays a list of unlocked prefixes
     default: true

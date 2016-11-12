@@ -35,7 +35,8 @@ public enum ScoreboardNodes
     CYCLE("core.board.cycle"),
     LIST("core.board.list"),
     STOP("core.board.stop"),
-    SHOW("core.board.show"),;
+    SHOW("core.board.show"),
+    TOGGLE("core.board.toggle");
 
     /**
      * Permission node

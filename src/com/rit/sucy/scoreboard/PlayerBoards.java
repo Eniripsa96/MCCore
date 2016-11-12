@@ -45,7 +45,32 @@ public class PlayerBoards
 
     private Board  currentBoard;
 
+    private boolean enabled = true;
+
     private int current = 0;
+
+    /**
+     * Toggles visibility of the scoreboard
+     */
+    public void toggle()
+    {
+        if (currentBoard != null)
+        {
+            if (enabled)
+                currentBoard.clearDisplay();
+            else
+                currentBoard.showPlayer();
+        }
+        enabled = !enabled;
+    }
+
+    /**
+     * @return true if enabled, false otherwise
+     */
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
 
     /**
      * Whether or not the player's scoreboard is cycling
@@ -159,7 +184,7 @@ public class PlayerBoards
      */
     public void showNextBoard()
     {
-        if (boards.size() == 0)
+        if (boards.size() == 0 || !enabled)
             return;
         int next = (current + 1) % boards.size();
         if (next != current)
@@ -212,7 +237,7 @@ public class PlayerBoards
      */
     public boolean hasActiveBoard()
     {
-        return boards.size() > 0;
+        return boards.size() > 0 && enabled;
     }
 
     /**
