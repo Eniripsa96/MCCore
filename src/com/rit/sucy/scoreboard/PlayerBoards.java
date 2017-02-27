@@ -27,10 +27,8 @@
 package com.rit.sucy.scoreboard;
 
 import com.rit.sucy.version.VersionManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.*;
 
@@ -172,11 +170,20 @@ public class PlayerBoards
      */
     public boolean showBoard(String name)
     {
-        for (Board board : boards)
-            if (format(board.getName()).equals(name))
-                return board.showPlayer();
+        for (int i = 0; i < boards.size(); i++)
+            if (format(boards.get(i).getName()).equals(name))
+                show(i);
 
         return false;
+    }
+
+    private void show(int index)
+    {
+        if (currentBoard != null)
+            currentBoard.clearDisplay();
+        current = index;
+        currentBoard = boards.get(index);
+        currentBoard.showPlayer();
     }
 
     /**
@@ -188,9 +195,7 @@ public class PlayerBoards
             return;
         int next = (current + 1) % boards.size();
         if (next != current)
-            boards.get(next).showPlayer();
-        current = next;
-        currentBoard = boards.get(current);
+            show(next);
     }
 
     /**

@@ -32,6 +32,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -173,6 +174,7 @@ public abstract class Board
 
         try
         {
+            clearDisplay();
             List<Object> packets = (List)getPackets.invoke(scoreboardServer, objective);
             packets.add(1, displayConstructor.newInstance(1, objective));
             Reflection.sendPackets(player, packets);
