@@ -27,12 +27,14 @@
 package com.rit.sucy.scoreboard;
 
 import com.rit.sucy.reflect.Reflection;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,7 +60,7 @@ public abstract class Board
      */
     public static void init(Scoreboard scoreboard)
     {
-        if (objConstructor != null)
+        if (getScore != null)
             return;
 
         try
@@ -84,13 +86,14 @@ public abstract class Board
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            System.out.println("Failed to set up reflection for scoreboards - restoring to slow method");
         }
     }
 
     protected final String plugin;
     private final String title;
 
+    private final Scoreboard scoreboard;
     private final Object objective;
 
     private Player player;
@@ -116,13 +119,23 @@ public abstract class Board
     {
         this.plugin = plugin;
         this.title = title;
-        try
-        {
-            objective = objConstructor.newInstance(scoreboardServer, title, sidebarCriteria);
+
+        Scoreboard scoreboard = null;
+        Object objective = null;
+        if (packetConstructor != null) {
+            try {
+                objective = objConstructor.newInstance(scoreboardServer, title, sidebarCriteria);
+            } catch (Exception ex) {
+                System.out.println("Failed to create objective for scoreboard - resorting to slow method");
+            }
         }
-        catch (Exception ex) {
-            throw new IllegalStateException("Failed to set up Board properly", ex);
+        if (objective == null) {
+            scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+            objective = scoreboard.registerNewObjective(title, "dummy");
+            ((Objective)objective).setDisplaySlot(DisplaySlot.SIDEBAR);
         }
+        this.scoreboard = scoreboard;
+        this.objective = objective;
     }
 
     /**
@@ -153,13 +166,16 @@ public abstract class Board
      */
     protected void set(String label, int score)
     {
-        try
-        {
-            setScore.invoke(getScore.invoke(scoreboardServer, label, objective), score);
+        if (scoreboard == null) {
+            try {
+                setScore.invoke(getScore.invoke(scoreboardServer, label, objective), score);
+            } catch (Exception ex) {
+                throw new IllegalStateException("Failed to set a score", ex);
+            }
         }
-        catch (Exception ex)
-        {
-            throw new IllegalStateException("Failed to set a score", ex);
+        else {
+            System.out.println("Set " + label + " to " + score);
+            ((Objective) objective).getScore(label).setScore(score);
         }
     }
 
@@ -172,17 +188,21 @@ public abstract class Board
         if (player == null)
             return false;
 
-        try
-        {
-            clearDisplay();
-            List<Object> packets = (List)getPackets.invoke(scoreboardServer, objective);
-            packets.add(1, displayConstructor.newInstance(1, objective));
-            Reflection.sendPackets(player, packets);
-            return true;
+        if (scoreboard == null) {
+            try {
+                clearDisplay();
+                List<Object> packets = (List) getPackets.invoke(scoreboardServer, objective);
+                packets.add(1, displayConstructor.newInstance(1, objective));
+                Reflection.sendPackets(player, packets);
+                return true;
+            } catch (Exception ex) {
+                throw new IllegalStateException("Failed to create packets", ex);
+            }
         }
-        catch (Exception ex)
-        {
-            throw new IllegalStateException("Failed to create packets", ex);
+        else {
+            System.out.println("Showed scoreboard to " + player.getName());
+            player.setScoreboard(scoreboard);
+            return true;
         }
     }
 
@@ -207,13 +227,15 @@ public abstract class Board
         if (player == null)
             return;
 
-        try
-        {
-            Reflection.sendPacket(player, packetConstructor.newInstance(objective, 1));
+        if (scoreboard == null) {
+            try {
+                Reflection.sendPacket(player, packetConstructor.newInstance(objective, 1));
+            } catch (Exception ex) {
+                throw new IllegalStateException("Failed to send clear packet", ex);
+            }
         }
-        catch (Exception ex)
-        {
-            throw new IllegalStateException("Failed to send clear packet", ex);
+        else {
+            player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         }
     }
 

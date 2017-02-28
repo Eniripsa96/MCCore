@@ -65,8 +65,7 @@ public class Reflection
             }
             catch (Exception ex)
             {
-                ex.printStackTrace();
-                throw new IllegalStateException("Failed to initialize reflection utility", ex);
+                System.out.println("Failed to set up reflection - is the server using Cauldron/Thermos?");
             }
         }
     }

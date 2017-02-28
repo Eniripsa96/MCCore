@@ -48,6 +48,7 @@ public class BoardManager
 
     static void init(Player player)
     {
+        System.out.println("Init scoreboard");
         if (scoreboardUsed && player != null)
             player.setScoreboard(scoreboard);
     }
@@ -158,6 +159,7 @@ public class BoardManager
     {
         if (!scoreboardUsed)
         {
+            System.out.println("Enable scoreboard");
             for (Player player : Bukkit.getOnlinePlayers())
                 player.setScoreboard(scoreboard);
             scoreboardUsed = true;
