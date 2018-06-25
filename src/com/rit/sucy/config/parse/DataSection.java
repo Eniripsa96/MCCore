@@ -593,7 +593,7 @@ public class DataSection
         if (!data.containsKey(key)) return fallback;
         Object obj = data.get(key);
         try {
-            return NumberParser.parseInt(obj.toString());
+            return Integer.parseInt(obj.toString());
         }
         catch (Exception ex) {
             return fallback;
@@ -647,7 +647,7 @@ public class DataSection
         if (!data.containsKey(key)) return fallback;
         Object obj = data.get(key);
         try {
-            return NumberParser.parseDouble(obj.toString());
+            return Double.parseDouble(obj.toString());
         }
         catch (Exception ex) {
             return fallback;

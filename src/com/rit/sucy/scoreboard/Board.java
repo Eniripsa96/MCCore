@@ -174,7 +174,6 @@ public abstract class Board
             }
         }
         else {
-            System.out.println("Set " + label + " to " + score);
             ((Objective) objective).getScore(label).setScore(score);
         }
     }
@@ -200,7 +199,6 @@ public abstract class Board
             }
         }
         else {
-            System.out.println("Showed scoreboard to " + player.getName());
             player.setScoreboard(scoreboard);
             return true;
         }

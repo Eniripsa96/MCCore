@@ -26,6 +26,7 @@
  */
 package com.rit.sucy.config;
 
+import jdk.internal.util.xml.impl.ReaderUTF8;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -156,7 +157,7 @@ public class Config
         InputStream defConfigStream = plugin.getResource(fileName);
         if (defConfigStream != null)
         {
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(new ReaderUTF8(defConfigStream));
             fileConfiguration.setDefaults(defConfig);
         }
     }

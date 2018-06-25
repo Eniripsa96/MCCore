@@ -39,37 +39,12 @@ public class NumberParser
      */
     public static int parseInt(String value)
     {
-        int n = 0;
-        int val;
-        boolean negative = false;
-
-        int i = 0;
-        char c = value.charAt(i);
-
-        // Negative sign in front
-        if (c == '-')
-        {
-            negative = true;
-            i++;
+        try {
+            return Integer.parseInt(value);
         }
-
-        // Positive sign in front
-        else if (c == '+')
-        {
-            i++;
+        catch (Exception ex) {
+            return 0;
         }
-
-        // Read in digits
-        for (; i < value.length(); i++)
-        {
-            c = value.charAt(i);
-            val = (int)c - 48;
-            if (val < 0 || val > 9)
-                error(value);
-            n *= 10;
-            n += val;
-        }
-        return negative ? -n : n;
     }
 
     /**
@@ -80,69 +55,12 @@ public class NumberParser
      */
     public static double parseDouble(String value)
     {
-        double n = 0;
-        double d = 0.1;
-        int val;
-        boolean decimal = false;
-        boolean negative = false;
-        int i = 0;
-        char c = value.charAt(i);
-
-        // Negative sign in front
-        if (c == '-')
-        {
-            negative = true;
-            i++;
+        try {
+            return Double.parseDouble(value);
         }
-
-        // Positive sign in front
-        else if (c == '+')
-        {
-            i++;
+        catch (Exception ex) {
+            return 0;
         }
-
-        for (; i < value.length(); i++)
-        {
-            c = value.charAt(i);
-            switch (c)
-            {
-                // Start the decimal portion
-                case '.':
-                case ',':
-                    if (decimal)
-                        error(value);
-                    decimal = true;
-                    break;
-
-                // Add digits
-                default:
-                    val = (int)c - 48;
-                    if (val < 0 || val > 9)
-                        error(value);
-                    if (decimal)
-                    {
-                        n += d * val;
-                        d *= 0.1;
-                    }
-                    else
-                    {
-                        n *= 10;
-                        n += val;
-                    }
-                    break;
-            }
-        }
-        return negative ? -n : n;
-    }
-
-    /**
-     * Throws an error when parsing numbers
-     *
-     * @param value string being parsed
-     */
-    private static void error(String value)
-    {
-        throw new NumberFormatException("Invalid Number: " + value);
     }
 }
 

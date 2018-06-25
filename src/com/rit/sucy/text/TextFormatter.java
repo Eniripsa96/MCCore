@@ -41,7 +41,7 @@ public class TextFormatter
     /**
      * Regex string for finding color patterns
      */
-    private static final String  COLOR_REGEX   = "([0-9a-fl-orA-FL-OR])";
+    private static final String  COLOR_REGEX   = "([0-9a-fk-orA-FL-OR])";
     private static final Pattern COLOR_PATTERN = Pattern.compile(COLOR_REGEX);
 
     /**
@@ -177,7 +177,7 @@ public class TextFormatter
             {
                 sb.setCharAt(index, ChatColor.COLOR_CHAR);
             }
-            index = sb.indexOf(t);
+            index = sb.indexOf(t, index + 1);
         }
     }
 

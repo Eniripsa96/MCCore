@@ -41,6 +41,7 @@ import java.util.HashMap;
 public class BoardManager
 {
     private static final HashMap<String, PlayerBoards> players = new HashMap<String, PlayerBoards>();
+    private static final HashMap<String, String> teams = new HashMap<String, String>();
 
     private static Scoreboard scoreboard;
 
@@ -48,7 +49,6 @@ public class BoardManager
 
     static void init(Player player)
     {
-        System.out.println("Init scoreboard");
         if (scoreboardUsed && player != null)
             player.setScoreboard(scoreboard);
     }
@@ -120,8 +120,14 @@ public class BoardManager
      */
     public static void setTeam(String player, String team)
     {
-        enableScoreboard();
-        scoreboard.getTeam(team).addEntry(player);
+        try {
+            enableScoreboard();
+            scoreboard.getTeam(team).addEntry(player);
+            teams.put(player, team);
+        }
+        catch (NoSuchMethodError nsme) {
+            // Cauldron/Thermos cannot do this
+        }
     }
 
     /**
@@ -131,7 +137,10 @@ public class BoardManager
      */
     public static void clearTeam(String player)
     {
-        org.bukkit.scoreboard.Team sbTeam = scoreboard.getEntryTeam(player);
+        if (!teams.containsKey(player))
+            return;
+
+        org.bukkit.scoreboard.Team sbTeam = scoreboard.getTeam(teams.remove(player));
         if (sbTeam != null) sbTeam.removeEntry(player);
     }
 
@@ -159,7 +168,6 @@ public class BoardManager
     {
         if (!scoreboardUsed)
         {
-            System.out.println("Enable scoreboard");
             for (Player player : Bukkit.getOnlinePlayers())
                 player.setScoreboard(scoreboard);
             scoreboardUsed = true;

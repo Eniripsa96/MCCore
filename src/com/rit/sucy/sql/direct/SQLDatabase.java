@@ -133,9 +133,7 @@ public class SQLDatabase
         // Connect to the server
         try
         {
-            plugin.getLogger().info("Connecting to MySQL database...");
             connection = DriverManager.getConnection(connectionURL, this.user, this.password);
-            plugin.getLogger().info("Connected to the MySQL database successfully");
         }
 
         // Unable to connect to the server
@@ -158,10 +156,8 @@ public class SQLDatabase
             // Close the database connection
             try
             {
-                plugin.getLogger().info("Closing connection to the MySQL database...");
                 connection.close();
                 connection = null;
-                plugin.getLogger().info("The connection to the MySQL database has been closed!");
             }
 
             // Unable to close the database connection

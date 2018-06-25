@@ -52,13 +52,12 @@ import java.util.regex.Pattern;
  * instantiate this class.</p>
  * <p>This config supports comments and UTF-8 encoding for Strings.</p>
  */
-public class CommentedLanguageConfig extends CommentedConfig
-{
+public class CommentedLanguageConfig extends CommentedConfig {
 
-    private static final String  EXPAND_FONT_REGEX = "\\{expandFront\\(([^,]+),([0-9]+),([0-9]+)\\)\\}";
-    private static final Pattern EXPAND_FRONT      = Pattern.compile(EXPAND_FONT_REGEX);
-    private static final String  EXPAND_BACK_REGEX = "\\{expandBack\\(([^,]+),([0-9]+),([0-9]+)\\)\\}";
-    private static final Pattern EXPAND_BACK       = Pattern.compile(EXPAND_BACK_REGEX);
+    private static final String EXPAND_FONT_REGEX = "\\{expandFront\\(([^,]+),([0-9]+),([0-9]+)\\)\\}";
+    private static final Pattern EXPAND_FRONT     = Pattern.compile(EXPAND_FONT_REGEX);
+    private static final String EXPAND_BACK_REGEX = "\\{expandBack\\(([^,]+),([0-9]+),([0-9]+)\\)\\}";
+    private static final Pattern EXPAND_BACK      = Pattern.compile(EXPAND_BACK_REGEX);
 
     /**
      * <p>Constructs a language config from the defaults in the file</p>
@@ -68,8 +67,7 @@ public class CommentedLanguageConfig extends CommentedConfig
      * @param plugin plugin reference
      * @param file   path to the language file
      */
-    public CommentedLanguageConfig(JavaPlugin plugin, String file)
-    {
+    public CommentedLanguageConfig(JavaPlugin plugin, String file) {
         super(plugin, file);
 
         // Update the config, making sure all defaults
@@ -89,8 +87,7 @@ public class CommentedLanguageConfig extends CommentedConfig
      *
      * @return unfiltered message or null if an invalid key
      */
-    public List<String> getMessage(String key)
-    {
+    public List<String> getMessage(String key) {
         return getMessage(key, false, FilterType.NONE);
     }
 
@@ -108,41 +105,33 @@ public class CommentedLanguageConfig extends CommentedConfig
      *
      * @return filtered message or null if an invalid key
      */
-    public List<String> getMessage(String key, boolean player, FilterType filterType, CustomFilter... filters)
-    {
+    public List<String> getMessage(String key, boolean player, FilterType filterType, CustomFilter... filters) {
 
         List<String> lines;
-        if (!getConfig().has(key)) return null;
-        else if (getConfig().isList(key)) {
+        if (!getConfig().has(key)) { return null; } else if (getConfig().isList(key)) {
             lines = getConfig().getList(key);
-        }
-        else
-        {
+        } else {
             lines = new ArrayList<String>();
             lines.add(getConfig().getString(key));
         }
         List<String> result = new ArrayList<String>();
 
         // Filter each line
-        for (String line : lines)
-        {
+        for (String line : lines) {
             StringBuilder sb = new StringBuilder(line);
 
             // Apply custom filters
-            for (CustomFilter filter : filters)
-            {
+            for (CustomFilter filter : filters) {
                 filter.apply(sb);
             }
 
             // Filter colors
-            if (filterType == FilterType.COLOR || filterType == FilterType.ALL)
-            {
+            if (filterType == FilterType.COLOR || filterType == FilterType.ALL) {
                 TextFormatter.colorString(sb);
             }
 
             // Filter specials
-            if (filterType == FilterType.SPECIAL || filterType == FilterType.ALL)
-            {
+            if (filterType == FilterType.SPECIAL || filterType == FilterType.ALL) {
                 filterSizer(sb, true, player);
                 filterSizer(sb, false, player);
                 filterBreak(sb);
@@ -163,25 +152,23 @@ public class CommentedLanguageConfig extends CommentedConfig
      * @param front  true if apply front sizer, false for back sizer
      * @param player whether or not it is for a player
      */
-    private void filterSizer(StringBuilder sb, boolean front, boolean player)
-    {
+    private void filterSizer(StringBuilder sb, boolean front, boolean player) {
         Pattern regex = front ? EXPAND_FRONT : EXPAND_BACK;
         Matcher match = regex.matcher(sb);
         int size = sb.length();
-        while (match.find())
-        {
+        while (match.find()) {
             int playerSize = Integer.parseInt(match.group(2));
             int consoleSize = Integer.parseInt(match.group(3));
             String string = match.group(1);
-            if (player)
-            {
+            if (player) {
                 sb.replace(match.start() + sb.length() - size, match.end(),
-                           (TextSizer.measureString(string) > playerSize - 2 ? string : TextSizer.expand(string, playerSize, front)));
-            }
-            else
-            {
+                        (TextSizer.measureString(string) > playerSize - 2 ? string : TextSizer.expand(
+                                string,
+                                playerSize,
+                                front)));
+            } else {
                 sb.replace(match.start() + sb.length() - size, match.end(),
-                           (string.length() > consoleSize ? string : TextSizer.expandConsole(string, consoleSize, front)));
+                        (string.length() > consoleSize ? string : TextSizer.expandConsole(string, consoleSize, front)));
             }
         }
     }
@@ -191,16 +178,13 @@ public class CommentedLanguageConfig extends CommentedConfig
      *
      * @param sb message to filter
      */
-    private void filterBreak(StringBuilder sb)
-    {
+    private void filterBreak(StringBuilder sb) {
         int index = sb.indexOf("{break}");
-        if (index >= 0)
-        {
+        if (index >= 0) {
             sb.delete(index, index + 7);
             String without = sb.toString();
             int size = TextSizer.measureString(without);
-            for (int i = 0; i < (320 - size) / 6; i++)
-            {
+            for (int i = 0; i < (320 - size) / 6; i++) {
                 sb.insert(index, '-');
             }
         }
@@ -212,8 +196,7 @@ public class CommentedLanguageConfig extends CommentedConfig
      * @param key    key for the language message
      * @param target recipient of the message
      */
-    public void sendMessage(String key, CommandSender target)
-    {
+    public void sendMessage(String key, CommandSender target) {
         sendMessage(key, target, FilterType.NONE);
     }
 
@@ -225,12 +208,12 @@ public class CommentedLanguageConfig extends CommentedConfig
      * @param filterType type of built-in filter to use
      * @param filters    custom filters to use
      */
-    public void sendMessage(String key, CommandSender target, FilterType filterType, CustomFilter... filters)
-    {
+    public void sendMessage(String key, CommandSender target, FilterType filterType, CustomFilter... filters) {
         List<String> lines = getMessage(key, target instanceof Player, filterType, filters);
-        for (String line : lines)
-        {
-            target.sendMessage(line);
+        for (String line : lines) {
+            if (!line.isEmpty()) {
+                target.sendMessage(line);
+            }
         }
     }
 
@@ -241,8 +224,7 @@ public class CommentedLanguageConfig extends CommentedConfig
      * @param loc    location to send the message from
      * @param radius radius to send the message across
      */
-    public void sendMessage(String key, Location loc, double radius)
-    {
+    public void sendMessage(String key, Location loc, double radius) {
         sendMessage(key, loc, radius, FilterType.NONE);
     }
 
@@ -255,17 +237,15 @@ public class CommentedLanguageConfig extends CommentedConfig
      * @param filterType type of built-in filter to use
      * @param filters    custom filters to use
      */
-    public void sendMessage(String key, Location loc, double radius, FilterType filterType, CustomFilter... filters)
-    {
+    public void sendMessage(String key, Location loc, double radius, FilterType filterType, CustomFilter... filters) {
         radius *= radius;
         List<String> lines = getMessage(key, true, filterType, filters);
-        for (Player player : loc.getWorld().getPlayers())
-        {
-            if (player.getLocation().distanceSquared(loc) < radius)
-            {
-                for (String line : lines)
-                {
-                    player.sendMessage(line);
+        for (Player player : loc.getWorld().getPlayers()) {
+            if (player.getLocation().distanceSquared(loc) < radius) {
+                for (String line : lines) {
+                    if (!line.isEmpty()) {
+                        player.sendMessage(line);
+                    }
                 }
             }
         }
@@ -278,8 +258,7 @@ public class CommentedLanguageConfig extends CommentedConfig
      * @param key       key for the language message
      * @param targetIds ids of the recipients of the message
      */
-    public void sendMessage(String key, Collection<UUID> targetIds)
-    {
+    public void sendMessage(String key, Collection<UUID> targetIds) {
         sendMessage(key, targetIds, FilterType.NONE);
     }
 
@@ -292,18 +271,16 @@ public class CommentedLanguageConfig extends CommentedConfig
      * @param filterType type of built-in filter to use
      * @param filters    custom filters to use
      */
-    public void sendMessage(String key, Collection<UUID> targetIds, FilterType filterType, CustomFilter... filters)
-    {
+    public void sendMessage(String key, Collection<UUID> targetIds, FilterType filterType, CustomFilter... filters) {
         List<String> lines = getMessage(key, true, filterType, filters);
-        if (lines == null || !VersionManager.isUUID()) return;
-        for (UUID id : targetIds)
-        {
+        if (lines == null || !VersionManager.isUUID()) { return; }
+        for (UUID id : targetIds) {
             Player target = Bukkit.getPlayer(id);
-            if (target != null)
-            {
-                for (String line : lines)
-                {
-                    target.sendMessage(line);
+            if (target != null) {
+                for (String line : lines) {
+                    if (!line.isEmpty()) {
+                        target.sendMessage(line);
+                    }
                 }
             }
         }
