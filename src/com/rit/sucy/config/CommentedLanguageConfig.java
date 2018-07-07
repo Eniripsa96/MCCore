@@ -118,6 +118,8 @@ public class CommentedLanguageConfig extends CommentedConfig {
 
         // Filter each line
         for (String line : lines) {
+            if (line.isEmpty()) continue;
+
             StringBuilder sb = new StringBuilder(line);
 
             // Apply custom filters
@@ -211,9 +213,7 @@ public class CommentedLanguageConfig extends CommentedConfig {
     public void sendMessage(String key, CommandSender target, FilterType filterType, CustomFilter... filters) {
         List<String> lines = getMessage(key, target instanceof Player, filterType, filters);
         for (String line : lines) {
-            if (!line.isEmpty()) {
-                target.sendMessage(line);
-            }
+            target.sendMessage(line);
         }
     }
 
@@ -242,11 +242,7 @@ public class CommentedLanguageConfig extends CommentedConfig {
         List<String> lines = getMessage(key, true, filterType, filters);
         for (Player player : loc.getWorld().getPlayers()) {
             if (player.getLocation().distanceSquared(loc) < radius) {
-                for (String line : lines) {
-                    if (!line.isEmpty()) {
-                        player.sendMessage(line);
-                    }
-                }
+                lines.forEach(player::sendMessage);
             }
         }
     }
@@ -277,11 +273,7 @@ public class CommentedLanguageConfig extends CommentedConfig {
         for (UUID id : targetIds) {
             Player target = Bukkit.getPlayer(id);
             if (target != null) {
-                for (String line : lines) {
-                    if (!line.isEmpty()) {
-                        target.sendMessage(line);
-                    }
-                }
+                lines.forEach(target::sendMessage);
             }
         }
     }

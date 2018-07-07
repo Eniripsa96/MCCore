@@ -27,9 +27,9 @@
 package com.rit.sucy.player;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -40,8 +40,7 @@ import java.util.List;
 /**
  * Provides checks for protection plugins
  */
-public class Protection
-{
+public class Protection {
 
     /**
      * Checks whether or not an entity can be attacked by a player
@@ -51,8 +50,7 @@ public class Protection
      *
      * @return true if the target can be attacked, false otherwise
      */
-    public static boolean canAttack(LivingEntity attacker, LivingEntity target)
-    {
+    public static boolean canAttack(LivingEntity attacker, LivingEntity target) {
         return canAttack(attacker, target, false);
     }
 
@@ -65,22 +63,24 @@ public class Protection
      *
      * @return true if the target can be attacked, false otherwise
      */
-    public static boolean canAttack(LivingEntity attacker, LivingEntity target, boolean passiveAlly)
-    {
-        if (attacker == target) return false;
-        if (target instanceof Tameable)
-        {
+    public static boolean canAttack(LivingEntity attacker, LivingEntity target, boolean passiveAlly) {
+        if (attacker == target) { return false; }
+        if (target instanceof Tameable) {
             Tameable entity = (Tameable) target;
-            if (entity.isTamed())
-            {
-                return canAttack(attacker, (Player) entity.getOwner(), false);
+            if (entity.isTamed() && entity.getOwner() instanceof OfflinePlayer) {
+                final OfflinePlayer owner = (OfflinePlayer) entity.getOwner();
+                if (owner.isOnline()) {
+                    return canAttack(attacker, owner.getPlayer(), false);
+                }
             }
-        }
-        else if (passiveAlly && target instanceof Animals)
-        {
+        } else if (passiveAlly && target instanceof Animals) {
             return false;
         }
-        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(attacker, target, EntityDamageEvent.DamageCause.CUSTOM, 1.0);
+        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(
+                attacker,
+                target,
+                EntityDamageEvent.DamageCause.CUSTOM,
+                1.0);
         Bukkit.getPluginManager().callEvent(event);
         return !event.isCancelled();
     }
@@ -93,8 +93,7 @@ public class Protection
      *
      * @return true if ally, false otherwise
      */
-    public static boolean isAlly(LivingEntity attacker, LivingEntity target)
-    {
+    public static boolean isAlly(LivingEntity attacker, LivingEntity target) {
         return !canAttack(attacker, target);
     }
 
@@ -106,13 +105,10 @@ public class Protection
      *
      * @return list of targets the player can attack
      */
-    public static List<LivingEntity> canAttack(LivingEntity attacker, List<LivingEntity> targets)
-    {
+    public static List<LivingEntity> canAttack(LivingEntity attacker, List<LivingEntity> targets) {
         List<LivingEntity> list = new ArrayList<LivingEntity>();
-        for (LivingEntity entity : targets)
-        {
-            if (canAttack(attacker, entity))
-            {
+        for (LivingEntity entity : targets) {
+            if (canAttack(attacker, entity)) {
                 list.add(entity);
             }
         }
@@ -127,13 +123,10 @@ public class Protection
      *
      * @return list of targets the player cannot attack
      */
-    public static List<LivingEntity> cannotAttack(LivingEntity attacker, List<LivingEntity> targets)
-    {
+    public static List<LivingEntity> cannotAttack(LivingEntity attacker, List<LivingEntity> targets) {
         List<LivingEntity> list = new ArrayList<LivingEntity>();
-        for (LivingEntity entity : targets)
-        {
-            if (!canAttack(attacker, entity))
-            {
+        for (LivingEntity entity : targets) {
+            if (!canAttack(attacker, entity)) {
                 list.add(entity);
             }
         }
